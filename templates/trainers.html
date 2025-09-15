@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Тренеры') }}{% endblock %}
+{% block content %}
+<section class="container pad-y">
+  <h1>{{ _('Тренеры') }}</h1>
+  <div class="cards three">
+    {% for t in trainers %}
+    <div class="card hover-scale">
+      <img src="{{ t.photo or url_for('static', filename='images/trainer.svg') }}" alt="{{ t.name }}">
+      <h3>{{ t.name }}</h3>
+      <p>{{ t.bio }}</p>
+    </div>
+    {% else %}
+    <p>{{ _('Скоро здесь появятся тренеры.') }}</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

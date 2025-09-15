@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Редактировать расписание') }}{% endblock %}
+{% block content %}
+<section class="container pad-y">
+  <h1>{{ _('Редактировать расписание') }}</h1>
+  <form method="post" class="form small">
+    {{ form.csrf_token }}
+    <div class="form-row">
+      <label>{{ _('День недели') }}</label>
+      {{ form.day_of_week(class="input") }}
+    </div>
+    <div class="form-row">
+      <label>{{ _('Время') }}</label>
+      {{ form.time(class="input") }}
+    </div>
+    <div class="form-row">
+      <label>{{ _('Активность') }}</label>
+      {{ form.activity(class="input") }}
+    </div>
+    <div class="form-row">
+      <label>{{ _('Тренер') }}</label>
+      {{ form.coach(class="input") }}
+    </div>
+    <div class="form-row">
+      {{ form.submit(class="btn btn-accent") }}
+    </div>
+  </form>
+
+  <h2 class="mt">{{ _('Текущее расписание') }}</h2>
+  <div class="table responsive">
+    <div class="table-head">
+      <div>{{ _('День') }}</div><div>{{ _('Время') }}</div><div>{{ _('Активность') }}</div><div>{{ _('Тренер') }}</div>
+    </div>
+    {% for s in schedule %}
+    <div class="table-row">
+      <div>{{ ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'][s.day_of_week] }}</div>
+      <div>{{ s.time }}</div>
+      <div>{{ s.activity }}</div>
+      <div>{{ s.coach or '-' }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

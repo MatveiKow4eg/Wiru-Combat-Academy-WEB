@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+{% block content %}
+<section class="hero hero-gym" style="background-image:url('{{ url_for('static', filename='images/mainheader.png') }}')">
+  <div class="container hero-inner">
+    <h1><span class="highlight">BE FIT</span><br>BE STRONGER</h1>
+    <p>Unleash your potential at our cutting-edge gym.<br>Elevate your fitness journey.</p>
+    <div class="btn-row">
+      <a class="btn btn-accent" href="{{ url_for('signup') }}">EXPLORE MORE</a>
+      <a class="btn" href="{{ url_for('signup') }}">BE A MEMBER</a>
+    </div>
+  </div>
+</section>
+
+<!-- Full-width title -->
+<section class="title-line" data-word="COMBAT" data-sep="✦">
+  <div class="title-row"></div>
+</section>
+
+<!-- Disciplines Grid -->
+<section class="disciplines pad-y">
+  <div class="container">
+    <div class="disciplines-grid">
+
+      <div class="discipline-card">
+        <img src="{{ url_for('static', filename='images/boxing.jfif') }}" alt="Boxing">
+        <div class="discipline-title">Бокс</div>
+      </div>
+
+      <div class="discipline-card">
+        <img src="{{ url_for('static', filename='images/wrestling.jpg') }}" alt="Wrestling">
+        <div class="discipline-title">Борьба</div>
+      </div>
+
+      <div class="discipline-card">
+        <img src="{{ url_for('static', filename='images/kickboxing.jpg') }}" alt="Kickboxing">
+        <div class="discipline-title">Кикбоксинг</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

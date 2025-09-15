@@ -1,0 +1,61 @@
+\
+msgid ""
+msgstr ""
+"Project-Id-Version: sports_club\n"
+"POT-Creation-Date: 2025-09-15 00:00+0000\n"
+"PO-Revision-Date: 2025-09-15 00:00+0000\n"
+"Language: et\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Главная"
+msgstr "Avaleht"
+
+msgid "Новости"
+msgstr "Uudised"
+
+msgid "Расписание"
+msgstr "Tunniplaan"
+
+msgid "Тренеры"
+msgstr "Treenerid"
+
+msgid "Контакты"
+msgstr "Kontaktid"
+
+msgid "Записаться"
+msgstr "Registreeru"
+
+msgid "Добро пожаловать в Sports Club!"
+msgstr "Tere tulemast Sports Clubi!"
+
+msgid "Сильнее каждый день — присоединяйся к нам."
+msgstr "Iga päev tugevam — liitu meiega."
+
+msgid "Записаться на тренировку"
+msgstr "Registreeru treeningule"
+
+msgid "Выбери свой путь"
+msgstr "Vali oma tee"
+
+msgid "Развивай силу, скорость и выносливость."
+msgstr "Arenda jõudu, kiirust ja vastupidavust."
+
+msgid "Техника, контроль и характер."
+msgstr "Tehnika, kontroll ja iseloom."
+
+msgid "Смешанные единоборства для смелых."
+msgstr "Vabamaadlus julgetele."
+
+msgid "Все новости"
+msgstr "Kõik uudised"
+
+msgid "Пока нет новостей."
+msgstr "Uudiseid veel pole."
+
+msgid "Открыть расписание"
+msgstr "Ava tunniplaan"
+
+msgid "Тренеры скоро появятся."
+msgstr "Treenerid ilmuvad peagi."

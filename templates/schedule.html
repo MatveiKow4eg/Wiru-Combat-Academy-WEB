@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Расписание тренировок') }}{% endblock %}
+{% block content %}
+<section class="container pad-y">
+  <h1>{{ _('Расписание тренировок') }}</h1>
+  <div class="table responsive">
+    <div class="table-head">
+      <div>{{ _('День') }}</div><div>{{ _('Время') }}</div><div>{{ _('Активность') }}</div><div>{{ _('Тренер') }}</div>
+    </div>
+    {% for s in schedule %}
+    <div class="table-row {% if s.day_of_week == today %}today{% endif %}">
+      <div>{{ ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'][s.day_of_week] }}</div>
+      <div>{{ s.time }}</div>
+      <div id="{{ s.activity|lower }}">{% if loop.first %}{% endif %}{{ s.activity }}</div>
+      <div>{{ s.coach or '-' }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

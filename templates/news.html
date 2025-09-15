@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Новости') }}{% endblock %}
+{% block content %}
+<section class="container pad-y">
+  <h1>{{ _('Новости') }}</h1>
+  <div class="cards three">
+    {% for item in news %}
+    <a class="card hover-scale" href="{{ url_for('news_detail', news_id=item.id) }}">
+      <img src="{{ item.image or url_for('static', filename='images/news.svg') }}" alt="{{ item.title }}">
+      <div class="meta">{{ item.created_at.strftime('%d.%m.%Y') }}</div>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.body[:160] }}{% if item.body|length > 160 %}…{% endif %}</p>
+    </a>
+    {% else %}
+    <p>{{ _('Пока нет новостей.') }}</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

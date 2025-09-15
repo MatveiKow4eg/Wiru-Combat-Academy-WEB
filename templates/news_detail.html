@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ item.title }}{% endblock %}
+{% block content %}
+<section class="container pad-y">
+  <article class="article">
+    <img class="article-cover" src="{{ item.image or url_for('static', filename='images/news.svg') }}" alt="{{ item.title }}">
+    <h1>{{ item.title }}</h1>
+    <div class="meta">{{ item.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+    <div class="article-body">{{ item.body|replace('\n','<br>')|safe }}</div>
+  </article>
+</section>
+{% endblock %}

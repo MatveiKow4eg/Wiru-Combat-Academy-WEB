@@ -1,0 +1,79 @@
+\
+msgid ""
+msgstr ""
+"Project-Id-Version: sports_club\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-15 00:00+0000\n"
+"PO-Revision-Date: 2025-09-15 00:00+0000\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/base.html:21
+msgid "Главная"
+msgstr "Главная"
+
+#: templates/base.html:22
+msgid "Новости"
+msgstr "Новости"
+
+#: templates/base.html:23
+msgid "Расписание"
+msgstr "Расписание"
+
+#: templates/base.html:24
+msgid "Тренеры"
+msgstr "Тренеры"
+
+#: templates/base.html:25
+msgid "Контакты"
+msgstr "Контакты"
+
+#: templates/base.html
+msgid "Записаться"
+msgstr "Записаться"
+
+#: templates/home.html
+msgid "Добро пожаловать в Sports Club!"
+msgstr "Добро пожаловать в Sports Club!"
+
+#: templates/home.html
+msgid "Сильнее каждый день — присоединяйся к нам."
+msgstr "Сильнее каждый день — присоединяйся к нам."
+
+#: templates/home.html
+msgid "Записаться на тренировку"
+msgstr "Записаться на тренировку"
+
+#: templates/home.html
+msgid "Выбери свой путь"
+msgstr "Выбери свой путь"
+
+#: templates/home.html
+msgid "Развивай силу, скорость и выносливость."
+msgstr "Развивай силу, скорость и выносливость."
+
+#: templates/home.html
+msgid "Техника, контроль и характер."
+msgstr "Техника, контроль и характер."
+
+#: templates/home.html
+msgid "Смешанные единоборства для смелых."
+msgstr "Смешанные единоборства для смелых."
+
+#: templates/home.html
+msgid "Все новости"
+msgstr "Все новости"
+
+#: templates/home.html
+msgid "Пока нет новостей."
+msgstr "Пока нет новостей."
+
+#: templates/home.html
+msgid "Открыть расписание"
+msgstr "Открыть расписание"
+
+#: templates/home.html
+msgid "Тренеры скоро появятся."
+msgstr "Тренеры скоро появятся."

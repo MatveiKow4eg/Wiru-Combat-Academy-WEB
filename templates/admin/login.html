@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Вход в админ-панель') }}{% endblock %}
+{% block content %}
+<section class="container pad-y">
+  <h1>{{ _('Вход в админ-панель') }}</h1>
+  <form method="post" class="form small">
+    {{ form.csrf_token }}
+    <div class="form-row">
+      <label>Username</label>
+      {{ form.username(class="input") }}
+    </div>
+    <div class="form-row">
+      <label>Password</label>
+      {{ form.password(class="input") }}
+    </div>
+    <div class="form-row">
+      {{ form.submit(class="btn btn-accent") }}
+    </div>
+  </form>
+</section>
+{% endblock %}

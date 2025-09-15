@@ -1,0 +1,158 @@
+/* ---------- Hero Section ---------- */
+.hero-gym {
+  background-size: cover;
+  background-position: center;
+  padding: 120px 0;
+  color: #fff;
+  position: relative;
+}
+
+.hero-gym .hero-inner h1 {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.hero-gym .hero-inner .highlight {
+  color: #ff2e2e;
+}
+
+.hero-gym .btn-row {
+  margin-top: 20px;
+  display: flex;
+  gap: 12px;
+}
+
+/* ---------- Services ---------- */
+.services .cards.four {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.services .card.service {
+  text-align: center;
+  background: #222;
+  border: 1px solid #333;
+  padding: 30px 20px;
+  border-radius: 16px;
+  transition: all 0.3s;
+}
+
+.services .card.service:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.services .card.service .icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.services .card.service h3 {
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.services .card.service.highlight {
+  background: #ff2e2e;
+  color: #fff;
+  border-color: #ff2e2e;
+}
+
+/* ---------- Title Line (full-width text row) ---------- */
+.title-line {
+  width: 100%;
+  overflow: hidden;
+  padding: 18px 0;
+}
+
+.title-line {
+  margin-bottom: 20px; /* отступ после строки */
+}
+
+.disciplines.pad-y {
+  padding: 0; /* убрали паддинг совсем */
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  white-space: nowrap;
+  text-transform: uppercase;
+  font-weight: 900;
+  font-size: clamp(28px, 4vw, 56px);
+  letter-spacing: 0.02em;
+  padding-top: 40px ;
+}
+
+.title-word {
+  color: transparent;
+  -webkit-text-stroke: 1px #ff2e2e;
+  opacity: 0.45;
+}
+
+.title-word.main {
+  color: #ff2e2e;
+  -webkit-text-stroke: 0;
+  opacity: 1;
+}
+
+.title-sep {
+  color: #ff2e2e;
+  font-size: 0.6em;
+  line-height: 1;
+}
+
+/* ---------- Disciplines ---------- */
+.disciplines-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;              /* увеличил зазор между карточками */
+  margin-top: 20px;
+}
+.disciplines-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;              /* увеличил зазор между карточками */
+  margin-top: 20px;
+}
+
+.discipline-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.discipline-card img {
+  width: 100%;
+  height: 360px;          /* было 260px — сделал больше */
+  object-fit: cover;
+  filter: brightness(70%);
+  transition: transform 0.3s ease;
+}
+
+.discipline-title {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 32px;        /* чуть больше текста */
+  font-weight: 700;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.discipline-card:hover img {
+  transform: scale(1.05);
+}
+
+.discipline-card:hover .discipline-title {
+  color: #ff2e2e;
+}

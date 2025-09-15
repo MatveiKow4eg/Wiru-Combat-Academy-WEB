@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Админ-панель') }}{% endblock %}
+{% block content %}
+<section class="container pad-y">
+  <h1>{{ _('Админ-панель') }}</h1>
+  <div class="cards two">
+    <div class="card">
+      <h3>{{ _('Новости') }}</h3>
+      <p>{{ _('Всего:') }} {{ news_count }}</p>
+      <a class="btn" href="{{ url_for('admin_add_news') }}">{{ _('Добавить новость') }}</a>
+    </div>
+    <div class="card">
+      <h3>{{ _('Заявки') }}</h3>
+      <p>{{ _('Новых заявок:') }} {{ signup_count }}</p>
+      <a class="btn" href="{{ url_for('schedule_page') }}">{{ _('Открыть расписание') }}</a>
+    </div>
+  </div>
+  <p><a class="link" href="{{ url_for('admin_edit_schedule') }}">{{ _('Редактировать расписание') }}</a> •
+     <a class="link" href="{{ url_for('admin_logout') }}">{{ _('Выйти') }}</a></p>
+</section>
+{% endblock %}
