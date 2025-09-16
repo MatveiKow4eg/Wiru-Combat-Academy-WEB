@@ -6,11 +6,11 @@
 {% block content %}
 <section class="hero hero-gym" style="background-image:url('{{ url_for('static', filename='images/mainheader.png') }}')">
   <div class="container hero-inner">
-    <h1><span class="highlight">BE FIT</span><br>BE STRONGER</h1>
-    <p>Unleash your potential at our cutting-edge gym.<br>Elevate your fitness journey.</p>
+    <h1><span class="highlight">БУДЬ В ФОРМЕ</span><br>СТАНЬ СИЛЬНЕЕ</h1>
+    <p>Раскрой свой потенциал в нашей Академии единоборств.
+<br>Подними свой уровень и стань сильнее с нами.</p>
     <div class="btn-row">
-      <a class="btn btn-accent" href="{{ url_for('signup') }}">EXPLORE MORE</a>
-      <a class="btn" href="{{ url_for('signup') }}">BE A MEMBER</a>
+      <a class="btn" href="{{ url_for('signup') }}">ЗАПИСАТЬСЯ</a>
     </div>
   </div>
 </section>
@@ -46,34 +46,99 @@
 
   </div>
 </section>
+<section class="schedule pad-y">
+  <div class="container">
+    <h2 class="section-title">Тренировки и расписание</h2>
 
-
-<!-- Full-width title -->
-<section class="title-line" data-word="COMBAT" data-sep="✦">
-  <div class="title-row"></div>
-</section>
-
-<!-- Disciplines Grid -->
-<section class="disciplines pad-y">
-    <div class="disciplines-grid">
-
-      <div class="discipline-card">
-        <img src="{{ url_for('static', filename='images/boxing.jfif') }}" alt="Boxing">
-        <div class="discipline-title">Бокс</div>
+    <div class="schedule-grid">
+      
+      <!-- Карточка Бокс -->
+      <div class="schedule-card">
+        <div class="schedule-image">
+          <img src="{{ url_for('static', filename='images/boxing.jfif') }}" alt="Бокс">
+        </div>
+        <div class="schedule-content">
+          <h3>Бокс</h3>
+          <p class="price">60€/мес – 600€/год – 8€/раз</p>
+          <ul>
+            <li>Пн: 18:30 – 20:00</li>
+            <li>Ср: 18:30 – 20:00</li>
+            <li>Пт: 18:30 – 20:00</li>
+          </ul>
+          <p class="contact">+372 5012345<br>boxing@wiru.ee</p>
+          <a href="signup" class="btn-main">Записаться</a>
+        </div>
       </div>
 
-      <div class="discipline-card">
-        <img src="{{ url_for('static', filename='images/wrestling.jpg') }}" alt="Wrestling">
-        <div class="discipline-title">Борьба</div>
+      <!-- Карточка Кикбокс -->
+      <div class="schedule-card">
+        <div class="schedule-image">
+          <img src="{{ url_for('static', filename='images/kickboxing.jpg') }}" alt="Кикбоксинг">
+        </div>
+        <div class="schedule-content">
+          <h3>Кикбоксинг</h3>
+          <p class="price">65€/мес – 650€/год – 9€/раз</p>
+          <ul>
+            <li>Вт: 18:30 – 20:00</li>
+            <li>Чт: 18:30 – 20:00</li>
+            <li>Сб: 12:00 – 13:30</li>
+          </ul>
+          <p class="contact">+372 5067890<br>kickboxing@wiru.ee</p>
+          <a href="signup" class="btn-main">Записаться</a>
+        </div>
       </div>
 
-      <div class="discipline-card">
-        <img src="{{ url_for('static', filename='images/kickboxing.jpg') }}" alt="Kickboxing">
-        <div class="discipline-title">Кикбоксинг</div>
+      <!-- Карточка Борьба -->
+      <div class="schedule-card">
+        <div class="schedule-image">
+          <img src="{{ url_for('static', filename='images/wrestling.jpg') }}" alt="Борьба">
+        </div>
+        <div class="schedule-content">
+          <h3>Борьба</h3>
+          <p class="price">55€/мес – 550€/год – 7€/раз</p>
+          <ul>
+            <li>Пн: 16:00 – 17:30</li>
+            <li>Ср: 16:00 – 17:30</li>
+            <li>Пт: 17:15 – 18:30</li>
+          </ul>
+          <p class="contact">+372 5034567<br>wrestling@wiru.ee</p>
+          <a href="signup" class="btn-main">Записаться</a>
+        </div>
       </div>
 
     </div>
+  </div>
 </section>
+
+
+<!-- 2) EXPECT TO HAVE TO SWEAT A LOT -->
+<section class="sweat-section">
+  <div class="wc-wrap">
+    <h2 class="sweat-title">ТРЕНИРОВКИ, КОТОРЫЕ <br>МЕНЯЮТ ТЕБЯ</h2>
+
+    <div class="sweat-grid">
+      <!-- Левая карточка -->
+      <div class="sweat-card">
+        <img src="{{ url_for('static', filename='images/boxer-left.jpg') }}" alt="Boxer left">
+        <div class="sweat-info">
+          <h3><span>100% </span> ФОКУС</h3>
+          <p>РАЗВИВАЙ РЕАКЦИЮ, СКОРОСТЬ И КООРДИНАЦИЮ.</p>
+        </div>
+      </div>
+
+      <!-- Правая карточка -->
+      <div class="sweat-card">
+        <img src="{{ url_for('static', filename='images/boxer-right.jpg') }}" alt="Boxer right">
+        <div class="sweat-info">
+          <h3><span>45+</span>МИНУТ ИНТЕНСИВА</h3>
+          <p>ЭФФЕКТИВНОЕ ЗАНЯТИЕ ДЛЯ СИЛЫ, ТЕХНИКИ И УВЕРЕННОСТИ.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
 
 <!-- 1) WORLD-CLASS KICKBOXING TRAINING -->
@@ -103,33 +168,46 @@
     </div>
   </div>
 </section>
+<section class="clients">
+  <div class="clients-wrap">
+    <h2 class="clients-title">НАШИ КЛИЕНТЫ</h2>
 
-<!-- 2) EXPECT TO HAVE TO SWEAT A LOT -->
-<section class="sweat-section">
-  <div class="wc-wrap">
-    <h2 class="sweat-title">ТРЕНИРОВКИ, КОТОРЫЕ <br>МЕНЯЮТ ТЕБЯ</h2>
-
-    <div class="sweat-grid">
-      <!-- Левая карточка -->
-      <div class="sweat-card">
-        <img src="{{ url_for('static', filename='images/boxer-left.jpg') }}" alt="Boxer left">
-        <div class="sweat-info">
-          <h3><span>100% </span> ФОКУС</h3>
-          <p>РАЗВИВАЙ РЕАКЦИЮ, СКОРОСТЬ И КООРДИНАЦИЮ.</p>
+    <div class="clients-grid">
+      <div class="client-card">
+        <img src="{{ url_for('static', filename='images/client-children.avif') }}" alt="Дети">
+        <div class="client-info">
+          <h3>ДЕТИ</h3>
+          <span class="age">от 4 до 13 лет</span>
         </div>
       </div>
 
-      <!-- Правая карточка -->
-      <div class="sweat-card">
-        <img src="{{ url_for('static', filename='images/boxer-right.jpg') }}" alt="Boxer right">
-        <div class="sweat-info">
-          <h3><span>45+</span>МИНУТ ИНТЕНСИВА</h3>
-          <p>ЭФФЕКТИВНОЕ ЗАНЯТИЕ ДЛЯ СИЛЫ, ТЕХНИКИ И УВЕРЕННОСТИ.</p>
+      <div class="client-card">
+        <img src="{{ url_for('static', filename='images/client-teenagers.jpg') }}" alt="Подростки">
+        <div class="client-info">
+          <h3>ПОДРОСТКИ</h3>
+          <span class="age">от 14 до 17 лет</span>
+        </div>
+      </div>
+
+      <div class="client-card">
+        <img src="{{ url_for('static', filename='images/client-adults.jpg') }}" alt="Взрослые">
+        <div class="client-info">
+          <h3>ВЗРОСЛЫЕ</h3>
+          <span class="age">от 18 до 45 лет</span>
+        </div>
+      </div>
+
+      <div class="client-card">
+        <img src="{{ url_for('static', filename='images/client-elderly.png') }}" alt="Старшие">
+        <div class="client-info">
+          <h3>СТАРШИЕ</h3>
+          <span class="age">от 46 лет и старше</span>
         </div>
       </div>
     </div>
   </div>
 </section>
+
 
 
 {% endblock %}

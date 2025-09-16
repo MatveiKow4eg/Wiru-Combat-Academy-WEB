@@ -17,7 +17,13 @@
 <body>
 <header class="header">
   <div class="container header-inner">
-    <div class="logo"><a href="{{ url_for('home') }}">Wiru Combat Academy</a></div>
+    <!-- Лого -->
+    <div class="logo">
+      <a href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Wiru Combat Academy Logo">
+      </a>
+    </div>
+
     <nav id="nav" class="nav">
       <a href="{{ url_for('home') }}">{{ _('Главная') }}</a>
       <a href="{{ url_for('news_list') }}">{{ _('Новости') }}</a>
@@ -47,15 +53,70 @@
   {% endwith %}
   {% block content %}{% endblock %}
 </main>
-
 <footer class="footer">
-  <div class="container footer-inner">
-    <div>&copy; {{ now.year }} Wiru Combat Academy</div>
-    <div class="socials">
-      <a href="#">Instagram</a> • <a href="#">Facebook</a>
+  <div class="footer-container">
+    <!-- Форма + Логотип -->
+    <div class="footer-top">
+      <div class="footer-form">
+        <h3>Напишите нам</h3>
+        <form method="POST" action="/send-message">
+          <div class="form-row two-cols">
+            <input type="text" name="name" placeholder="Ваше имя" required>
+            <input type="email" name="email" placeholder="Ваш Email" required>
+          </div>
+          <textarea name="message" placeholder="Ваше сообщение" rows="5" required></textarea>
+          <button type="submit">Отправить</button>
+        </form>
+      </div>
+
+      <!-- Логотип справа -->
+      <div class="footer-logo">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Wiru Combat Academy Logo">
+      </div>
+    </div>
+
+    <!-- Карта + контакты -->
+    <div class="footer-bottom">
+      <div class="footer-map">
+        <div style="width:100%; height:400px;">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1925.701057225439!2d27.275484534636032!3d59.397257499382036!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x469471e0e775ef25%3A0xb0da126ff4f8ee0f!2sWiru%20Spordikeskus!5e0!3m2!1sru!2sus!4v1758046051065!5m2!1sru!2sus"
+    width="100%"
+    height="100%"
+    style="border:0; border-radius:8px;"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+</div>
+
+      </div>
+
+      <div class="footer-contacts">
+        <h3>Контакты</h3>
+        <p>Järveküla tee 41, Järve, 30321 <br>Ida-Viru maakond</p>
+        <p>+372 5555 5555</p>
+        <p>info@wiruacademy.ee</p>
+        <h3>Банк</h3>
+        <p>YOUR NAME OU </p>
+        <p>EE xxxxxxxxxxxxxxxxxxxxx</p>
+        <p>EE xxxxxxxxxxxxxxxxxxxxx</p>
+        <div class="socials">
+          <a href="#">Instagram</a> • 
+          <a href="#">Facebook</a> • 
+          <a href="#">YouTube</a>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- Нижняя строка -->
+  <div class="footer-copy">
+    <p>&copy; {{ now.year }} Wiru Combat Academy — Все права защищены</p>
+  </div>
 </footer>
+
+
 <script src="{{ url_for('static', filename='js/title-line.js') }}"></script>
 </body>
 </html>

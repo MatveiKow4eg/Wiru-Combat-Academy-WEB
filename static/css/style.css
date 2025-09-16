@@ -5,10 +5,7 @@
   --head:#ffffff;
   --accent:#e02525;
   --accent-hover:#ff3333;
-  --border:#2a2a2a;
-  --accent-dark:#b02b2a;
-  --muted:#bdbdbd;
-}
+  --border:#2  --acc}
 
 *{box-sizing:border-box}
 html,body{
@@ -36,6 +33,13 @@ p{font-size:17px;line-height:1.6}
 .pad-y{padding:60px 0}
 
 /* HEADER */
+.logo img {
+  max-width: 60px; /* регулируй под свой размер */
+  height: auto;
+  display: block;
+}
+
+
 .header{
   background:#111;
   position:sticky;
@@ -157,4 +161,130 @@ p{font-size:17px;line-height:1.6}
   .nav{display:none;position:absolute;right:16px;top:60px;background:#121212;border:1px solid #333;border-radius:12px;padding:12px}
   .nav.open{display:flex;flex-direction:column;gap:8px}
   .burger{display:block;background:transparent;border:1px solid #333;color:#fff;padding:8px 12px;border-radius:8px}
+}
+.footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.footer-form h3,
+.footer-contacts h3 {
+  color: #ff2e2e;
+  margin-bottom: 15px;
+}
+
+.footer-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-form input,
+.footer-form textarea {
+  background: #1e1e1e;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.footer-form button {
+  background: #e02525;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.footer-form {
+  max-width: 690px;
+  
+}
+.form-row.two-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px; /* Увеличиваем расстояние между полями */
+}
+
+.footer-form button:hover {
+  background: #ff3333;
+}
+
+.footer-bottom {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.footer-map iframe {
+  width: 100%;
+  border-radius: 10px;
+  filter: invert(0.9) hue-rotate(180deg) contrast(90%) brightness(90%);
+}
+
+.footer-contacts p {
+  margin: 8px 0;
+}
+
+.footer-contacts .socials {
+  margin-top: 10px;
+}
+
+.footer-contacts .socials a {
+  color: #ff2e2e;
+  text-decoration: none;
+}
+
+.footer-contacts .socials a:hover {
+  text-decoration: underline;
+}
+
+.footer-copy {
+  text-align: center;
+  border-top: 1px solid #333;
+  margin-top: 40px;
+  padding: 20px 0;
+  font-size: 13px;
+  color: #888;
+}
+
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 3fr 1fr; /* форма занимает больше места, логотип меньше */
+  max-width: 960px; /* общая ширина блока */
+  align-items: start; /* форма и логотип сверху */
+  gap: 40px;
+}
+
+.footer-form {
+  max-width: 100%;
+}
+.footer-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.footer-logo img {
+  max-width: 500px; /* увеличиваем максимальную ширину */
+  width: 100%;       /* изображение будет растягиваться по контейнеру */
+  height: auto;
+  padding-top: 35px;      /* сохраняем пропорции */
+}
+/* Адаптив */
+@media (max-width: 768px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .footer-logo {
+    margin-top: 20px;
+  }
 }

@@ -145,6 +145,92 @@ h1, .wc-title, .story-heading .story-word.main {
   text-align: center;
 }
 
+
+.section-title {
+  text-align: center;
+  font-size: clamp(42px, 6vw, 72px);
+  font-family: "Russo One", "Anton", sans-serif;
+  color: var(--wc-red);
+  margin-bottom: 60px;
+  text-transform: uppercase;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 в ряд */
+  gap: 35px;
+  max-width: 1400px; /* шире контейнер */
+  margin: 0 auto;
+}
+
+.schedule-card {
+  background: #111;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.schedule-image img {
+  width: 100%;
+  height: 280px;  /* выше картинка */
+  filter: grayscale(100%);
+  object-fit: cover;
+  display: block;
+}
+
+.schedule-content {
+  padding: 25px;
+}
+
+.schedule-content h3 {
+  font-size: 26px;
+  margin-bottom: 12px;
+  color: var(--wc-red);
+  font-weight: 800;
+}
+
+.schedule-content .price {
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.schedule-content ul {
+  margin: 0;
+  padding: 0;
+  list-style: none; /* уберёт точки перед элементами */
+}
+
+.schedule-content .contact {
+  color: #bbb;
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+
+.schedule-content .btn-main {
+  display: block;
+  text-align: center;
+  background: var(--wc-red);
+  padding: 14px 0;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.schedule-content .btn-main:hover {
+  background: #ff3b3b;
+}
+
+
+
 /* ===== Sweat block ===== */
 .sweat-grid {
   display: grid; grid-template-columns: repeat(2, 1fr);
@@ -152,7 +238,6 @@ h1, .wc-title, .story-heading .story-word.main {
 }
 .sweat-card { position: relative; border-radius: 14px; overflow: hidden; height: 420px; }
 .sweat-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: transform 0.4s ease; }
-.sweat-card:hover img { transform: scale(1.05); }
 .sweat-info {
   position:absolute; bottom:0; left:0; right:0; padding:25px; text-align:left;
   background: linear-gradient(to top, rgba(0,0,0,0.9) 30%, rgba(0,0,0,0.4) 70%, transparent 100%);
@@ -242,6 +327,76 @@ h1, .wc-title, .story-heading .story-word.main {
   text-transform: none;
   margin: 0;
 }
+.clients {
+  background: var(--bg);
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.clients-title {
+  font-family: "Russo One", "Anton", sans-serif;
+  text-transform: uppercase;
+  color: var(--wc-red);
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 900;
+  margin-bottom: 50px;
+  letter-spacing: 1px;
+}
+.clients-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  width: 100%;        /* растянется на всю ширину */
+  max-width: none;    /* убрали ограничение */
+  margin: 0;          /* убрали центрирование */
+}
+
+.client-card {
+  border-radius: 12px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.client-card img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  filter: grayscale(100%);
+  display: block;
+}
+
+.client-info {
+  padding: 14px 10px;
+}
+
+.client-info h3 {
+  font-family: "Russo One", "Anton", sans-serif;
+  font-size: 22px;
+  color: var(--wc-red);
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.client-info p {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  color: #fff;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .clients-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .clients-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 /* ===== Responsive ===== */
 @media (max-width: 900px){
