@@ -111,17 +111,21 @@
 /* ---------- Disciplines ---------- */
 .disciplines-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;              /* увеличил зазор между карточками */
-  margin-top: 20px;
-}
-.disciplines-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;              /* увеличил зазор между карточками */
-  margin-top: 20px;
+  grid-template-columns: repeat(3, 1fr); /* 3 равные колонки */
+  gap: 20px;
+  margin-top: 40px;
+  max-width: 1400px;       /* чтобы не растягивались слишком на больших мониторах */
+  margin-left: auto;
+  margin-right: auto;
 }
 
+.discipline-card img {
+  width: 100%;
+  height: 550px;           /* увеличил высоту карточки */
+  object-fit: cover;
+  filter: brightness(70%);
+  transition: transform 0.3s ease;
+}
 .discipline-card {
   position: relative;
   overflow: hidden;
@@ -131,21 +135,16 @@
   transition: transform 0.3s ease;
 }
 
-.discipline-card img {
-  width: 100%;
-  height: 360px;          /* было 260px — сделал больше */
-  object-fit: cover;
-  filter: brightness(70%);
-  transition: transform 0.3s ease;
-}
 
 .discipline-title {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
-  font-size: 32px;        /* чуть больше текста */
+  bottom: 20px;            /* снизу */
+  left: 50%;               /* середина по горизонтали */
+  transform: translateX(-50%); /* смещение влево на половину ширины текста */
+  font-size: 32px;
   font-weight: 700;
   color: #fff;
+  text-align: center;
   transition: color 0.3s ease;
 }
 
