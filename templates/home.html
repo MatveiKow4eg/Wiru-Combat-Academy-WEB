@@ -14,6 +14,39 @@
     </div>
   </div>
 </section>
+<section class="our-story">
+  <div class="story-wrap">
+
+    <!-- Заголовок -->
+    <div class="story-heading">
+      <span class="story-word main">О НАС</span>
+    </div>
+
+<!-- Контент -->
+<div class="story-content">
+  <div class="story-text">
+   <p class="big">
+  В Ида-Вирумаа появился новый спортивный центр — WIRU COMBAT ACADEMY, 
+  основанный Сирвеном Авакяном, Сиймом Нейссааром и Сиймом Пярком. 
+  Всего за три месяца их идея превратилась в реальность: двери клуба открылись 
+  для бокса, борьбы, ММА и функциональных тренировок. <br >
+  Сегодня это один из самых больших залов в Эстонии и крупнейший зал единоборств в Ида-Вирумаа.
+</p>
+
+
+    <img src="{{ url_for('static', filename='images/boxer-left.jpg') }}" alt="Наша История">
+
+    <p class="small">
+      Академия объединяет сильную команду тренеров во главе с чемпионом Эстонии Кириллом Сериковым 
+      и стала современной площадкой, где каждый может развиваться, укреплять здоровье 
+      и воспитывать уверенность, дисциплину и командный дух.
+    </p>
+  </div>
+</div>
+
+  </div>
+</section>
+
 
 <!-- Full-width title -->
 <section class="title-line" data-word="COMBAT" data-sep="✦">
@@ -41,5 +74,62 @@
 
     </div>
 </section>
+
+
+<!-- 1) WORLD-CLASS KICKBOXING TRAINING -->
+<section class="wc-section">
+  <div class="wc-wrap">
+    <h2 class="wc-title">СОВРЕМЕННАЯ АКАДЕМИЯ<br>ЕДИНОБОРСТВ</h2>
+
+    <p class="wc-lead">
+      В Wiru Combat Academy проходят тренировки по боксу, борьбе и ММА с упором на технику, дисциплину и личностный рост. Наша цель — помочь каждому, от детей до взрослых, раскрыть свой потенциал в безопасной и вдохновляющей атмосфере.
+    </p>
+
+    <div class="wc-pills">
+      <div class="wc-pill pill-1">
+        <span class="num">1</span><span class="label">СИЛА</span>
+      </div>
+      <p class="wc-desc">
+        Наши тренировки укрепляют тело, закаляют характер и дают уверенность — фундамент любого единоборства.
+      </p>
+
+      <div class="wc-pill pill-2">
+        <span class="num">2</span><span class="label">ТЕХНИКА</span>
+      </div>  
+
+      <div class="wc-pill pill-3">
+        <span class="num">3</span><span class="label">ХАРАКТЕР</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2) EXPECT TO HAVE TO SWEAT A LOT -->
+<section class="sweat-section">
+  <div class="wc-wrap">
+    <h2 class="sweat-title">ТРЕНИРОВКИ, КОТОРЫЕ <br>МЕНЯЮТ ТЕБЯ</h2>
+
+    <div class="sweat-grid">
+      <!-- Левая карточка -->
+      <div class="sweat-card">
+        <img src="{{ url_for('static', filename='images/boxer-left.jpg') }}" alt="Boxer left">
+        <div class="sweat-info">
+          <h3><span>100% </span> ФОКУС</h3>
+          <p>РАЗВИВАЙ РЕАКЦИЮ, СКОРОСТЬ И КООРДИНАЦИЮ.</p>
+        </div>
+      </div>
+
+      <!-- Правая карточка -->
+      <div class="sweat-card">
+        <img src="{{ url_for('static', filename='images/boxer-right.jpg') }}" alt="Boxer right">
+        <div class="sweat-info">
+          <h3><span>45+</span>МИНУТ ИНТЕНСИВА</h3>
+          <p>ЭФФЕКТИВНОЕ ЗАНЯТИЕ ДЛЯ СИЛЫ, ТЕХНИКИ И УВЕРЕННОСТИ.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 {% endblock %}
