@@ -43,7 +43,7 @@
   <div class="container">
     <h2 class="section-title">{{ _('Тренировки и расписание') }}</h2>
 
-    <div class="schedule-grid">
+    <div class="schedule-grid" id="scheduleGrid">
       
       <!-- Карточка Бокс -->
       <div class="schedule-card">
@@ -99,6 +99,10 @@
         </div>
       </div>
 
+    </div>
+    <div class="schedule-nav">
+      <button class="schedule-arrow prev" aria-label="Previous" type="button">‹</button>
+      <button class="schedule-arrow next" aria-label="Next" type="button">›</button>
     </div>
   </div>
 </section>
@@ -165,7 +169,7 @@
   <div class="clients-wrap">
     <h2 class="clients-title">{{ _('НАШИ КЛИЕНТЫ') }}</h2>
 
-    <div class="clients-grid">
+    <div class="clients-grid" id="clientsGrid">
       <div class="client-card">
         <img src="{{ url_for('static', filename='images/client-children.avif') }}" alt="{{ _('Дети') }}">
         <div class="client-info">
@@ -197,6 +201,10 @@
           <span class="age">{{ _('от 46 лет и старше') }}</span>
         </div>
       </div>
+    </div>
+    <div class="clients-nav">
+      <button class="clients-arrow prev" aria-label="Previous" type="button">‹</button>
+      <button class="clients-arrow next" aria-label="Next" type="button">›</button>
     </div>
   </div>
 </section>
