@@ -7,7 +7,7 @@
   position: relative;
 }
 .hero-gym .hero-inner h1 {
-  font-size: 56px;
+  font-size: clamp(36px, 7vw, 56px);
   font-weight: 800;
   line-height: 1.2;
   margin-bottom: 20px;
@@ -70,7 +70,7 @@
 .discipline-card { position: relative; overflow: hidden; border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.4); cursor: pointer; transition: transform 0.3s ease; }
 .discipline-card img {
-  width: 100%; height: 550px; object-fit: cover; filter: brightness(70%);
+  width: 100%; max-width: 100%; aspect-ratio: 16/9; object-fit: cover; filter: brightness(70%);
   transition: transform 0.3s ease;
 }
 .discipline-title{
@@ -100,8 +100,19 @@ h1, .wc-title, .story-heading .story-word.main {
 .wc-section{ background: var(--wc-bg); color: var(--wc-text); padding: 80px 20px 90px; }
 .wc-wrap{ max-width: 980px; margin: 0 auto; text-align: center; }
 .wc-title{
-  font-family: "Anton", sans-serif; text-transform: uppercase; color: var(--wc-red);
-  font-size: clamp(44px, 7vw, 60px); line-height: .95; letter-spacing: 1px; margin: 0 0 18px;
+  font-family: "Anton", sans-serif;
+  text-transform: uppercase;
+  color: var(--wc-red);
+  font-size: clamp(36px, 7vw, 60px);
+  line-height: 1;
+  letter-spacing: .8px;
+  display: block;
+  margin: 0 auto 18px;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding-inline: clamp(12px, 4vw, 32px);
+  text-align: center;
+  text-wrap: balance;
 }
 .wc-lead{
   font-family: "Montserrat", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -148,10 +159,10 @@ h1, .wc-title, .story-heading .story-word.main {
 
 .section-title {
   text-align: center;
-  font-size: clamp(42px, 6vw, 72px);
+  font-size: clamp(28px, 6vw, 60px);
   font-family: "Russo One", "Anton", sans-serif;
   color: var(--wc-red);
-  margin-bottom: 60px;
+  margin-bottom: clamp(28px, 6vw, 60px);
   text-transform: uppercase;
 }
 
@@ -176,7 +187,8 @@ h1, .wc-title, .story-heading .story-word.main {
 
 .schedule-image img {
   width: 100%;
-  height: 280px;  /* выше картинка */
+  max-width: 100%;
+  aspect-ratio: 16/9;  /* адаптивная высота */
   filter: grayscale(100%);
   object-fit: cover;
   display: block;
@@ -236,7 +248,7 @@ h1, .wc-title, .story-heading .story-word.main {
   display: grid; grid-template-columns: repeat(2, 1fr);
   gap: 24px; max-width: 1000px; margin: 0 auto;
 }
-.sweat-card { position: relative; border-radius: 14px; overflow: hidden; height: 420px; }
+.sweat-card { position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 16/10; }
 .sweat-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(100%); transition: transform 0.4s ease; }
 .sweat-info {
   position:absolute; bottom:0; left:0; right:0; padding:25px; text-align:left;
@@ -256,7 +268,7 @@ h1, .wc-title, .story-heading .story-word.main {
 /* ===== Our Story (cleaned + improved readability) ===== */
 .our-story {
   position: relative;
-  padding: 100px 0 80px;
+  padding: clamp(60px, 10vw, 100px) 0 clamp(40px, 8vw, 80px);
   background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
   color: var(--text);
 }
@@ -308,7 +320,9 @@ h1, .wc-title, .story-heading .story-word.main {
 /* image */
 .story-content .story-text img{
   flex: 1 1 320px;
-  max-width: 380px;
+  max-width: 100%;
+  width: 100%;
+  height: auto;
   border-radius: 14px;
   border: 1px solid var(--border);
   box-shadow: 0 14px 30px rgba(0,0,0,.35);
@@ -329,7 +343,7 @@ h1, .wc-title, .story-heading .story-word.main {
 }
 .clients {
   background: var(--bg);
-  padding: 80px 20px;
+  padding: clamp(40px, 8vw, 80px) 20px;
   text-align: center;
 }
 
@@ -359,7 +373,8 @@ h1, .wc-title, .story-heading .story-word.main {
 
 .client-card img {
   width: 100%;
-  height: 280px;
+  max-width: 100%;
+  aspect-ratio: 16/10;
   object-fit: cover;
   filter: grayscale(100%);
   display: block;
@@ -412,7 +427,7 @@ h1, .wc-title, .story-heading .story-word.main {
 }
 
 @media (max-width: 700px){
-  .wc-title{ font-size: 44px; }
+  .wc-title{ font-size: clamp(28px, 8vw, 44px); padding-inline: 6vw; letter-spacing: .5px; }
   .wc-lead{ font-size: 12px; }
   .wc-pill{ --h: 64px; padding: 0 22px; }
   .wc-pill .label{ font-size: 28px; }

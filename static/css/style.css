@@ -17,27 +17,35 @@ html,body{
   background:var(--bg);
   color:var(--text);
   font-family:Roboto,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+  width:100%;
+  overflow-x:hidden;
 }
 
 a{color:var(--accent);text-decoration:none;transition:0.2s}
 a:hover{color:var(--accent-hover)}
 
+/* Ensure media elements never overflow */
+img, svg, video, canvas{ max-width:100%; height:auto; display:block; }
+iframe{ max-width:100%; }
+
 h1,h2,h3{
   color:var(--head);
   margin:0 0 .5rem;
   font-weight:700;
+  overflow-wrap:anywhere;
+  word-break:break-word;
 }
-h1{font-size:48px}
-h2{font-size:32px}
-h3{font-size:22px}
+h1{font-size: clamp(32px, 6vw, 64px)}
+h2{font-size: clamp(24px, 4.5vw, 40px)}
+h3{font-size: clamp(18px, 3.5vw, 28px)}
 p{font-size:17px;line-height:1.6}
 
 .container{width:min(1200px,92%);margin:0 auto}
-.pad-y{padding:60px 0}
+.pad-y{padding: clamp(30px, 8vw, 60px) 0}
 
 /* HEADER */
 .logo img {
-  max-width: 60px; /* регулируй под свой размер */
+  max-width: clamp(40px, 8vw, 60px); /* регулируй под свой размер */
   height: auto;
   display: block;
 }
@@ -93,19 +101,19 @@ p{font-size:17px;line-height:1.6}
 .hero{
   background-size:cover;
   background-position:center;
-  padding:120px 0;
+  padding: clamp(80px, 12vw, 120px) 0;
   border-bottom:1px solid var(--border);
   color:#fff;
 }
 .hero-inner{max-width:720px}
 .hero-inner h1{
-  font-size:64px;
+  font-size: clamp(36px, 8vw, 64px);
   font-weight:800;
   line-height:1.1;
 }
 .hero-inner p{
   margin-top:12px;
-  font-size:20px;
+  font-size: clamp(16px, 3.8vw, 20px);
   color:#ccc;
 }
 .hero-inner .btn-row{margin-top:20px;display:flex;gap:12px}
@@ -306,6 +314,9 @@ p{font-size:17px;line-height:1.6}
   .footer-contacts h3 { font-size: 18px; }
   .footer-contacts p { font-size: 14px; line-height: 1.45; margin: 6px 0; }
   .footer-contacts .socials a { font-size: 14px; }
+  /* reorder sections: contacts (in footer-bottom) go before logo (in footer-top) */
+  .footer-bottom { order: 1; }
+  .footer-top { order: 2; }
 }
 
 @media (max-width: 520px){
