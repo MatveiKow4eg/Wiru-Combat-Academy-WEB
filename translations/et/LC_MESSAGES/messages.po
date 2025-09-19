@@ -1,4 +1,3 @@
-\
 msgid ""
 msgstr ""
 "Project-Id-Version: sports_club\n"
@@ -59,3 +58,238 @@ msgstr "Ava tunniplaan"
 
 msgid "Тренеры скоро появятся."
 msgstr "Treenerid ilmuvad peagi."
+
+msgid "Расписание тренировок"
+msgstr "Treeningute ajakava"
+
+msgid "День"
+msgstr "Päev"
+
+msgid "Время"
+msgstr "Aeg"
+
+msgid "Активность"
+msgstr "Tegevus"
+
+msgid "Тренер"
+msgstr "Treener"
+
+msgid "Пн"
+msgstr "E"
+
+msgid "Вт"
+msgstr "T"
+
+msgid "Ср"
+msgstr "K"
+
+msgid "Чт"
+msgstr "N"
+
+msgid "Пт"
+msgstr "R"
+
+msgid "Сб"
+msgstr "L"
+
+msgid "Вс"
+msgstr "P"
+
+msgid "Спасибо! Мы свяжемся с вами скоро."
+msgstr "Aitäh! Võtame Teiega peagi ühendust."
+
+msgid "Добро пожаловать в админ-панель!"
+msgstr "Tere tulemast admin-paneeli!"
+
+msgid "Неверный логин или пароль."
+msgstr "Vale kasutajanimi või parool."
+
+msgid "Вы вышли из админ-панели."
+msgstr "Olete admin-paneelist välja logitud."
+
+msgid "Требуется авторизация администратора."
+msgstr "Administraatori kinnitus on vajalik."
+
+msgid "Новость добавлена."
+msgstr "Uudis on lisatud."
+
+msgid "Тренировка добавлена в расписание."
+msgstr "Treening lisatud ajakavasse."
+
+# base.html footer
+msgid "Напишите нам"
+msgstr "Kirjuta meile"
+
+msgid "Ваше имя"
+msgstr "Teie nimi"
+
+msgid "Ваш Email"
+msgstr "Teie e-post"
+
+msgid "Ваше сообщение"
+msgstr "Teie sõnum"
+
+msgid "Отправить"
+msgstr "Saada"
+
+msgid "Банк"
+msgstr "Pank"
+
+msgid "Все права защищены"
+msgstr "Kõik õigused kaitstud"
+
+# home.html hero and sections
+msgid "БУДЬ В ФОРМЕ"
+msgstr "OLE HEAS VORMIS"
+
+msgid "СТАНЬ СИЛЬНЕЕ"
+msgstr "MUUTU TUGEVAMAKS"
+
+msgid "О НАС"
+msgstr "MEIST"
+
+msgid "Наша история"
+msgstr "Meie lugu"
+
+msgid "Тренировки и расписание"
+msgstr "Treeningud ja ajakava"
+
+msgid "Бокс"
+msgstr "Poks"
+
+msgid "Кикбоксинг"
+msgstr "Kickpoks"
+
+msgid "Борьба"
+msgstr "Maadlus"
+
+msgid "60€/мес – 600€/год – 8€/раз"
+msgstr "60€/kuu – 600€/aasta – 8€/kord"
+
+msgid "65€/мес – 650€/год – 9€/раз"
+msgstr "65€/kuu – 650€/aasta – 9€/kord"
+
+msgid "55€/мес – 550€/год – 7€/раз"
+msgstr "55€/kuu – 550€/aasta – 7€/kord"
+
+msgid "ТРЕНИРОВКИ, КОТОРЫЕ"
+msgstr "TREENINGUD, MIS"
+
+msgid "МЕНЯЮТ ТЕБЯ"
+msgstr "MUUDAVAD SIND"
+
+msgid "ФОКУС"
+msgstr "FOOKUS"
+
+msgid "РАЗВИВАЙ РЕАКЦИЮ, СКОРОСТЬ И КООРДИНАЦИЮ."
+msgstr "Arenda reaktsiooni, kiirust ja koordinatsiooni."
+
+msgid "МИНУТ ИНТЕНСИВА"
+msgstr "MINUTIT INTENSIIVSUST"
+
+msgid "ЭФФЕКТИВНОЕ ЗАНЯТИЕ ДЛЯ СИЛЫ, ТЕХНИКИ И УВЕРЕННОСТИ."
+msgstr "Tõhus treening jõu, tehnika ja enesekindluse jaoks."
+
+msgid "СОВРЕМЕННАЯ АКАДЕМИЯ"
+msgstr "KAASAEGNE AKADEEMIA"
+
+msgid "ЕДИНОБОРСТВ"
+msgstr "VÕITLUSKUNST"
+
+msgid "СИЛА"
+msgstr "JÕUD"
+
+msgid "Наши тренировки укрепляют тело, закаляют характер и дают уверенность — фундамент любого единоборства."
+msgstr "Meie treeningud tugevdavad keha, karastavad iseloomu ja annavad enesekindlust — iga võitluskunsti alus."
+
+msgid "ТЕХНИКА"
+msgstr "TEHNIKA"
+
+msgid "ХАРАКТЕР"
+msgstr "ISELOOM"
+
+msgid "НАШИ КЛИЕНТЫ"
+msgstr "MEIE KLIENDID"
+
+msgid "Дети"
+msgstr "Lapsed"
+
+msgid "ДЕТИ"
+msgstr "LAPSED"
+
+msgid "от 4 до 13 лет"
+msgstr "4 kuni 13 aastat"
+
+msgid "Подростки"
+msgstr "Noorukid"
+
+msgid "ПОДРОСТКИ"
+msgstr "NOORUKID"
+
+msgid "от 14 до 17 лет"
+msgstr "14 kuni 17 aastat"
+
+msgid "Взрослые"
+msgstr "Täiskasvanud"
+
+msgid "ВЗРОСЛЫЕ"
+msgstr "TÄISKASVANUD"
+
+msgid "от 18 до 45 лет"
+msgstr "18 kuni 45 aastat"
+
+msgid "Старшие"
+msgstr "Eakad"
+
+msgid "СТАРШИЕ"
+msgstr "EAKAD"
+
+msgid "от 46 лет и старше"
+msgstr "46 ja vanemad"
+
+# normalized long strings from home.html
+msgid "Раскрой свой потенциал в нашей Академии единоборств.<br>Подними свой уровень и стань сильнее с нами."
+msgstr "Ava oma potentsiaal meie võitluskunsti akadeemias.<br>Tõsta oma taset ja muutu meiega tugevamaks."
+
+msgid "В Ида-Вирумаа появился новый спортивный центр — WIRU COMBAT ACADEMY, основанный Сирвеном Авакяном, Сиймом Нейссааром и Сиймом Пярком. Всего за три месяца их идея превратилась в реальность: двери клуба открылись для бокса, борьбы, ММА и функциональных тренировок. Сегодня это один из самы�� больших залов в Эстонии и крупнейший зал единоборств в Ида-Вирумаа."
+msgstr "Ida-Virumaal avati uus spordikeskus — WIRU COMBAT ACADEMY, mille asutasid Sirven Avakyan, Siim Neissaar ja Siim Pärk. Vaid kolme kuuga muutus nende idee reaalsuseks: klubi uksed avati poksi, maadluse, MMA ja funktsionaalsete treeningute jaoks. Täna on see üks suurimaid saale Eestis ja suurim võitluskunstide saal Ida-Virumaal."
+
+msgid "Академия объединяет сильную команду тренеров во главе с чемпионом Эстонии Кириллом Сериковым и стала современной площадкой, где каждый может развиваться, укреплять здоровье и воспитывать уверенность, дисциплину и командный дух."
+msgstr "Akadeemia koondab tugeva treenerite meeskonna eesotsas Eesti meistri Kirill Serikoviga ja on saanud kaasaegseks kohaks, kus igaüks saab areneda, tugevdada tervist ning kasvatada enesekindlust, distsipliini ja meeskonnavaimu."
+
+# contact/signup/admin/login
+msgid "Email:"
+msgstr "E-post:"
+
+msgid "Email"
+msgstr "E-post"
+
+msgid "Имя пользователя"
+msgstr "Kasutajanimi"
+
+msgid "Пароль"
+msgstr "Parool"
+
+msgid "Адрес: ул. Примерная, 1, Таллинн"
+msgstr "Aadress: Näide tn 1, Tallinn"
+
+msgid "Телефон:"
+msgstr "Telefon:"
+
+msgid "Здесь будет карта"
+msgstr "Siia tuleb kaart"
+
+msgid "Запись на тренировку"
+msgstr "Treeningule registreerimine"
+
+msgid "Имя"
+msgstr "Nimi"
+
+msgid "Телефон"
+msgstr "Telefon"
+
+msgid "Направление"
+msgstr "Suund"
+
+msgid "Скоро здесь появятся тренеры."
+msgstr "Treenerid ilmuvad peagi siia."

@@ -6,11 +6,11 @@
   <form method="post" class="form small">
     {{ form.csrf_token }}
     <div class="form-row">
-      <label>Username</label>
+      <label>{{ _('Имя пользователя') }}</label>
       {{ form.username(class="input") }}
     </div>
     <div class="form-row">
-      <label>Password</label>
+      <label>{{ _('Пароль') }}</label>
       {{ form.password(class="input") }}
     </div>
     <div class="form-row">

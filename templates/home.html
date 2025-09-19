@@ -1,16 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Главная{% endblock %}
+{% block title %}{{ _('Главная') }}{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 {% endblock %}
 {% block content %}
 <section class="hero hero-gym" style="background-image:url('{{ url_for('static', filename='images/mainheader.png') }}')">
   <div class="container hero-inner">
-    <h1><span class="highlight">БУДЬ В ФОРМЕ</span><br>СТАНЬ СИЛЬНЕЕ</h1>
-    <p>Раскрой свой потенциал в нашей Академии единоборств.
-<br>Подними свой уровень и стань сильнее с нами.</p>
+    <h1><span class="highlight">{{ _('БУДЬ В ФОРМЕ') }}</span><br>{{ _('СТАНЬ СИЛЬНЕЕ') }}</h1>
+    <p>{{ _('Раскрой свой потенциал в нашей Академии единоборств.<br>Подними свой уровень и стань сильнее с нами.')|safe }}</p>
     <div class="btn-row">
-      <a class="btn" href="{{ url_for('signup') }}">ЗАПИСАТЬСЯ</a>
+      <a class="btn" href="{{ url_for('signup') }}">{{ _('Записаться') }}</a>
     </div>
   </div>
 </section>
@@ -19,27 +18,21 @@
 
     <!-- Заголовок -->
     <div class="story-heading">
-      <span class="story-word main">О НАС</span>
+      <span class="story-word main">{{ _('О НАС') }}</span>
     </div>
 
 <!-- Контент -->
 <div class="story-content">
   <div class="story-text">
    <p class="big">
-  В Ида-Вирумаа появился новый спортивный центр — WIRU COMBAT ACADEMY, 
-  основанный Сирвеном Авакяном, Сиймом Нейссааром и Сиймом Пярком. 
-  Всего за три месяца их идея превратилась в реальность: двери клуба открылись 
-  для бокса, борьбы, ММА и функциональных тренировок. <br >
-  Сегодня это один из самых больших залов в Эстонии и крупнейший зал единоборств в Ида-Вирумаа.
+  {{ _('В Ида-Вирумаа появился новый спортивный центр — WIRU COMBAT ACADEMY, основанный Сирвеном Авакяном, Сиймом Нейссааром и Сиймом Пярком. Всего за три месяца их идея превратилась в реальность: двери клуба открылись для бокса, борьбы, ММА и функциональных тренировок. Сегодня это один из самых больших залов в Эстонии и крупнейший зал единоборств в Ида-Вирумаа.') }}
 </p>
 
 
-    <img src="{{ url_for('static', filename='images/boxer-left.jpg') }}" alt="Наша История">
+    <img src="{{ url_for('static', filename='images/boxer-left.jpg') }}" alt="{{ _('Наша история') }}">
 
     <p class="small">
-      Академия объединяет сильную команду тренеров во главе с чемпионом Эстонии Кириллом Сериковым 
-      и стала современной площадкой, где каждый может развиваться, укреплять здоровье 
-      и воспитывать уверенность, дисциплину и командный дух.
+      {{ _('Академия объединяет сильную команду тренеров во главе с чемпионом Эстонии Кириллом Сериковым и стала современной площадкой, где каждый может развиваться, укреплять здоровье и воспитывать уверенность, дисциплину и командный дух.') }}
     </p>
   </div>
 </div>
@@ -48,61 +41,61 @@
 </section>
 <section class="schedule pad-y">
   <div class="container">
-    <h2 class="section-title">Тренировки и расписание</h2>
+    <h2 class="section-title">{{ _('Тренировки и расписание') }}</h2>
 
     <div class="schedule-grid">
       
       <!-- Карточка Бокс -->
       <div class="schedule-card">
         <div class="schedule-image">
-          <img src="{{ url_for('static', filename='images/boxing.jfif') }}" alt="Бокс">
+          <img src="{{ url_for('static', filename='images/boxing.jfif') }}" alt="{{ _('Бокс') }}">
         </div>
         <div class="schedule-content">
-          <h3>Бокс</h3>
-          <p class="price">60€/мес – 600€/год – 8€/раз</p>
+          <h3>{{ _('Бокс') }}</h3>
+          <p class="price">{{ _('60€/мес – 600€/год – 8€/раз') }}</p>
           <ul>
-            <li>Пн: 18:30 – 20:00</li>
-            <li>Ср: 18:30 – 20:00</li>
-            <li>Пт: 18:30 – 20:00</li>
+            <li>{{ _('Пн') }}: 18:30 – 20:00</li>
+            <li>{{ _('Ср') }}: 18:30 – 20:00</li>
+            <li>{{ _('Пт') }}: 18:30 – 20:00</li>
           </ul>
           <p class="contact">+372 5012345<br>boxing@wiru.ee</p>
-          <a href="signup" class="btn-main">Записаться</a>
+          <a href="signup" class="btn-main">{{ _('Записаться') }}</a>
         </div>
       </div>
 
       <!-- Карточка Кикбокс -->
       <div class="schedule-card">
         <div class="schedule-image">
-          <img src="{{ url_for('static', filename='images/kickboxing.jpg') }}" alt="Кикбоксинг">
+          <img src="{{ url_for('static', filename='images/kickboxing.jpg') }}" alt="{{ _('Кикбоксинг') }}">
         </div>
         <div class="schedule-content">
-          <h3>Кикбоксинг</h3>
-          <p class="price">65€/мес – 650€/год – 9€/раз</p>
+          <h3>{{ _('Кикбоксинг') }}</h3>
+          <p class="price">{{ _('65€/мес – 650€/год – 9€/раз') }}</p>
           <ul>
-            <li>Вт: 18:30 – 20:00</li>
-            <li>Чт: 18:30 – 20:00</li>
-            <li>Сб: 12:00 – 13:30</li>
+            <li>{{ _('Вт') }}: 18:30 – 20:00</li>
+            <li>{{ _('Чт') }}: 18:30 – 20:00</li>
+            <li>{{ _('Сб') }}: 12:00 – 13:30</li>
           </ul>
           <p class="contact">+372 5067890<br>kickboxing@wiru.ee</p>
-          <a href="signup" class="btn-main">Записаться</a>
+          <a href="signup" class="btn-main">{{ _('Записаться') }}</a>
         </div>
       </div>
 
       <!-- Карточка Борьба -->
       <div class="schedule-card">
         <div class="schedule-image">
-          <img src="{{ url_for('static', filename='images/wrestling.jpg') }}" alt="Борьба">
+          <img src="{{ url_for('static', filename='images/wrestling.jpg') }}" alt="{{ _('Борьба') }}">
         </div>
         <div class="schedule-content">
-          <h3>Борьба</h3>
-          <p class="price">55€/мес – 550€/год – 7€/раз</p>
+          <h3>{{ _('Борьба') }}</h3>
+          <p class="price">{{ _('55€/мес – 550€/год – 7€/раз') }}</p>
           <ul>
-            <li>Пн: 16:00 – 17:30</li>
-            <li>Ср: 16:00 – 17:30</li>
-            <li>Пт: 17:15 – 18:30</li>
+            <li>{{ _('Пн') }}: 16:00 – 17:30</li>
+            <li>{{ _('Ср') }}: 16:00 – 17:30</li>
+            <li>{{ _('Пт') }}: 17:15 – 18:30</li>
           </ul>
           <p class="contact">+372 5034567<br>wrestling@wiru.ee</p>
-          <a href="signup" class="btn-main">Записаться</a>
+          <a href="signup" class="btn-main">{{ _('Записаться') }}</a>
         </div>
       </div>
 
@@ -114,15 +107,15 @@
 <!-- 2) EXPECT TO HAVE TO SWEAT A LOT -->
 <section class="sweat-section">
   <div class="wc-wrap">
-    <h2 class="sweat-title">ТРЕНИРОВКИ, КОТОРЫЕ <br>МЕНЯЮТ ТЕБЯ</h2>
+    <h2 class="sweat-title">{{ _('ТРЕНИРОВКИ, КОТОРЫЕ') }} <br>{{ _('МЕНЯЮТ ТЕБЯ') }}</h2>
 
     <div class="sweat-grid">
       <!-- Левая карточка -->
       <div class="sweat-card">
         <img src="{{ url_for('static', filename='images/boxer-left.jpg') }}" alt="Boxer left">
         <div class="sweat-info">
-          <h3><span>100% </span> ФОКУС</h3>
-          <p>РАЗВИВАЙ РЕАКЦИЮ, СКОРОСТЬ И КООРДИНАЦИЮ.</p>
+          <h3><span>100% </span> {{ _('ФОКУС') }}</h3>
+          <p>{{ _('РАЗВИВАЙ РЕАКЦИЮ, СКОРОСТЬ И КООРДИНАЦИЮ.') }}</p>
         </div>
       </div>
 
@@ -130,8 +123,8 @@
       <div class="sweat-card">
         <img src="{{ url_for('static', filename='images/boxer-right.jpg') }}" alt="Boxer right">
         <div class="sweat-info">
-          <h3><span>45+</span>МИНУТ ИНТЕНСИВА</h3>
-          <p>ЭФФЕКТИВНОЕ ЗАНЯТИЕ ДЛЯ СИЛЫ, ТЕХНИКИ И УВЕРЕННОСТИ.</p>
+          <h3><span>45+</span>{{ _('МИНУТ ИНТЕНСИВА') }}</h3>
+          <p>{{ _('ЭФФЕКТИВНОЕ ЗАНЯТИЕ ДЛЯ СИЛЫ, ТЕХНИКИ И УВЕРЕННОСТИ.') }}</p>
         </div>
       </div>
     </div>
@@ -144,64 +137,64 @@
 <!-- 1) WORLD-CLASS KICKBOXING TRAINING -->
 <section class="wc-section">
   <div class="wc-wrap">
-    <h2 class="wc-title">СОВРЕМЕННАЯ АКАДЕМИЯ<br>ЕДИНОБОРСТВ</h2>
+    <h2 class="wc-title">{{ _('СОВРЕМЕННАЯ АКАДЕМИЯ') }}<br>{{ _('ЕДИНОБОРСТВ') }}</h2>
 
     <p class="wc-lead">
-      В Wiru Combat Academy проходят тренировки по боксу, борьбе и ММА с упором на технику, дисциплину и личностный рост. Наша цель — помочь каждому, от детей до взрослых, раскрыть свой потенциал в безопасной и вдохновляющей атмосфере.
+      {% trans %}В Wiru Combat Academy проходят тренировки по боксу, борьбе и ММА с упором на технику, дисциплину и личностный рост. Наша цель — помочь каждому, от детей до взрослых, раскрыть свой потенциал в безопасной и вдохновляющей атмосфере.{% endtrans %}
     </p>
 
     <div class="wc-pills">
       <div class="wc-pill pill-1">
-        <span class="num">1</span><span class="label">СИЛА</span>
+        <span class="num">1</span><span class="label">{{ _('СИЛА') }}</span>
       </div>
       <p class="wc-desc">
-        Наши тренировки укрепляют тело, закаляют характер и дают уверенность — фундамент любого единоборства.
+        {{ _('Наши тренировки укрепляют тело, закаляют характер и дают уверенность — фундамент любого единоборства.') }}
       </p>
 
       <div class="wc-pill pill-2">
-        <span class="num">2</span><span class="label">ТЕХНИКА</span>
+        <span class="num">2</span><span class="label">{{ _('ТЕХНИКА') }}</span>
       </div>  
 
       <div class="wc-pill pill-3">
-        <span class="num">3</span><span class="label">ХАРАКТЕР</span>
+        <span class="num">3</span><span class="label">{{ _('ХАРАКТЕР') }}</span>
       </div>
     </div>
   </div>
 </section>
 <section class="clients">
   <div class="clients-wrap">
-    <h2 class="clients-title">НАШИ КЛИЕНТЫ</h2>
+    <h2 class="clients-title">{{ _('НАШИ КЛИЕНТЫ') }}</h2>
 
     <div class="clients-grid">
       <div class="client-card">
-        <img src="{{ url_for('static', filename='images/client-children.avif') }}" alt="Дети">
+        <img src="{{ url_for('static', filename='images/client-children.avif') }}" alt="{{ _('Дети') }}">
         <div class="client-info">
-          <h3>ДЕТИ</h3>
-          <span class="age">от 4 до 13 лет</span>
+          <h3>{{ _('ДЕТИ') }}</h3>
+          <span class="age">{{ _('от 4 до 13 лет') }}</span>
         </div>
       </div>
 
       <div class="client-card">
-        <img src="{{ url_for('static', filename='images/client-teenagers.jpg') }}" alt="Подростки">
+        <img src="{{ url_for('static', filename='images/client-teenagers.jpg') }}" alt="{{ _('Подростки') }}">
         <div class="client-info">
-          <h3>ПОДРОСТКИ</h3>
-          <span class="age">от 14 до 17 лет</span>
+          <h3>{{ _('ПОДРОСТКИ') }}</h3>
+          <span class="age">{{ _('от 14 до 17 лет') }}</span>
         </div>
       </div>
 
       <div class="client-card">
-        <img src="{{ url_for('static', filename='images/client-adults.jpg') }}" alt="Взрослые">
+        <img src="{{ url_for('static', filename='images/client-adults.jpg') }}" alt="{{ _('Взрослые') }}">
         <div class="client-info">
-          <h3>ВЗРОСЛЫЕ</h3>
-          <span class="age">от 18 до 45 лет</span>
+          <h3>{{ _('ВЗРОСЛЫЕ') }}</h3>
+          <span class="age">{{ _('от 18 до 45 лет') }}</span>
         </div>
       </div>
 
       <div class="client-card">
-        <img src="{{ url_for('static', filename='images/client-elderly.png') }}" alt="Старшие">
+        <img src="{{ url_for('static', filename='images/client-elderly.png') }}" alt="{{ _('Старшие') }}">
         <div class="client-info">
-          <h3>СТАРШИЕ</h3>
-          <span class="age">от 46 лет и старше</span>
+          <h3>{{ _('СТАРШИЕ') }}</h3>
+          <span class="age">{{ _('от 46 лет и старше') }}</span>
         </div>
       </div>
     </div>

@@ -5,10 +5,36 @@ from config import Config
 from models import db, News, Schedule, Trainer, Signup
 from forms import LoginForm, NewsForm, ScheduleForm, SignupForm
 
+import os
+from babel.messages.pofile import read_po
+from babel.messages.mofile import write_mo
+
+
+def compile_translations(app):
+    trans_dir = os.path.join(app.root_path, "translations")
+    if not os.path.isdir(trans_dir):
+        return
+    for lang in os.listdir(trans_dir):
+        po_path = os.path.join(trans_dir, lang, "LC_MESSAGES", "messages.po")
+        mo_path = os.path.join(trans_dir, lang, "LC_MESSAGES", "messages.mo")
+        if os.path.isfile(po_path):
+            try:
+                with open(po_path, "r", encoding="utf-8") as f:
+                    catalog = read_po(f)
+                os.makedirs(os.path.dirname(mo_path), exist_ok=True)
+                with open(mo_path, "wb") as f:
+                    write_mo(f, catalog)
+            except Exception:
+                # Skip locale if it fails to compile
+                pass
+
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    # Compile translations on startup
+    compile_translations(app)
 
     # DB
     db.init_app(app)

@@ -33,7 +33,7 @@
     </div>
     {% for s in schedule %}
     <div class="table-row">
-      <div>{{ ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'][s.day_of_week] }}</div>
+      <div>{{ [_('Пн'), _('Вт'), _('Ср'), _('Чт'), _('Пт'), _('Сб'), _('Вс')][s.day_of_week] }}</div>
       <div>{{ s.time }}</div>
       <div>{{ s.activity }}</div>
       <div>{{ s.coach or '-' }}</div>

@@ -1,4 +1,3 @@
-\
 msgid ""
 msgstr ""
 "Project-Id-Version: sports_club\n"
@@ -60,3 +59,280 @@ msgstr "Open schedule"
 
 msgid "Тренеры скоро появятся."
 msgstr "Coaches are coming soon."
+
+msgid "Расписание тренировок"
+msgstr "Training schedule"
+
+msgid "День"
+msgstr "Day"
+
+msgid "Время"
+msgstr "Time"
+
+msgid "Активность"
+msgstr "Activity"
+
+msgid "Тренер"
+msgstr "Coach"
+
+msgid "Пн"
+msgstr "Mon"
+
+msgid "Вт"
+msgstr "Tue"
+
+msgid "Ср"
+msgstr "Wed"
+
+msgid "Чт"
+msgstr "Thu"
+
+msgid "Пт"
+msgstr "Fri"
+
+msgid "Сб"
+msgstr "Sat"
+
+msgid "Вс"
+msgstr "Sun"
+
+msgid "Спасибо! Мы свяжемся с вами скоро."
+msgstr "Thank you! We will contact you soon."
+
+msgid "Добро пожаловать в админ-панель!"
+msgstr "Welcome to the admin panel!"
+
+msgid "Неверный логин или пароль."
+msgstr "Invalid username or password."
+
+msgid "Вы вышли из админ-панели."
+msgstr "You have logged out of the admin panel."
+
+msgid "Требуется авторизация администратора."
+msgstr "Administrator authorization required."
+
+msgid "Новость добавлена."
+msgstr "News item added."
+
+msgid "Тренировка добавлена в расписание."
+msgstr "Training added to schedule."
+
+msgid "Админ-панель"
+msgstr "Admin panel"
+
+msgid "Вход в админ-панель"
+msgstr "Admin login"
+
+msgid "Всего:"
+msgstr "Total:"
+
+msgid "Добавить новость"
+msgstr "Add news"
+
+msgid "Заявки"
+msgstr "Requests"
+
+msgid "Новых заявок:"
+msgstr "New requests:"
+
+msgid "Редактировать расписание"
+msgstr "Edit schedule"
+
+msgid "Выйти"
+msgstr "Log out"
+
+msgid "Заголовок"
+msgstr "Title"
+
+msgid "Текст"
+msgstr "Text"
+
+msgid "Ссылка на изображение (необязательно)"
+msgstr "Image URL (optional)"
+
+msgid "День недели"
+msgstr "Day of week"
+
+msgid "Текущее расписание"
+msgstr "Current schedule"
+
+# base.html footer form and contacts
+msgid "Напишите нам"
+msgstr "Write to us"
+
+msgid "Ваше имя"
+msgstr "Your name"
+
+msgid "Ваш Email"
+msgstr "Your Email"
+
+msgid "Ваше сообщение"
+msgstr "Your message"
+
+msgid "Отправить"
+msgstr "Send"
+
+msgid "Банк"
+msgstr "Bank"
+
+msgid "Все права защищены"
+msgstr "All rights reserved"
+
+# home.html hero and sections
+msgid "БУДЬ В ФОРМЕ"
+msgstr "GET IN SHAPE"
+
+msgid "СТАНЬ СИЛЬНЕЕ"
+msgstr "BECOME STRONGER"
+
+msgid "О НАС"
+msgstr "ABOUT US"
+
+msgid "Наша история"
+msgstr "Our Story"
+
+msgid "Тренировки и расписание"
+msgstr "Training and schedule"
+
+msgid "Бокс"
+msgstr "Boxing"
+
+msgid "Кикбоксинг"
+msgstr "Kickboxing"
+
+msgid "Борьба"
+msgstr "Wrestling"
+
+msgid "60€/мес – 600€/год – 8€/раз"
+msgstr "€60/mo – €600/yr – €8/visit"
+
+msgid "65€/мес – 650€/год – 9€/раз"
+msgstr "€65/mo – €650/yr – €9/visit"
+
+msgid "55€/мес – 550€/год – 7€/раз"
+msgstr "€55/mo – €550/yr – €7/visit"
+
+msgid "ТРЕНИРОВКИ, КОТОРЫЕ"
+msgstr "WORKOUTS THAT"
+
+msgid "МЕНЯЮТ ТЕБЯ"
+msgstr "CHANGE YOU"
+
+msgid "ФОКУС"
+msgstr "FOCUS"
+
+msgid "РАЗВИВАЙ РЕАКЦИЮ, СКОРОСТЬ И КООРДИНАЦИЮ."
+msgstr "Develop reaction, speed and coordination."
+
+msgid "МИНУТ ИНТЕНСИВА"
+msgstr "MINUTES OF INTENSITY"
+
+msgid "ЭФФЕКТИВНОЕ ЗАНЯТИЕ ДЛЯ СИЛЫ, ТЕХНИКИ И УВЕРЕННОСТИ."
+msgstr "Effective session for strength, technique and confidence."
+
+msgid "СОВРЕМЕННАЯ АКАДЕМИЯ"
+msgstr "MODERN ACADEMY"
+
+msgid "ЕДИНОБОРСТВ"
+msgstr "OF MARTIAL ARTS"
+
+msgid "СИЛА"
+msgstr "STRENGTH"
+
+msgid "Наши тренировки укрепляют тело, закаляют характер и дают уверенность — фундамент любого единоборства."
+msgstr "Our training strengthens the body, builds character and gives confidence — the foundation of any martial art."
+
+msgid "ТЕХНИКА"
+msgstr "TECHNIQUE"
+
+msgid "ХАРАКТЕР"
+msgstr "CHARACTER"
+
+msgid "НАШИ КЛИЕНТЫ"
+msgstr "OUR CLIENTS"
+
+msgid "Дети"
+msgstr "Children"
+
+msgid "ДЕТИ"
+msgstr "CHILDREN"
+
+msgid "от 4 до 13 лет"
+msgstr "from 4 to 13 years"
+
+msgid "Подростки"
+msgstr "Teenagers"
+
+msgid "ПОДРОСТКИ"
+msgstr "TEENAGERS"
+
+msgid "от 14 до 17 лет"
+msgstr "from 14 to 17 years"
+
+msgid "Взрослые"
+msgstr "Adults"
+
+msgid "ВЗРОСЛЫЕ"
+msgstr "ADULTS"
+
+msgid "от 18 до 45 лет"
+msgstr "from 18 to 45 years"
+
+msgid "Старшие"
+msgstr "Seniors"
+
+msgid "СТАРШИЕ"
+msgstr "SENIORS"
+
+msgid "от 46 лет и старше"
+msgstr "from 46 and older"
+
+# contact and signup labels
+msgid "Email:"
+msgstr "Email:"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Имя пользователя"
+msgstr "Username"
+
+msgid "Пароль"
+msgstr "Password"
+
+# contact page extra
+msgid "Адрес: ул. Примерная, 1, Таллинн"
+msgstr "Address: 1 Example St, Tallinn"
+
+msgid "Телефон:"
+msgstr "Phone:"
+
+msgid "Здесь будет карта"
+msgstr "Map will appear here"
+
+# signup labels
+msgid "Запись на тренировку"
+msgstr "Training signup"
+
+msgid "Имя"
+msgstr "Name"
+
+msgid "Телефон"
+msgstr "Phone"
+
+msgid "Направление"
+msgstr "Discipline"
+
+# trainers page message
+msgid "Скоро здесь появятся тренеры."
+msgstr "Trainers will appear here soon."
+
+# long paragraphs (trans blocks)
+msgid "Раскрой свой потенциал в нашей Академии единоборств.<br>Подними свой уровень и стань сильнее с нами."
+msgstr "Unleash your potential at our Combat Academy.<br>Level up and get stronger with us."
+
+msgid "В Ида-Вирумаа появился новый спортивный центр — WIRU COMBAT ACADEMY, основанный Сирвеном Авакяном, Сиймом Нейссааром и Сиймом Пярком. Всего за три месяца их идея превратилась в реальность: двери клуба открылись для бокса, борьбы, ММА и функциональных тренировок. Сегодня это один из самых больших залов в Эстонии и крупнейший зал единоборств в Ида-Вирумаа."
+msgstr "A new sports center has opened in Ida-Virumaa — WIRU COMBAT ACADEMY, founded by Sirven Avakyan, Siim Neissaar and Siim Pärk. In just three months, their idea became reality: the club opened its doors for boxing, wrestling, MMA and functional training. Today it is one of the largest gyms in Estonia and the largest martial arts venue in Ida-Virumaa."
+
+msgid "Академия объединяет сильную команду тренеров во главе с чемпионом Эстонии Кириллом Сериковым и стала современной площадкой, где каждый может развиваться, укреплять здоровье и воспитывать уверенность, дисциплину и командный дух."
+msgstr "The Academy brings together a strong team of coaches led by Estonian champion Kirill Serikov and has become a modern venue where everyone can develop, improve health, and foster confidence, discipline and team spirit."

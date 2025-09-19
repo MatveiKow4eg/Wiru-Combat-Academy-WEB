@@ -58,14 +58,14 @@
     <!-- Форма + Логотип -->
     <div class="footer-top">
       <div class="footer-form">
-        <h3>Напишите нам</h3>
+        <h3>{{ _('Напишите нам') }}</h3>
         <form method="POST" action="/send-message">
           <div class="form-row two-cols">
-            <input type="text" name="name" placeholder="Ваше имя" required>
-            <input type="email" name="email" placeholder="Ваш Email" required>
+            <input type="text" name="name" placeholder="{{ _('Ваше имя') }}" required>
+            <input type="email" name="email" placeholder="{{ _('Ваш Email') }}" required>
           </div>
-          <textarea name="message" placeholder="Ваше сообщение" rows="5" required></textarea>
-          <button type="submit">Отправить</button>
+          <textarea name="message" placeholder="{{ _('Ваше сообщение') }}" rows="5" required></textarea>
+          <button type="submit">{{ _('Отправить') }}</button>
         </form>
       </div>
 
@@ -93,11 +93,11 @@
       </div>
 
       <div class="footer-contacts">
-        <h3>Контакты</h3>
+        <h3>{{ _('Контакты') }}</h3>
         <p>Järveküla tee 41, Järve, 30321 <br>Ida-Viru maakond</p>
         <p>+372 5555 5555</p>
         <p>info@wiruacademy.ee</p>
-        <h3>Банк</h3>
+        <h3>{{ _('Банк') }}</h3>
         <p>YOUR NAME OU </p>
         <p>EE xxxxxxxxxxxxxxxxxxxxx</p>
         <p>EE xxxxxxxxxxxxxxxxxxxxx</p>
@@ -112,7 +112,7 @@
 
   <!-- Нижняя строка -->
   <div class="footer-copy">
-    <p>&copy; {{ now.year }} Wiru Combat Academy — Все права защищены</p>
+    <p>&copy; {{ now.year }} Wiru Combat Academy — {{ _('Все права защищены') }}</p>
   </div>
 </footer>
 

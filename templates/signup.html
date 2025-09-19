@@ -11,7 +11,7 @@
       {% for e in form.name.errors %}<div class="error">{{ e }}</div>{% endfor %}
     </div>
     <div class="form-row">
-      <label>Email</label>
+      <label>{{ _('Email') }}</label>
       {{ form.email(class="input") }}
       {% for e in form.email.errors %}<div class="error">{{ e }}</div>{% endfor %}
     </div>
