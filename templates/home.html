@@ -52,50 +52,44 @@
         </div>
         <div class="schedule-content">
           <h3>{{ _('Бокс') }}</h3>
-          <p class="price">{{ _('60€/мес – 600€/год – 8€/раз') }}</p>
-          <ul>
+                    <ul>
             <li>{{ _('Пн') }}: 18:30 – 20:00</li>
             <li>{{ _('Ср') }}: 18:30 – 20:00</li>
             <li>{{ _('Пт') }}: 18:30 – 20:00</li>
           </ul>
-          <p class="contact">+372 5012345<br>boxing@wiru.ee</p>
-          <a href="signup" class="btn-main">{{ _('Записаться') }}</a>
+                    <a href="{{ url_for('schedule_page') }}" class="btn-main">{{ _('Подробнее') }}</a>
         </div>
       </div>
 
       <!-- Карточка Кикбокс -->
       <div class="schedule-card">
         <div class="schedule-image">
-          <img src="{{ url_for('static', filename='images/kickboxing.jpg') }}" alt="{{ _('Кикбоксинг') }}">
+          <img src="{{ url_for('static', filename='images/kickboxing.jpg') }}" alt="{{ _('MMA') }}">
         </div>
         <div class="schedule-content">
-          <h3>{{ _('Кикбоксинг') }}</h3>
-          <p class="price">{{ _('65€/мес – 650€/год – 9€/раз') }}</p>
-          <ul>
+          <h3>{{ _('MMA') }}</h3>
+                    <ul>
             <li>{{ _('Вт') }}: 18:30 – 20:00</li>
             <li>{{ _('Чт') }}: 18:30 – 20:00</li>
             <li>{{ _('Сб') }}: 12:00 – 13:30</li>
           </ul>
-          <p class="contact">+372 5067890<br>kickboxing@wiru.ee</p>
-          <a href="signup" class="btn-main">{{ _('Записаться') }}</a>
+                    <a href="{{ url_for('schedule_page') }}" class="btn-main">{{ _('Подробнее') }}</a>
         </div>
       </div>
 
       <!-- Карточка Борьба -->
       <div class="schedule-card">
         <div class="schedule-image">
-          <img src="{{ url_for('static', filename='images/wrestling.jpg') }}" alt="{{ _('Борьба') }}">
+          <img src="{{ url_for('static', filename='images/wrestling.jpg') }}" alt="{{ _('Греко-римская борьба') }}">
         </div>
         <div class="schedule-content">
-          <h3>{{ _('Борьба') }}</h3>
-          <p class="price">{{ _('55€/мес – 550€/год – 7€/раз') }}</p>
-          <ul>
+          <h3>{{ _('Греко-римская борьба') }}</h3>
+                    <ul>
             <li>{{ _('Пн') }}: 16:00 – 17:30</li>
             <li>{{ _('Ср') }}: 16:00 – 17:30</li>
             <li>{{ _('Пт') }}: 17:15 – 18:30</li>
           </ul>
-          <p class="contact">+372 5034567<br>wrestling@wiru.ee</p>
-          <a href="signup" class="btn-main">{{ _('Записаться') }}</a>
+                    <a href="{{ url_for('schedule_page') }}" class="btn-main">{{ _('Подробнее') }}</a>
         </div>
       </div>
 

@@ -191,7 +191,7 @@ h1, .wc-title, .story-heading .story-word.main {
 .schedule-image img {
   width: 100%;
   max-width: 100%;
-  aspect-ratio: 16/9;  /* адаптивная высота */
+  aspect-ratio: 16/15;  /* адаптивная высота (чуть выше) */
   filter: grayscale(100%);
   object-fit: cover;
   display: block;
@@ -232,6 +232,7 @@ h1, .wc-title, .story-heading .story-word.main {
   text-align: center;
   background: var(--wc-red);
   padding: 14px 0;
+  margin-top: 16px;
   border-radius: 10px;
   font-weight: 700;
   font-size: 16px;
@@ -453,7 +454,7 @@ h1, .wc-title, .story-heading .story-word.main {
   .schedule-nav { position: absolute; top: 50%; left: 0; right: 0; display: flex; justify-content: space-between; transform: translateY(-50%); pointer-events: none; padding: 0 8px; }
   .schedule-arrow { pointer-events: all; background: var(--wc-red); border: 1px solid var(--wc-red-dark); width: 40px; height: 40px; border-radius: 50%; color: #fff; display:flex; align-items:center; justify-content:center; font-size: 22px; }
 
-  .schedule-image img { height: 220px; }
+  .schedule-image img { height: 260px; }
   .schedule-content { padding: 18px; }
   .schedule-content h3 { font-size: 22px; }
   .schedule-content .price { font-size: 15px; }
@@ -468,4 +469,28 @@ h1, .wc-title, .story-heading .story-word.main {
   .clients-grid .client-card { flex: 0 0 92%; min-width: 92%; }
     .clients-nav { position: absolute; top: 50%; left: 0; right: 0; display: flex; justify-content: space-between; transform: translateY(-50%); pointer-events: none; padding: 0 8px; }
   .clients-arrow { pointer-events: all; background: var(--wc-red); border: 1px solid var(--wc-red-dark); width: 40px; height: 40px; border-radius: 50%; color: #fff; display:flex; align-items:center; justify-content:center; font-size: 22px; }
+}
+
+/* ===== Home wide overrides (desktop) ===== */
+@media (min-width: 1025px) {
+  /* Broaden base container on home page (home.css only loads on home) */
+  .container { width: min(1800px, 96%); }
+
+  /* Hero text area wider */
+  .hero-inner { max-width: 1100px; }
+
+  /* Our Story wrapper wider */
+  .story-wrap { max-width: 1100px; }
+
+  /* World-class section wrapper wider */
+  .wc-wrap { max-width: 1600px; }
+
+  /* Disciplines grid wider */
+  .disciplines-grid { max-width: 1800px; }
+
+  /* Schedule grid slightly narrower */
+  .schedule-grid { max-width: 1500px; }
+
+  /* Sweat grid same width as schedule */
+  .sweat-grid { max-width: 1500px; }
 }

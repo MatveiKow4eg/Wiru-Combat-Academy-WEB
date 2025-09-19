@@ -13,6 +13,12 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
   {% block extra_css %}{% endblock %}
+  <style>
+    /* Mobile-only override: slightly narrower side drawer */
+    @media (max-width: 640px) {
+      #nav.nav { width: 72vw; max-width: 280px; }
+    }
+  </style>
 </head>
 <body>
 <header class="header">
@@ -25,11 +31,17 @@
     </div>
 
     <nav id="nav" class="nav">
+      <div class="nav-header">
+        <a class="nav-logo" href="{{ url_for('home') }}">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Wiru Combat Academy Logo">
+        </a>
+      </div>
       <a href="{{ url_for('home') }}">{{ _('Главная') }}</a>
       <a href="{{ url_for('news_list') }}">{{ _('Новости') }}</a>
       <a href="{{ url_for('schedule_page') }}">{{ _('Расписание') }}</a>
       <a href="{{ url_for('trainers_page') }}">{{ _('Тренеры') }}</a>
       <a href="{{ url_for('contact') }}">{{ _('Контакты') }}</a>
+      <a href="{{ url_for('signup') }}" class="btn btn-accent nav-cta" style="margin-top:auto; display:block; text-align:center;">{{ _('Записаться') }}</a>
     </nav>
     <div class="header-actions">
       <div class="lang-switch">
