@@ -43,6 +43,7 @@
       <a href="{{ url_for('contact') }}">{{ _('Контакты') }}</a>
       <a href="{{ url_for('signup') }}" class="btn btn-accent nav-cta" style="margin-top:auto; display:block; text-align:center;">{{ _('Записаться') }}</a>
     </nav>
+    <div id="navOverlay" class="nav-overlay" onclick="toggleMenu()"></div>
     <div class="header-actions">
       <div class="lang-switch">
         {% for code in LANGUAGES %}

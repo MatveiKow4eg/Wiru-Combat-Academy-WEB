@@ -1,7 +1,64 @@
 function toggleMenu(){
   const nav = document.getElementById('nav');
+  const overlay = document.getElementById('navOverlay');
+  const body = document.body;
+  const willOpen = !nav.classList.contains('open');
   nav.classList.toggle('open');
+  body.classList.toggle('menu-open', willOpen);
+  if(overlay){
+    if(willOpen){
+      overlay.style.position = 'fixed';
+      overlay.style.left = '0'; overlay.style.top = '0'; overlay.style.right = '0'; overlay.style.bottom = '0';
+      overlay.style.background = 'rgba(0,0,0,0.5)';
+      overlay.style.backdropFilter = 'saturate(120%) blur(1px)';
+      overlay.style.opacity = '1';
+      overlay.style.pointerEvents = 'auto';
+      overlay.style.transition = 'opacity .3s ease';
+      overlay.style.zIndex = '150';
+    } else {
+      overlay.style.opacity = '0';
+      overlay.style.pointerEvents = 'none';
+    }
+  }
 }
+
+  // Mobile nav: swipe-to-close, close on ESC and link click (mobile only)
+(function(){
+  const nav = document.getElementById('nav');
+  if(!nav) return;
+  const isMobile = () => window.matchMedia('(max-width: 640px)').matches;
+
+  // Close on ESC
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && nav.classList.contains('open')) toggleMenu();
+  });
+
+  // Close when clicking any link in the drawer (mobile only)
+  nav.addEventListener('click', (e) => {
+    const t = e.target;
+    if(t && t.tagName === 'A' && isMobile() && nav.classList.contains('open')) {
+      toggleMenu();
+    }
+  });
+
+  // Swipe left to close
+  let startX = 0, deltaX = 0, dragging = false;
+  nav.addEventListener('touchstart', (e) => {
+    if(!isMobile() || !nav.classList.contains('open')) return;
+    dragging = true; startX = e.touches[0].clientX; deltaX = 0;
+  }, { passive: true });
+
+  nav.addEventListener('touchmove', (e) => {
+    if(!dragging || !isMobile() || !nav.classList.contains('open')) return;
+    deltaX = e.touches[0].clientX - startX;
+  }, { passive: true });
+
+  nav.addEventListener('touchend', () => {
+    if(!dragging || !isMobile() || !nav.classList.contains('open')) return;
+    dragging = false;
+    if(deltaX < -50) toggleMenu();
+  });
+})();
 
   // Mobile slider for schedule (infinite)
 (function(){
@@ -247,4 +304,70 @@ function toggleMenu(){
   }
   window.addEventListener('resize', handleResize);
   handleResize();
+})();
+
+// Fixed header: hide on scroll down, show on scroll up
+(function(){
+  const header = document.querySelector('.header');
+  if(!header) return;
+
+  function setHeaderHeightVar(){
+    const h = header.getBoundingClientRect().height;
+    document.documentElement.style.setProperty('--header-h', h + 'px');
+  }
+
+  // keep updated on load/resize and if header size changes
+  window.addEventListener('load', setHeaderHeightVar);
+  window.addEventListener('resize', setHeaderHeightVar);
+  if('ResizeObserver' in window){
+    const ro = new ResizeObserver(setHeaderHeightVar);
+    ro.observe(header);
+  }
+
+  let lastY = Math.max(window.pageYOffset || document.documentElement.scrollTop || 0, 0);
+  let ticking = false;
+  const DELTA = 8; // minimal scroll delta to react
+
+  function update(){
+    const y = Math.max(window.pageYOffset || document.documentElement.scrollTop || 0, 0);
+
+    // Keep header visible while mobile nav is open
+    if(document.body.classList.contains('menu-open')){
+      header.classList.remove('header--hidden');
+      lastY = y;
+      ticking = false;
+      return;
+    }
+
+    const delta = y - lastY;
+    const goingDown = delta > 0;
+
+    if(Math.abs(delta) > DELTA){
+      if(goingDown){
+        header.classList.add('header--hidden');
+      } else {
+        header.classList.remove('header--hidden');
+      }
+    }
+
+    if(y <= 0){
+      header.classList.remove('header--hidden');
+    }
+
+    lastY = y;
+    ticking = false;
+  }
+
+  function onScroll(){
+    if(!ticking){
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Initial sync
+  setHeaderHeightVar();
+  update();
 })();
