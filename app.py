@@ -1,11 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, abort
 from flask_babel import Babel, gettext as _
+from flask_login import LoginManager, current_user
+from flask_wtf.csrf import CSRFProtect
 from datetime import datetime
 from config import Config
-from models import db, News, Schedule, Trainer, Signup
+from models import db, News, Schedule, Trainer, Signup, User
 from forms import LoginForm, NewsForm, ScheduleForm, SignupForm
 
 import os
+from functools import wraps
 from babel.messages.pofile import read_po
 from babel.messages.mofile import write_mo
 
@@ -41,6 +44,27 @@ def create_app():
     with app.app_context():
         db.create_all()
         seed_if_empty()
+
+    # Auth and CSRF
+    login_manager = LoginManager(app)
+    login_manager.login_view = "admin_login"
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
+    csrf = CSRFProtect(app)
+
+    # Admin-required decorator (403 on failure)
+    def admin_required(view):
+        @wraps(view)
+        def wrapper(*args, **kwargs):
+            if not current_user.is_authenticated:
+                abort(403)
+            if not getattr(current_user, "is_admin", False):
+                abort(403)
+            return view(*args, **kwargs)
+        return wrapper
 
     # Babel
     def select_locale():
@@ -118,23 +142,9 @@ def create_app():
         return render_template("signup.html", form=form)
 
     # Admin auth
-    def is_admin():
-        return session.get("is_admin", False)
-
     @app.route("/admin/login", methods=["GET", "POST"])
     def admin_login():
-        if is_admin():
-            return redirect(url_for("admin_dashboard"))
         form = LoginForm()
-        if form.validate_on_submit():
-            if (
-                form.username.data == app.config["ADMIN_USERNAME"]
-                and form.password.data == app.config["ADMIN_PASSWORD"]
-            ):
-                session["is_admin"] = True
-                flash(_("Добро пожаловать в админ-панель!"))
-                return redirect(url_for("admin_dashboard"))
-            flash(_("Неверный логин или пароль."))
         return render_template("admin/login.html", form=form)
 
     @app.route("/admin/logout")
@@ -143,16 +153,9 @@ def create_app():
         flash(_("Вы вышли из админ-панели."))
         return redirect(url_for("home"))
 
-    def admin_required():
-        if not is_admin():
-            flash(_("Требуется авторизация администратора."))
-            return False
-        return True
-
     @app.route("/admin")
+    @admin_required
     def admin_dashboard():
-        if not admin_required():
-            return redirect(url_for("admin_login"))
         return render_template(
             "admin/dashboard.html",
             news_count=News.query.count(),
@@ -160,9 +163,8 @@ def create_app():
         )
 
     @app.route("/admin/news/add", methods=["GET", "POST"])
+    @admin_required
     def admin_add_news():
-        if not admin_required():
-            return redirect(url_for("admin_login"))
         form = NewsForm()
         if form.validate_on_submit():
             n = News(
@@ -173,13 +175,41 @@ def create_app():
             db.session.add(n)
             db.session.commit()
             flash(_("Новость добавлена."))
-            return redirect(url_for("news_list"))
-        return render_template("admin/add_news.html", form=form)
+            return redirect(url_for("admin_news_list"))
+        return render_template("admin/news_form.html", form=form, page_title=_("Добавить новость"))
+
+    @app.route("/admin/news")
+    @admin_required
+    def admin_news_list():
+        items = News.query.order_by(News.created_at.desc()).all()
+        return render_template("admin/news_list.html", items=items)
+
+    @app.route("/admin/news/edit/<int:news_id>", methods=["GET", "POST"])
+    @admin_required
+    def admin_edit_news(news_id):
+        item = News.query.get_or_404(news_id)
+        form = NewsForm(obj=item)
+        if form.validate_on_submit():
+            item.title = form.title.data
+            item.body = form.body.data
+            item.image = (form.image.data or "").strip() or None
+            db.session.commit()
+            flash(_("Новость обновлена."))
+            return redirect(url_for("admin_news_list"))
+        return render_template("admin/news_form.html", form=form, page_title=_("Редактировать новость"), item=item)
+
+    @app.route("/admin/news/delete/<int:news_id>", methods=["POST"])
+    @admin_required
+    def admin_delete_news(news_id):
+        item = News.query.get_or_404(news_id)
+        db.session.delete(item)
+        db.session.commit()
+        flash(_("Новость удалена."))
+        return redirect(url_for("admin_news_list"))
 
     @app.route("/admin/schedule", methods=["GET", "POST"])
+    @admin_required
     def admin_edit_schedule():
-        if not admin_required():
-            return redirect(url_for("admin_login"))
         form = ScheduleForm()
         if form.validate_on_submit():
             item = Schedule(

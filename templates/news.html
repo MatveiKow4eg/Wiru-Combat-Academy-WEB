@@ -5,12 +5,23 @@
   <h1>{{ _('Новости') }}</h1>
   <div class="cards three">
     {% for item in news %}
-    <a class="card hover-scale" href="{{ url_for('news_detail', news_id=item.id) }}">
-      <img src="{{ item.image or url_for('static', filename='images/news.svg') }}" alt="{{ item.title }}">
-      <div class="meta">{{ item.created_at.strftime('%d.%m.%Y') }}</div>
-      <h3>{{ item.title }}</h3>
-      <p>{{ item.body[:160] }}{% if item.body|length > 160 %}…{% endif %}</p>
-    </a>
+    <div class="card hover-scale">
+      <a href="{{ url_for('news_detail', news_id=item.id) }}" style="display:block">
+        <img src="{{ item.image or url_for('static', filename='images/news.svg') }}" alt="{{ item.title }}">
+        <div class="meta">{{ item.created_at.strftime('%d.%m.%Y') }}</div>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.body[:160] }}{% if item.body|length > 160 %}…{% endif %}</p>
+      </a>
+      {% if current_user.is_authenticated and current_user.is_admin %}
+      <div style="display:flex; gap:8px; margin-top:10px;">
+        <a class="btn" href="{{ url_for('admin_edit_news', news_id=item.id) }}">{{ _('Редактировать') }}</a>
+        <form method="POST" action="{{ url_for('admin_delete_news', news_id=item.id) }}" onsubmit="return confirm('{{ _('Удалить новость?') }}');">
+          {{ csrf_token() }}
+          <button class="btn" style="background:#2a0000; border:1px solid #511; color:#fff;">{{ _('Удалить') }}</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
     {% else %}
     <p>{{ _('Пока нет новостей.') }}</p>
     {% endfor %}

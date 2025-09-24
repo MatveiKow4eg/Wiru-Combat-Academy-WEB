@@ -474,7 +474,7 @@ h1, .wc-title, .story-heading .story-word.main {
 /* ===== Home wide overrides (desktop) ===== */
 @media (min-width: 1025px) {
   /* Broaden base container on home page (home.css only loads on home) */
-  .container { width: min(1800px, 96%); }
+  .main .container { width: min(1800px, 96%); }
 
   /* Hero text area wider */
   .hero-inner { max-width: 1100px; }

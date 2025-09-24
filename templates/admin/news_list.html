@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Админка — Новости') }}{% endblock %}
+{% block content %}
+<section class="container pad-y">
+  <h1>{{ _('Новости') }}</h1>
+  <div style="margin: 16px 0; display:flex; justify-content:flex-end;">
+    <a class="btn btn-accent" href="{{ url_for('admin_add_news') }}">{{ _('Добавить новость') }}</a>
+  </div>
+
+  {% if items %}
+  <div class="card">
+    <div class="table" style="width:100%; overflow:auto;">
+      <div class="table-head" style="display:grid; grid-template-columns: 80px 2fr 1fr 160px; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); color:#bbb;">
+        <div>ID</div>
+        <div>{{ _('Заголовок') }}</div>
+        <div>{{ _('Создано') }}</div>
+        <div>{{ _('Действия') }}</div>
+      </div>
+      {% for n in items %}
+      <div class="table-row" style="display:grid; grid-template-columns: 80px 2fr 1fr 160px; gap:10px; padding:12px 0; border-bottom:1px solid #222; align-items:center;">
+        <div>{{ n.id }}</div>
+        <div>
+          <a href="{{ url_for('news_detail', news_id=n.id) }}" target="_blank" style="color:#fff">{{ n.title }}</a>
+        </div>
+        <div>{{ n.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+        <div style="display:flex; gap:8px;">
+          <a class="btn" href="{{ url_for('admin_edit_news', news_id=n.id) }}">{{ _('Редактировать') }}</a>
+          <form method="POST" action="{{ url_for('admin_delete_news', news_id=n.id) }}" onsubmit="return confirm('{{ _('Удалить новость?') }}');">
+            {{ csrf_token() }}
+            <button class="btn" style="background:#2a0000; border:1px solid #511; color:#fff;">{{ _('Удалить') }}</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% else %}
+    <p>{{ _('Новостей пока нет.') }}</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title or _('Новость') }}{% endblock %}
+{% block content %}
+<section class="container pad-y">
+  <h1>{{ page_title or _('Новость') }}</h1>
+  <div class="form">
+    <form method="POST">
+      {{ form.hidden_tag() }}
+
+      <div class="form-row">
+        <label for="title">{{ _('Заголовок') }}</label>
+        {{ form.title(class_='input', id='title', placeholder=_('Введите заголовок')) }}
+        {% for e in form.title.errors %}<div class="error">{{ e }}</div>{% endfor %}
+      </div>
+
+      <div class="form-row">
+        <label for="body">{{ _('Текст') }}</label>
+        {{ form.body(class_='textarea', id='body', placeholder=_('Текст новости'), rows=10) }}
+        {% for e in form.body.errors %}<div class="error">{{ e }}</div>{% endfor %}
+      </div>
+
+      <div class="form-row">
+        <label for="image">{{ _('Ссылка на изображение') }}</label>
+        {{ form.image(class_='input', id='image', placeholder='/static/uploads/news/filename.jpg') }}
+        {% if item and item.image %}
+        <div style="margin-top:8px">
+          <img src="{{ item.image }}" alt="preview" style="max-width:240px; border:1px solid #333; border-radius:8px;">
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="form-row" style="display:flex; gap:10px;">
+        {{ form.submit(class_='btn btn-accent') }}
+        <a class="btn" href="{{ url_for('admin_news_list') }}">{{ _('Отмена') }}</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

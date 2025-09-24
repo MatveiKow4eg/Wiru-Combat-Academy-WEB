@@ -6,6 +6,15 @@
     <img class="article-cover" src="{{ item.image or url_for('static', filename='images/news.svg') }}" alt="{{ item.title }}">
     <h1>{{ item.title }}</h1>
     <div class="meta">{{ item.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+    {% if current_user.is_authenticated and current_user.is_admin %}
+    <div style="display:flex; gap:8px; margin: 10px 0 20px;">
+      <a class="btn" href="{{ url_for('admin_edit_news', news_id=item.id) }}">{{ _('Редактировать') }}</a>
+      <form method="POST" action="{{ url_for('admin_delete_news', news_id=item.id) }}" onsubmit="return confirm('{{ _('Удалить новость?') }}');">
+        {{ csrf_token() }}
+        <button class="btn" style="background:#2a0000; border:1px solid #511; color:#fff;">{{ _('Удалить') }}</button>
+      </form>
+    </div>
+    {% endif %}
     <div class="article-body">{{ item.body|replace('\n','<br>')|safe }}</div>
   </article>
 </section>
