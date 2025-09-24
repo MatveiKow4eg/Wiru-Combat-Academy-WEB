@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, abort
 from flask_babel import Babel, gettext as _
-from flask_login import LoginManager, current_user
+from flask_login import LoginManager, current_user, login_user, logout_user
 from flask_wtf.csrf import CSRFProtect
+from werkzeug.security import check_password_hash, generate_password_hash
+from urllib.parse import urlparse, urljoin
 from datetime import datetime
 from config import Config
 from models import db, News, Schedule, Trainer, Signup, User
@@ -60,11 +62,17 @@ def create_app():
         @wraps(view)
         def wrapper(*args, **kwargs):
             if not current_user.is_authenticated:
-                abort(403)
+                # Redirect to login with next param for a more intuitive flow
+                return redirect(url_for("admin_login", next=request.url))
             if not getattr(current_user, "is_admin", False):
                 abort(403)
             return view(*args, **kwargs)
         return wrapper
+
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        flash(_("Требуется вход для доступа."))
+        return redirect(url_for("admin_login", next=request.url))
 
     # Babel
     def select_locale():
@@ -145,10 +153,25 @@ def create_app():
     @app.route("/admin/login", methods=["GET", "POST"])
     def admin_login():
         form = LoginForm()
+        if form.validate_on_submit():
+            user = User.query.filter_by(username=form.username.data).first()
+            if user and user.is_admin and check_password_hash(user.password_hash or "", form.password.data):
+                login_user(user)
+                flash(_("Добро пожаловать в админ-панель!"))
+                next_url = request.args.get("next")
+                def is_safe_url(target):
+                    ref_url = urlparse(request.host_url)
+                    test_url = urlparse(urljoin(request.host_url, target or ""))
+                    return test_url.scheme in ("http", "https") and ref_url.netloc == test_url.netloc
+                if next_url and is_safe_url(next_url):
+                    return redirect(next_url)
+                return redirect(url_for("admin_dashboard"))
+            flash(_("Неверный логин или пароль."))
         return render_template("admin/login.html", form=form)
 
     @app.route("/admin/logout")
     def admin_logout():
+        logout_user()
         session.clear()
         flash(_("Вы вышли из админ-панели."))
         return redirect(url_for("home"))
@@ -229,6 +252,10 @@ def create_app():
             "admin/edit_schedule.html", form=form, schedule=schedule
         )
 
+    @app.errorhandler(403)
+    def forbidden(_e):
+        return render_template("errors/403.html"), 403
+
     return app
 
 
@@ -256,6 +283,16 @@ def seed_if_empty():
         ]
         for name, bio, photo in trainers:
             db.session.add(Trainer(name=name, bio=bio, photo=photo))
+
+    # Seed local admin user if none exists
+    if User.query.filter_by(username="admin").first() is None:
+        admin_user = User(
+            username="admin",
+            password_hash=generate_password_hash("admin123"),
+            is_admin=True,
+        )
+        db.session.add(admin_user)
+
     db.session.commit()
 
 

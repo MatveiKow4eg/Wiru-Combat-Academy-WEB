@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}403 — Forbidden{% endblock %}
+{% block content %}
+<section class="container pad-y">
+  <h1>403</h1>
+  <p>{{ _('Недостаточно прав для доступа к этой странице.') }}</p>
+  <div style="margin-top:16px; display:flex; gap:10px;">
+    <a class="btn" href="{{ url_for('home') }}">{{ _('На главную') }}</a>
+    <a class="btn btn-accent" href="{{ url_for('admin_login') }}">{{ _('Войти как админ') }}</a>
+  </div>
+</section>
+{% endblock %}
