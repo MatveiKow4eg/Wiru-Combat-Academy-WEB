@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Вход в админ-панель') }}{% endblock %}
+{% block title %}{{ _('Регистрация') }}{% endblock %}
 {% block content %}
 <section class="container pad-y">
-  <h1>{{ _('Вход в админ-панель') }}</h1>
+  <h1>{{ _('Регистрация') }}</h1>
   <form method="post" class="form small">
     {{ form.csrf_token }}
     <div class="form-row">
@@ -11,14 +11,19 @@
       {% for e in form.email.errors %}<div class="error">{{ e }}</div>{% endfor %}
     </div>
     <div class="form-row">
+      <label>{{ _('Имя пользователя (необязательно)') }}</label>
+      {{ form.username(class="input") }}
+      {% for e in form.username.errors %}<div class="error">{{ e }}</div>{% endfor %}
+    </div>
+    <div class="form-row">
       <label>{{ _('Пароль') }}</label>
       {{ form.password(class="input") }}
       {% for e in form.password.errors %}<div class="error">{{ e }}</div>{% endfor %}
     </div>
     <div class="form-row">
-      <label style="display:flex; align-items:center; gap:6px;">
-        {{ form.remember() }} <span>{{ _('Запомнить меня') }}</span>
-      </label>
+      <label>{{ _('Подтверждение пароля') }}</label>
+      {{ form.confirm(class="input") }}
+      {% for e in form.confirm.errors %}<div class="error">{{ e }}</div>{% endfor %}
     </div>
     <div class="form-row">
       {{ form.submit(class="btn btn-accent") }}

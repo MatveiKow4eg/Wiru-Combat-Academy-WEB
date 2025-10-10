@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ _('Профиль') }}{% endblock %}
+{% block content %}
+<section class="container pad-y">
+  <h1>{{ _('Профиль') }}</h1>
+  <div class="card" style="padding:16px;">
+    <p><strong>Email:</strong> {{ current_user.email }}</p>
+    <p><strong>Username:</strong> {{ current_user.username or '—' }}</p>
+    <p><strong>Role:</strong> {{ current_user.role }}</p>
+    <p><strong>Status:</strong> {{ _('Активен') if current_user.is_active else _('Заблокирован') }}</p>
+  </div>
+  <div style="margin-top:16px; display:flex; gap:10px;">
+    <a class="btn" href="{{ url_for('logout') }}">{{ _('Выход') }}</a>
+    {% if current_user.role == 'admin' %}
+      <a class="btn btn-accent" href="{{ url_for('admin_dashboard') }}">{{ _('Админ-панель') }}</a>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
