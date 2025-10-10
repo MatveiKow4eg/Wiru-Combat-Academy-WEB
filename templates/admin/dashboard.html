@@ -7,7 +7,10 @@
     <div class="card">
       <h3>{{ _('Новости') }}</h3>
       <p>{{ _('Всего:') }} {{ news_count }}</p>
-      <a class="btn" href="{{ url_for('admin_add_news') }}">{{ _('Добавить новость') }}</a>
+      <div class="btn-row" style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn" href="{{ url_for('admin_news_list') }}">{{ _('Все новости') }}</a>
+        <a class="btn btn-accent" href="{{ url_for('admin_add_news') }}">{{ _('Добавить новость') }}</a>
+      </div>
     </div>
     <div class="card">
       <h3>{{ _('Заявки') }}</h3>

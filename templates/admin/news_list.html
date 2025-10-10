@@ -26,7 +26,7 @@
         <div style="display:flex; gap:8px;">
           <a class="btn" href="{{ url_for('admin_edit_news', news_id=n.id) }}">{{ _('Редактировать') }}</a>
           <form method="POST" action="{{ url_for('admin_delete_news', news_id=n.id) }}" onsubmit="return confirm('{{ _('Удалить новость?') }}');">
-            {{ csrf_token() }}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button class="btn" style="background:#2a0000; border:1px solid #511; color:#fff;">{{ _('Удалить') }}</button>
           </form>
         </div>

@@ -41,6 +41,9 @@
       <a href="{{ url_for('schedule_page') }}">{{ _('Расписание') }}</a>
       <a href="{{ url_for('trainers_page') }}">{{ _('Тренеры') }}</a>
       <a href="{{ url_for('contact') }}">{{ _('Контакты') }}</a>
+      {% if current_user.is_authenticated and current_user.is_admin %}
+      <a href="{{ url_for('admin_dashboard') }}">{{ _('Админ') }}</a>
+      {% endif %}
       <a href="{{ url_for('signup') }}" class="btn btn-accent nav-cta" style="margin-top:auto; display:block; text-align:center;">{{ _('Записаться') }}</a>
     </nav>
     <div id="navOverlay" class="nav-overlay" onclick="toggleMenu()"></div>

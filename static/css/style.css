@@ -115,13 +115,46 @@ p{font-size:17px;line-height:1.6}
   padding:12px 22px;
   border-radius:8px;
   cursor:pointer;
-  display:inline-block;
+  display:inline-inline;
   transition:all .3s ease;
   font-weight:600;
 }
 .btn:hover{transform:translateY(-2px);background:#222}
 .btn-accent{background:var(--accent)}
 .btn-accent:hover{background:var(--accent-hover)}
+
+/* small buttons for admin controls */
+.btn.btn--sm{
+  padding:8px 12px;
+  font-size:14px;
+  border-radius:6px;
+  line-height:1.1;
+}
+.btn--edit{
+  background:#2b2b2b;
+  border:1px solid #3a3a3a;
+  color:#eee;
+}
+.btn--edit:hover{
+  background:#3a3a3a;
+}
+.btn--danger{
+  background:#b81f1f;
+  border:1px solid #b81f1f;
+  color:#fff;
+}
+.btn--danger:hover{
+  background:#e02525;
+}
+
+/* admin controls container under news cards */
+.admin-controls{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+  align-items:center;
+}
+.admin-controls form{ margin:0; }
 
 /* HERO */
 .hero{
