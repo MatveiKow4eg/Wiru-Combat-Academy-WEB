@@ -17,6 +17,29 @@
     /* Mobile-only override: slightly narrower side drawer */
     @media (max-width: 640px) {
       #nav.nav { width: 72vw; max-width: 280px; }
+      /* show right-side buttons also on mobile */
+      .header-actions .btn { display: inline-block !important; }
+    }
+    /* improve spacing in right header area */
+    .header-actions { gap: 16px; }
+    .auth-ctrls { display:flex; align-items:center; gap: 14px; }
+    .lang-switch { margin-right: 6px; }
+    /* header auth controls */
+    .header-actions .header-link {
+      color: #ddd; text-transform: uppercase; font-size: 14px; font-weight: 600;
+    }
+    .header-actions .header-link:hover { color: var(--accent); }
+    .header-actions .user-avatar {
+      width: 36px; height: 36px;
+      display: inline-flex; align-items: center; justify-content: center;
+      color: #ddd; background: #1a1a1a; border: 1px solid #333; border-radius: 50%;
+      transition: border-color .2s ease, color .2s ease, background .2s ease;
+      vertical-align: middle;
+    }
+    .header-actions .user-avatar:hover { border-color: var(--accent); color: #fff; background: #222; }
+    @media (min-width: 641px){
+      .header-actions{ justify-self: end; }
+      .header .nav{ justify-self: center; }
     }
   </style>
 </head>
@@ -41,37 +64,58 @@
       <a href="{{ url_for('schedule_page') }}">{{ _('Расписание') }}</a>
       <a href="{{ url_for('trainers_page') }}">{{ _('Тренеры') }}</a>
       <a href="{{ url_for('contact') }}">{{ _('Контакты') }}</a>
-      {% if current_user.is_authenticated and current_user.role == 'admin' %}
-      <a href="{{ url_for('admin_dashboard') }}">{{ _('Админ') }}</a>
-      {% endif %}
-      {% if current_user.is_authenticated %}
-      <a href="{{ url_for('profile') }}">{{ _('Профиль') }}</a>
-      <a href="{{ url_for('logout') }}">{{ _('Выход') }}</a>
-      {% else %}
-      <a href="{{ url_for('login') }}">{{ _('Войти') }}</a>
-      <a href="{{ url_for('register') }}">{{ _('Регистрация') }}</a>
-      {% endif %}
-      <a href="{{ url_for('signup') }}" class="btn btn-accent nav-cta" style="margin-top:auto; display:block; text-align:center;">{{ _('Записаться') }}</a>
+            <a href="{{ url_for('signup') }}" class="btn btn-accent nav-cta" style="margin-top:auto; display:block; text-align:center;">{{ _('Записаться') }}</a>
     </nav>
-    <div id="navOverlay" class="nav-overlay" onclick="toggleMenu()"></div>
-    <div class="header-actions">
+        <div class="header-actions">
       <div class="lang-switch">
         {% for code in LANGUAGES %}
           <a class="lang {{ 'active' if session.get('lang','ru')==code else '' }}" href="{{ request.path }}?lang={{ code }}">{{ code.upper() }}</a>
         {% endfor %}
       </div>
-      <a class="btn" href="{{ url_for('signup') }}">{{ _('Записаться') }}</a>
+      <div class="auth-ctrls">
+        {% if not current_user.is_authenticated %}
+          <a class="btn" href="{{ url_for('login') }}">{{ _('Войти') }}</a>
+        {% else %}
+          {% if current_user.role == 'admin' %}
+            <a class="header-link" href="{{ url_for('admin_dashboard') }}">{{ _('Админ-панель') }}</a>
+          {% endif %}
+          <a href="{{ url_for('profile') }}" class="user-avatar" title="{{ _('Профиль') }}" aria-label="{{ _('Профиль') }}">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 21a8 8 0 0 0-16 0"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </a>
+          <a class="header-link" href="{{ url_for('logout') }}">{{ _('Выход') }}</a>
+        {% endif %}
+      </div>
       <button class="burger" aria-label="Menu" onclick="toggleMenu()">☰</button>
     </div>
   </div>
 </header>
+<div id="navOverlay" class="nav-overlay" onclick="toggleMenu()"></div>
 
 <main class="main">
-  {% with messages = get_flashed_messages() %}
+  {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}
-    <div class="flash">
-      {% for m in messages %}<div class="flash-item">{{ m }}</div>{% endfor %}
+    <div class="flash" id="flash">
+      {% for cat, m in messages %}
+        <div class="flash-item {{ cat|default('message') }}">{{ m }}</div>
+      {% endfor %}
     </div>
+    <script>
+      // Auto-hide flash messages after 1 second with a smooth transition
+      (function(){
+        var container = document.getElementById('flash');
+        if (!container) return;
+        setTimeout(function(){
+          var items = container.querySelectorAll('.flash-item');
+          items.forEach(function(el){ el.classList.add('hide'); });
+          setTimeout(function(){
+            if (container && container.parentNode) container.parentNode.removeChild(container);
+          }, 300);
+        }, 1000);
+      })();
+    </script>
     {% endif %}
   {% endwith %}
   {% block content %}{% endblock %}

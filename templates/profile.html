@@ -2,18 +2,109 @@
 {% block title %}{{ _('Профиль') }}{% endblock %}
 {% block content %}
 <section class="container pad-y">
-  <h1>{{ _('Профиль') }}</h1>
-  <div class="card" style="padding:16px;">
-    <p><strong>Email:</strong> {{ current_user.email }}</p>
-    <p><strong>Username:</strong> {{ current_user.username or '—' }}</p>
-    <p><strong>Role:</strong> {{ current_user.role }}</p>
-    <p><strong>Status:</strong> {{ _('Активен') if current_user.is_active else _('Заблокирован') }}</p>
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px;">
+    <div style="display:flex; align-items:center; gap:14px;">
+      <div style="width:64px; height:64px; border-radius:50%; border:1px solid #333; background:#1a1a1a; display:flex; align-items:center; justify-content:center; color:#ddd;">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 21a8 8 0 0 0-16 0"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+      </div>
+      <div>
+        <h1 style="margin:0;">{{ current_user.username or _('Без имени') }}</h1>
+        <div style="color:#bbb; font-size:14px;">{{ current_user.email }}</div>
+        {% if current_user.role == 'admin' %}
+          <span class="btn btn--sm" style="background:#2a1414; border:1px solid #b81f1f; color:#ffb3b3; margin-top:6px; display:inline-block;">Admin</span>
+        {% endif %}
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      {% if current_user.role == 'admin' %}
+        <a class="btn btn-accent" href="{{ url_for('admin_dashboard') }}">{{ _('Перейти в Админ-панель') }}</a>
+      {% endif %}
+    </div>
   </div>
-  <div style="margin-top:16px; display:flex; gap:10px;">
-    <a class="btn" href="{{ url_for('logout') }}">{{ _('Выход') }}</a>
-    {% if current_user.role == 'admin' %}
-      <a class="btn btn-accent" href="{{ url_for('admin_dashboard') }}">{{ _('Админ-панель') }}</a>
-    {% endif %}
+
+  <div class="cards two">
+    <!-- Account -->
+    <div class="card">
+      <h3 style="margin-bottom:10px;">{{ _('Мой аккаунт') }}</h3>
+      <form method="post">
+        {{ csrf_token() }}
+        <input type="hidden" name="action" value="update_account">
+        <div class="form-row">
+          <label style="color:#ccc; margin-bottom:6px;">{{ _('Имя/Ник') }}</label>
+          <input class="input" type="text" name="username" value="{{ current_user.username or '' }}" maxlength="80" placeholder="{{ _('Ваше имя или ник') }}">
+        </div>
+        <div class="form-row">
+          <label style="color:#ccc; margin-bottom:6px;">Email</label>
+          <input class="input" type="email" name="email" value="{{ current_user.email }}" maxlength="255">
+        </div>
+        <div class="form-row">
+          <button class="btn btn-accent" type="submit">{{ _('Сохранить') }}</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Security -->
+    <div class="card">
+      <h3 style="margin-bottom:10px;">{{ _('Безопасность') }}</h3>
+      <form method="post">
+        {{ csrf_token() }}
+        <input type="hidden" name="action" value="change_password">
+        <div class="form-row">
+          <label style="color:#ccc; margin-bottom:6px;">{{ _('Текущий пароль') }}</label>
+          <input class="input" type="password" name="current_password" minlength="6" required>
+        </div>
+        <div class="form-row">
+          <label style="color:#ccc; margin-bottom:6px;">{{ _('Новый пароль') }}</label>
+          <input class="input" type="password" name="new_password" minlength="6" required>
+        </div>
+        <div class="form-row">
+          <label style="color:#ccc; margin-bottom:6px;">{{ _('Подтверждение нового пароля') }}</label>
+          <input class="input" type="password" name="confirm_password" minlength="6" required>
+        </div>
+        <div class="form-row">
+          <button class="btn btn-accent" type="submit">{{ _('Изменить пароль') }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="cards two" style="margin-top:20px;">
+    <!-- Preferences -->
+    <div class="card">
+      <h3 style="margin-bottom:10px;">{{ _('Предпочтения') }}</h3>
+      <form method="post">
+        {{ csrf_token() }}
+        <input type="hidden" name="action" value="update_prefs">
+        <div class="form-row">
+          <label style="color:#ccc; margin-bottom:6px;">{{ _('Язык интерфейса') }}</label>
+          <select class="input" name="lang">
+            {% set cur = session.get('lang', 'ru') %}
+            <option value="ru" {{ 'selected' if cur == 'ru' else '' }}>Русский</option>
+            <option value="en" {{ 'selected' if cur == 'en' else '' }}>English</option>
+            <option value="et" {{ 'selected' if cur == 'et' else '' }}>Eesti</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <button class="btn btn-accent" type="submit">{{ _('Сохранить предпочтения') }}</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Sessions (optional placeholder) -->
+    <div class="card">
+      <h3 style="margin-bottom:10px;">{{ _('Сессии / Устройства') }}</h3>
+      <p style="color:#bbb;">{{ _('Пока что здесь заглушка. Можно добавить список активных сессий и кнопку:') }}</p>
+      <div class="form-row">
+        <form method="post" onsubmit="return confirm('{{ _('Вы уверены, что хотите выйти на всех устройствах?') }}');">
+          {{ csrf_token() }}
+          <input type="hidden" name="action" value="logout_all">
+          <button class="btn" type="button" disabled>{{ _('Выйти со всех устройств') }}</button>
+        </form>
+      </div>
+    </div>
   </div>
 </section>
 {% endblock %}

@@ -221,10 +221,13 @@ def create_app():
     def login():
         if current_user.is_authenticated:
             # already logged in: route by role
-            return redirect(url_for("admin_dashboard" if current_user.role == 'admin' else "home"))
+            return redirect(url_for("admin_dashboard" if current_user.role == 'admin' else "profile"))
         form = LoginForm()
         if form.validate_on_submit():
-            user = User.query.filter_by(email=form.email.data.lower().strip()).first()
+            ident = (form.email.data or '').strip()
+            user = User.query.filter_by(email=ident.lower()).first()
+            if not user:
+                user = User.query.filter_by(username=ident).first()
             if user and user.is_active and user.check_password(form.password.data):
                 login_user(user, remember=form.remember.data)
                 flash(_("Добро пожаловать!"))
@@ -233,14 +236,14 @@ def create_app():
                     return redirect(nxt)
                 if user.role == 'admin':
                     return redirect(url_for("admin_dashboard"))
-                return redirect(url_for("home"))
-            flash(_("Неверный email или пароль"))
+                return redirect(url_for("profile"))
+            flash(_("Неверный email/имя пользователя или пароль"))
         return render_template("auth/login.html", form=form)
 
     @app.route("/register", methods=["GET", "POST"])
     def register():
         if current_user.is_authenticated:
-            return redirect(url_for("home"))
+            return redirect(url_for("profile"))
         form = RegisterForm()
         if form.validate_on_submit():
             email = form.email.data.lower().strip()
@@ -257,7 +260,7 @@ def create_app():
             nxt = request.args.get("next")
             if nxt and is_safe_next(nxt):
                 return redirect(nxt)
-            return redirect(url_for("home"))
+            return redirect(url_for("profile"))
         return render_template("auth/register.html", form=form)
 
     @app.route("/logout")
@@ -366,9 +369,64 @@ def create_app():
         )
 
     # Simple profile page for authenticated users
-    @app.route("/profile")
+    @app.route("/profile", methods=["GET", "POST"])
     @login_required
     def profile():
+        # Determine which form/tab was submitted
+        action = request.form.get('action') if request.method == 'POST' else None
+
+        # Update account (username/email)
+        if action == 'update_account':
+            new_username = (request.form.get('username') or '').strip() or None
+            new_email = (request.form.get('email') or '').strip().lower()
+            # Email can be read-only if blank in form
+            if new_email and new_email != current_user.email:
+                # Ensure uniqueness
+                if User.query.filter(User.email == new_email, User.id != current_user.id).first():
+                    flash(_("Этот email уже занят."), 'error')
+                else:
+                    current_user.email = new_email
+            # Update username with uniqueness check
+            if new_username != current_user.username:
+                if new_username and User.query.filter(User.username == new_username, User.id != current_user.id).first():
+                    flash(_("Это имя пользователя уже занято."), 'error')
+                else:
+                    current_user.username = new_username
+            db.session.commit()
+            flash(_("Профиль обновлён."), 'success')
+            return redirect(url_for('profile'))
+
+        # Change password
+        if action == 'change_password':
+            current_pwd = request.form.get('current_password') or ''
+            new_pwd = request.form.get('new_password') or ''
+            confirm_pwd = request.form.get('confirm_password') or ''
+            # Validate
+            if not current_user.check_password(current_pwd):
+                flash(_("Текущий пароль неверен."), 'error')
+                return redirect(url_for('profile'))
+            if len(new_pwd) < 6:
+                flash(_("Новый пароль слишком коротк��й."), 'error')
+                return redirect(url_for('profile'))
+            if new_pwd != confirm_pwd:
+                flash(_("Пароли не совпадают."), 'error')
+                return redirect(url_for('profile'))
+            current_user.set_password(new_pwd)
+            db.session.commit()
+            flash(_("Пароль успешно изменён."), 'success')
+            return redirect(url_for('profile'))
+
+        # Preferences: language
+        if action == 'update_prefs':
+            lang = request.form.get('lang')
+            if lang in app.config.get('LANGUAGES', ['ru','en','et']):
+                session['lang'] = lang
+                flash(_("Язык интерфейса обновлён."), 'success')
+            else:
+                flash(_("Недопустимый язык."), 'error')
+            # remember-me preference is handled at login; here we could store preference if needed
+            return redirect(url_for('profile'))
+
         return render_template("profile.html")
 
     @app.errorhandler(403)
