@@ -11,7 +11,38 @@
 
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+    // Global fetch wrapper to attach CSRF token to non-GET requests
+    (function(){
+      try{
+        var tag = document.querySelector('meta[name="csrf-token"]');
+        var token = tag ? tag.getAttribute('content') : null;
+        if(!token) return;
+        var originalFetch = window.fetch;
+        window.fetch = function(input, init){
+          init = init || {};
+          var method = (init.method || 'GET').toUpperCase();
+          if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS'){
+            var hdrs = init.headers || {};
+            try{
+              // If Headers object, clone to set new header
+              if (typeof Headers !== 'undefined' && hdrs instanceof Headers){
+                var h2 = new Headers(hdrs);
+                if (!h2.has('X-CSRFToken')) h2.set('X-CSRFToken', token);
+                init.headers = h2;
+              } else {
+                if (!('X-CSRFToken' in hdrs)) hdrs['X-CSRFToken'] = token;
+                init.headers = hdrs;
+              }
+            }catch(e){ /* noop */ }
+          }
+          return originalFetch(input, init);
+        };
+      }catch(e){ /* noop */ }
+    })();
+  </script>
   {% block extra_css %}{% endblock %}
   <style>
     /* Mobile-only override: slightly narrower side drawer */

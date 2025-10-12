@@ -2,6 +2,27 @@
 {% block title %}Профиль — Wiru Combat Academy{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+<style>
+/* Desktop: hide tabs, use sidebar. Mobile: show sticky tabs */
+.tabs{display:none}
+.tab{padding:8px 14px; border:1px solid #ddd; border-radius:8px; cursor:pointer; text-decoration:none; color:inherit; background:#141414}
+.tab.active{background:#111; color:#fff; border-color:#111}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+@media (max-width: 900px){
+  /* Hide side navigation on phones, keep header */
+  .side-nav{display:none}
+  /* Sticky, scrollable tabs */
+  .tabs{display:flex; gap:10px; margin:0 0 12px 0; padding:8px; position:sticky; top:0; z-index:5; background:rgba(13,13,13,.95); backdrop-filter:saturate(120%) blur(2px); border-bottom:1px solid #222; overflow-x:auto}
+  .tabs .tab{white-space:nowrap}
+  /* Stack info blocks */
+  .info-grid{grid-template-columns:1fr !important}
+  /* Allow horizontal scroll for wide tables */
+  .card-body{overflow-x:auto}
+  .table .table-row{min-width:560px}
+}
+</style>
 {% endblock %}
 {% block content %}
 <div class="profile-layout">
@@ -22,12 +43,11 @@
     </div>
     <nav class="side-nav">
       <a class="nav-item active" href="{{ url_for('profile') }}">Главная</a>
-      <a class="nav-item" href="{{ url_for('schedule_page') }}">Расписание</a>
-      <a class="nav-item" href="{{ url_for('contact') }}">Связаться</a>
       <div class="divider"></div>
-      <a class="nav-item" href="{{ url_for('profile') }}">Профиль</a>
-      <a class="nav-item" href="/billing">Абонемент</a>
-      <a class="nav-item" href="/documents">Документы</a>
+      <div class="nav-label">Разделы</div>
+      <a class="nav-item" href="#" data-tab="overview">Профиль</a>
+      <a class="nav-item" href="#" data-tab="billing">Абонемент</a>
+      <a class="nav-item" href="#" data-tab="documents">Документы</a>
       {% if current_user.role == 'admin' %}
       <div class="divider"></div>
       <div class="nav-label">Админ</div>
@@ -39,95 +59,177 @@
   </aside>
 
   <section class="content">
-    {% set sub = last_sub %}
-    {% if sub and sub.current_period_end %}
-      {% set now_ts = now.timestamp() %}
-      {% set end_ts = sub.current_period_end.timestamp() %}
-      {% set secs = (end_ts - now_ts) %}
-      {% set days_left = (secs // 86400)|int %}
-      {% if days_left < 7 and days_left >= 0 %}
-      <div class="banner warning" role="status" aria-live="polite">
-        Подписка истекает через {{ days_left }} дн.
-      </div>
-      {% endif %}
-    {% endif %}
+    <div class="tabs" role="tablist">
+      <a class="tab" role="tab" aria-controls="tab-overview" data-tab="overview" href="#overview">Профиль</a>
+      <a class="tab" role="tab" aria-controls="tab-billing" data-tab="billing" href="#billing">Абонемент</a>
+      <a class="tab" role="tab" aria-controls="tab-documents" data-tab="documents" href="#documents">Документы</a>
+    </div>
 
-    <div class="grid">
-      <div class="card">
-        <div class="card-head">
-          <h2>Account Management</h2>
+    <div id="tab-overview" class="tab-content">
+      {% set sub = last_sub %}
+      {% if sub and sub.current_period_end %}
+        {% set now_ts = now.timestamp() %}
+        {% set end_ts = sub.current_period_end.timestamp() %}
+        {% set secs = (end_ts - now_ts) %}
+        {% set days_left = (secs // 86400)|int %}
+        {% if days_left < 7 and days_left >= 0 %}
+        <div class="banner warning" role="status" aria-live="polite">
+          Подписка истекает через {{ days_left }} дн.
         </div>
-        <div class="card-body">
-          <div class="avatar-upload">
-            <div class="avatar large"><span>{{ (current_user.full_name or current_user.username or current_user.email)[:1]|upper }}</span></div>
-            <form method="post" action="#" enctype="multipart/form-data" onsubmit="alert('Загрузка аватара — заглушка'); return false;">
-              <label class="btn" for="avatarFile">Загрузить фото</label>
-              <input id="avatarFile" type="file" name="avatar" accept="image/*" style="display:none;">
+        {% endif %}
+      {% endif %}
+
+      <div class="grid">
+        <div class="card">
+          <div class="card-head">
+            <h2>Account Management</h2>
+          </div>
+          <div class="card-body">
+            <div class="avatar-upload">
+              <div class="avatar large"><span>{{ (current_user.full_name or current_user.username or current_user.email)[:1]|upper }}</span></div>
+              <form method="post" action="#" enctype="multipart/form-data" onsubmit="alert('Загрузка аватара — заглушка'); return false;">
+                <label class="btn" for="avatarFile">Загрузить фото</label>
+                <input id="avatarFile" type="file" name="avatar" accept="image/*" style="display:none;">
+              </form>
+            </div>
+
+            <form method="post" action="{{ url_for('profile') }}" class="form" aria-label="Смена пароля">
+              <input type="hidden" name="action" value="change_password">
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Текущий пароль</label>
+                  <input class="input" type="password" name="current_password" minlength="8" required>
+                </div>
+                <div class="form-field">
+                  <label>Новый пароль</label>
+                  <input class="input" type="password" name="new_password" minlength="8" required>
+                </div>
+                <div class="form-field">
+                  <label>Подтверждение</label>
+                  <input class="input" type="password" name="confirm_password" minlength="8" required>
+                </div>
+              </div>
+              <button class="btn btn-accent" type="submit">Сменить пароль</button>
             </form>
           </div>
+        </div>
 
-          <form method="post" action="{{ url_for('profile') }}" class="form" aria-label="Смена пароля">
-            <input type="hidden" name="action" value="change_password">
-            <div class="form-grid">
-              <div class="form-field">
-                <label>Текущий пароль</label>
-                <input class="input" type="password" name="current_password" minlength="8" required>
+        <div class="card">
+          <div class="card-head">
+            <h2>Profile Information</h2>
+          </div>
+          <div class="card-body">
+            <div class="info-grid">
+              <div>
+                <label>ФИО</label>
+                <div class="value">{{ current_user.full_name or '—' }}</div>
               </div>
-              <div class="form-field">
-                <label>Новый пароль</label>
-                <input class="input" type="password" name="new_password" minlength="8" required>
+              <div>
+                <label>Уровен��</label>
+                <div class="value">{{ current_user.level or '—' }}</div>
               </div>
-              <div class="form-field">
-                <label>Подтверждение</label>
-                <input class="input" type="password" name="confirm_password" minlength="8" required>
+              <div>
+                <label>Группа</label>
+                <div class="value">{{ current_user.group_name or '—' }}</div>
               </div>
             </div>
-            <button class="btn btn-accent" type="submit">Сменить пароль</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-billing" class="tab-content">
+      <div class="card">
+        <div class="card-head"><h2>Текущий абонемент</h2></div>
+        <div class="card-body">
+          {% if active_sub %}
+          <div class="status-line">
+            <span class="chip status-{{ active_sub.status }}">{{ active_sub.status }}</span>
+            {% if active_sub.current_period_end %}
+              <span class="muted">до {{ active_sub.current_period_end.strftime('%d.%m.%Y') }}</span>
+            {% endif %}
+          </div>
+          {% else %}
+            <p class="muted">Подписка не активна.</p>
+          {% endif %}
+          <div class="actions">
+            <button class="btn btn-accent" onclick="createCheckout('{{ config.STRIPE_PRICE_MONTHLY }}')">Продлить (месяц)</button>
+            <button class="btn" onclick="createCheckout('{{ config.STRIPE_PRICE_YEARLY }}')">Перейти на годовой</button>
+            {% if customer_id %}
+            <button class="btn" onclick="openPortal()">Управлять подпиской</button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>История оплат</h2></div>
+        <div class="card-body">
+          <div class="table">
+            <div class="table-row head">
+              <div>Дата</div>
+              <div>Сумма</div>
+              <div>Статус</div>
+              <div>Invoice</div>
+            </div>
+            {% for p in payments %}
+            <div class="table-row">
+              <div>{{ (p.paid_at or p.created_at).strftime('%d.%m.%Y %H:%M') }}</div>
+              <div>{{ (p.amount or 0)/100 }} {{ p.currency or 'EUR' }}</div>
+              <div><span class="chip status-{{ p.status }}">{{ p.status }}</span></div>
+              <div>
+                {% if p.stripe_invoice_id %}
+                  <a href="https://invoice.stripe.com/i/{{ p.stripe_invoice_id }}" target="_blank" rel="noopener">{{ p.stripe_invoice_id }}</a>
+                {% else %} — {% endif %}
+              </div>
+            </div>
+            {% else %}
+              <div class="table-row"><div class="muted">Платежей пока нет.</div></div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-documents" class="tab-content">
+      <div class="card">
+        <div class="card-head"><h2>Загрузка документа</h2></div>
+        <div class="card-body">
+          <form method="post" action="/documents/upload" enctype="multipart/form-data" class="form" aria-label="Загрузка документа">
+            {{ form.csrf_token }}
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Файл (pdf, jpg, png)</label>
+                {{ form.file(class_='input') }}
+              </div>
+              <div class="form-field">
+                <label>Заметка</label>
+                {{ form.note(class_='input') }}
+              </div>
+            </div>
+            <button class="btn btn-accent" type="submit">Загрузить</button>
           </form>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-head">
-          <h2>Profile Information</h2>
-        </div>
+        <div class="card-head"><h2>Мои документы</h2></div>
         <div class="card-body">
-          <div class="info-grid">
-            <div>
-              <label>ФИО</label>
-              <div class="value">{{ current_user.full_name or '—' }}</div>
+          <div class="table">
+            <div class="table-row head">
+              <div>Имя файла</div>
+              <div>Размер</div>
+              <div>Дата</div>
             </div>
-            <div>
-              <label>Уровень</label>
-              <div class="value">{{ current_user.level or '—' }}</div>
+            {% for d in docs %}
+            <div class="table-row">
+              <div>{{ d.filename }}</div>
+              <div>{{ (d.size_bytes or 0) // 1024 }} KB</div>
+              <div>{{ d.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</div>
             </div>
-            <div>
-              <label>Группа</label>
-              <div class="value">{{ current_user.group_name or '—' }}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-head">
-          <h2>Subscription Status</h2>
-        </div>
-        <div class="card-body">
-          {% if sub %}
-            <div class="status-line">
-              <span class="chip status-{{ sub.status }}">{{ sub.status or '—' }}</span>
-              {% if sub.current_period_end %}
-                <span class="muted">до {{ sub.current_period_end.strftime('%d.%m.%Y') }}</span>
-              {% endif %}
-            </div>
-          {% else %}
-            <p class="muted">Подписка не активна.</p>
-          {% endif %}
-          <div class="actions">
-            <a href="/billing" class="btn btn-accent">Продлить</a>
-            <a href="{{ url_for('schedule_page') }}" class="btn">Посмотреть расписание</a>
-            <a href="{{ url_for('contact') }}" class="btn">Связаться с тренером</a>
+            {% else %}
+              <div class="table-row"><div class="muted">Нет загруженных документов.</div></div>
+            {% endfor %}
           </div>
         </div>
       </div>
@@ -135,4 +237,46 @@
 
   </section>
 </div>
+
+<script>
+(function(){
+  function setActive(tab){
+    document.querySelectorAll('.tab, .side-nav .nav-item[data-tab]').forEach(el=>{
+      const is = el.getAttribute('data-tab') === tab;
+      el.classList.toggle('active', is);
+    });
+    document.querySelectorAll('.tab-content').forEach(el=>{
+      el.classList.toggle('active', el.id === 'tab-'+tab);
+    });
+  }
+  function getTab(){
+    const url = new URL(window.location);
+    const q = url.searchParams.get('tab');
+    const hash = (window.location.hash||'').replace('#','');
+    return (q||hash||'overview');
+  }
+  function onNavClick(e){
+    const t = e.target.closest('[data-tab]');
+    if(!t) return;
+    e.preventDefault();
+    const tab = t.getAttribute('data-tab');
+    history.replaceState(null, '', `?tab=${tab}#${tab}`);
+    setActive(tab);
+  }
+  document.querySelectorAll('[data-tab]').forEach(el=> el.addEventListener('click', onNavClick));
+  window.addEventListener('hashchange', ()=> setActive(getTab()));
+  setActive(getTab());
+})();
+
+async function createCheckout(price_id){
+  const resp = await fetch('/billing/checkout/session', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({price_id})});
+  const data = await resp.json();
+  if (data.url) window.location = data.url; else alert('Ошибка со��дания сессии оплаты');
+}
+async function openPortal(){
+  const resp = await fetch('/billing/portal', {method:'POST'});
+  const data = await resp.json();
+  if (data.url) window.location = data.url; else alert('Ошибка открытия портала');
+}
+</script>
 {% endblock %}

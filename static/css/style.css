@@ -134,7 +134,7 @@ p{font-size:17px;line-height:1.6}
   transition:all .3s ease;
   font-weight:600;
 }
-.btn:hover{transform:translateY(-2px);background:#222}
+.btn:hover{background:#222}
 .btn-accent{background:var(--accent)}
 .btn-accent:hover{background:var(--accent-hover)}
 
@@ -205,7 +205,7 @@ p{font-size:17px;line-height:1.6}
   padding:20px;
   transition:all .3s ease;
 }
-.card:hover{transform:translateY(-5px);box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.card:hover{transform:none!important;box-shadow:none!important}
 .card.service{text-align:center}
 .card.service .icon{font-size:36px;margin-bottom:12px;color:var(--accent)}
 .card.service.highlight{background:var(--accent);color:#fff;border-color:var(--accent)}

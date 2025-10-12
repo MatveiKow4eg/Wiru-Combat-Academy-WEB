@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, abort, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, session, abort, jsonify, send_file
 from flask_babel import Babel, gettext as _
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from flask_wtf.csrf import CSRFProtect
@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from config import Config
 from models import db, News, Schedule, Trainer, Signup, User, Subscription, Payment, Document
 import models as models
-from forms import LoginForm, RegisterForm, NewsForm, ScheduleForm, SignupForm
+from forms import LoginForm, RegisterForm, NewsForm, ScheduleForm, SignupForm, DocumentUploadForm, UserSearchForm
 
 import os
 import secrets
@@ -52,20 +52,37 @@ def run_simple_migrations(app):
                 cols_rows = conn.exec_driver_sql("PRAGMA table_info('user')").fetchall()
                 cols = {row[1] for row in cols_rows}
 
-                # Add columns if missing (NULL allowed initially for safety)
+                # Add columns if missing (NULL allowed initially for safety).
+                # Include all columns defined on models.User to prevent SELECT errors.
+                add_cols_sql = []
                 if "email" not in cols:
-                    conn.exec_driver_sql("ALTER TABLE user ADD COLUMN email VARCHAR(255)")
+                    add_cols_sql.append("ALTER TABLE user ADD COLUMN email VARCHAR(255)")
+                if "username" not in cols:
+                    add_cols_sql.append("ALTER TABLE user ADD COLUMN username VARCHAR(80)")
+                if "password_hash" not in cols:
+                    add_cols_sql.append("ALTER TABLE user ADD COLUMN password_hash VARCHAR(255)")
+                if "full_name" not in cols:
+                    add_cols_sql.append("ALTER TABLE user ADD COLUMN full_name VARCHAR(255)")
+                if "level" not in cols:
+                    add_cols_sql.append("ALTER TABLE user ADD COLUMN level VARCHAR(120)")
+                if "group_name" not in cols:
+                    add_cols_sql.append("ALTER TABLE user ADD COLUMN group_name VARCHAR(120)")
                 if "role" not in cols:
-                    conn.exec_driver_sql("ALTER TABLE user ADD COLUMN role VARCHAR(10)")
+                    add_cols_sql.append("ALTER TABLE user ADD COLUMN role VARCHAR(10)")
                 if "is_active" not in cols:
-                    conn.exec_driver_sql("ALTER TABLE user ADD COLUMN is_active BOOLEAN")
+                    add_cols_sql.append("ALTER TABLE user ADD COLUMN is_active BOOLEAN")
                 if "created_at" not in cols:
-                    conn.exec_driver_sql("ALTER TABLE user ADD COLUMN created_at DATETIME")
+                    add_cols_sql.append("ALTER TABLE user ADD COLUMN created_at DATETIME")
+                if "is_admin" not in cols:
+                    add_cols_sql.append("ALTER TABLE user ADD COLUMN is_admin BOOLEAN")
+                for stmt in add_cols_sql:
+                    conn.exec_driver_sql(stmt)
 
-                # Backfill defaults
+                # Backfill safe defaults for new columns
                 conn.exec_driver_sql("UPDATE user SET role = COALESCE(role, 'user')")
                 conn.exec_driver_sql("UPDATE user SET is_active = COALESCE(is_active, 1)")
                 conn.exec_driver_sql("UPDATE user SET created_at = COALESCE(created_at, datetime('now'))")
+                conn.exec_driver_sql("UPDATE user SET is_admin = COALESCE(is_admin, 0)")
 
                 # If there is an admin with no email, assign a default email if free
                 row = conn.exec_driver_sql(
@@ -79,7 +96,7 @@ def run_simple_migrations(app):
                         default_email = f"admin+{admin_id}@site.local"
                     conn.exec_driver_sql("UPDATE user SET email = ? WHERE id = ?", (default_email, admin_id))
 
-                # Create indexes
+                # Create indexes (avoid creating a unique index on username to prevent failures on duplicates)
                 conn.exec_driver_sql("CREATE UNIQUE INDEX IF NOT EXISTS ux_user_email ON user(email)")
                 conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS ix_user_role ON user(role)")
         except Exception:
@@ -99,6 +116,11 @@ def create_app():
         db.create_all()
         run_simple_migrations(app)
         seed_if_empty()
+        # Ensure upload directory exists
+        try:
+            os.makedirs(app.config.get("UPLOAD_DIR", "./uploads"), exist_ok=True)
+        except Exception:
+            app.logger.warning("Unable to create upload directory")
 
     # Auth and CSRF
     login_manager = LoginManager(app)
@@ -365,20 +387,50 @@ def create_app():
             "admin/edit_schedule.html", form=form, schedule=schedule
         )
 
+    # Admin: Users list and detail
+    @app.route("/admin/users")
+    @admin_required
+    def admin_users():
+        form = UserSearchForm(request.args)
+        q = (form.q.data or '').strip() if form else ''
+        query = User.query
+        if q:
+            like = f"%{q}%"
+            query = query.filter(
+                (User.email.ilike(like)) |
+                (User.username.ilike(like)) |
+                (User.full_name.ilike(like))
+            )
+        users = query.order_by(User.created_at.desc()).limit(200).all()
+        return render_template("admin/users_list.html", users=users, form=form, q=q)
+
+    @app.route("/admin/users/<int:user_id>")
+    @admin_required
+    def admin_user_detail(user_id):
+        u = User.query.get_or_404(user_id)
+        subs = u.subscriptions.order_by(Subscription.created_at.desc()).all()
+        pays = u.payments.order_by(Payment.created_at.desc()).all()
+        docs = u.documents.order_by(Document.uploaded_at.desc()).all()
+        return render_template("admin/user_detail.html", user=u, subs=subs, payments=pays, docs=docs)
+
+    # Admin: billing lists
+    @app.route("/admin/billing/subscriptions")
+    @admin_required
+    def admin_billing_subscriptions():
+        subs = Subscription.query.order_by(Subscription.created_at.desc()).limit(500).all()
+        return render_template("admin/subs.html", subs=subs)
+
+    @app.route("/admin/billing/payments")
+    @admin_required
+    def admin_billing_payments():
+        pays = Payment.query.order_by(Payment.created_at.desc()).limit(500).all()
+        return render_template("admin/payments.html", payments=pays)
+
     # Billing routes
     @app.route("/billing")
     @login_required
     def billing_home():
-        try:
-            active_sub = current_user.subscriptions.order_by(Subscription.created_at.desc()).first()
-        except Exception:
-            active_sub = None
-        try:
-            payments = current_user.payments.order_by(Payment.created_at.desc()).limit(50).all()
-        except Exception:
-            payments = []
-        customer_id = active_sub.stripe_customer_id if active_sub and active_sub.stripe_customer_id else None
-        return render_template("profile/billing.html", active_sub=active_sub, payments=payments, customer_id=customer_id)
+        return redirect(url_for("profile", tab="billing"))
 
     @app.route("/billing/checkout/session", methods=["POST"]) 
     @login_required
@@ -592,8 +644,8 @@ def create_app():
             if not current_user.check_password(current_pwd):
                 flash(_("Текущий пароль неверен."), 'error')
                 return redirect(url_for('profile'))
-            if len(new_pwd) < 6:
-                flash(_("Новый пароль слишком коротк��й."), 'error')
+            if len(new_pwd) < 8:
+                flash(_("Новый пароль слишком короткий."), 'error')
                 return redirect(url_for('profile'))
             if new_pwd != confirm_pwd:
                 flash(_("Пароли не совпадают."), 'error')
@@ -614,13 +666,116 @@ def create_app():
             # remember-me preference is handled at login; here we could store preference if needed
             return redirect(url_for('profile'))
 
-        # Compute latest subscription for UI
+        # Compute latest subscription for UI (Overview)
         last_sub = None
         try:
             last_sub = current_user.subscriptions.order_by(Subscription.created_at.desc()).first()
         except Exception:
             last_sub = None
-        return render_template("profile/overview.html", last_sub=last_sub)
+
+        # Data for Billing tab
+        try:
+            active_sub = current_user.subscriptions.order_by(Subscription.created_at.desc()).first()
+        except Exception:
+            active_sub = None
+        try:
+            payments = current_user.payments.order_by(Payment.created_at.desc()).limit(50).all()
+        except Exception:
+            payments = []
+        customer_id = active_sub.stripe_customer_id if active_sub and active_sub.stripe_customer_id else None
+
+        # Data for Documents tab
+        form = DocumentUploadForm()
+        try:
+            docs = current_user.documents.order_by(Document.uploaded_at.desc()).all()
+        except Exception:
+            docs = []
+
+        return render_template("profile/overview.html", last_sub=last_sub, active_sub=active_sub, payments=payments, customer_id=customer_id, form=form, docs=docs)
+
+    # Documents routes
+    @app.route("/documents", methods=["GET"]) 
+    @login_required
+    def documents():
+        return redirect(url_for("profile", tab="documents"))
+
+    @app.route("/documents/upload", methods=["POST"]) 
+    @login_required
+    def documents_upload():
+        form = DocumentUploadForm()
+        if not form.validate_on_submit():
+            flash(_("Ошибка загрузки файла"), 'error')
+            return redirect(url_for("documents"))
+        f = form.file.data
+        filename = f.filename or ''
+        ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+        allowed = set(app.config.get("ALLOWED_UPLOAD_EXTENSIONS", {"pdf","jpg","jpeg","png"}))
+        if ext not in allowed:
+            flash(_("Недопустимый тип файла"), 'error')
+            return redirect(url_for("documents"))
+        max_bytes = int(app.config.get("MAX_UPLOAD_MB", 15)) * 1024 * 1024
+        content_len = request.content_length or 0
+        if content_len and content_len > max_bytes + 8192:
+            flash(_("Файл слишком большой"), 'error')
+            return redirect(url_for("documents"))
+        import uuid
+        user_dir = os.path.join(app.config.get("UPLOAD_DIR", "./uploads"), str(current_user.id))
+        os.makedirs(user_dir, exist_ok=True)
+        stored_name = f"{uuid.uuid4().hex}.{ext}"
+        stored_path = os.path.join(user_dir, stored_name)
+        try:
+            f.save(stored_path)
+            size_bytes = os.path.getsize(stored_path)
+            if size_bytes > max_bytes:
+                os.remove(stored_path)
+                flash(_("Файл слишком большой"), 'error')
+                return redirect(url_for("documents"))
+        except Exception:
+            try:
+                if os.path.exists(stored_path): os.remove(stored_path)
+            except Exception:
+                pass
+            flash(_("Ошибка сохранения файла"), 'error')
+            return redirect(url_for("documents"))
+        doc = Document(
+            user_id=current_user.id,
+            filename=filename,
+            stored_path=stored_path,
+            mime=getattr(f, 'mimetype', None),
+            size_bytes=size_bytes,
+            note=(form.note.data or '').strip() or None,
+        )
+        db.session.add(doc)
+        db.session.commit()
+        flash(_("Документ загружен"), 'success')
+        return redirect(url_for("profile", tab="documents"))
+
+    @app.route("/admin/documents")
+    @admin_required
+    def admin_documents():
+        user_id = request.args.get("user_id", type=int)
+        q = (request.args.get("q") or "").strip()
+        query = Document.query
+        if user_id:
+            query = query.filter(Document.user_id == user_id)
+        if q:
+            like = f"%{q}%"
+            query = query.filter((Document.filename.ilike(like)) | (Document.note.ilike(like)))
+        docs = query.order_by(Document.uploaded_at.desc()).limit(200).all()
+        return render_template("admin/documents_list.html", docs=docs, user_id=user_id, q=q)
+
+    @app.route("/admin/documents/<int:doc_id>/download")
+    @admin_required
+    def admin_document_download(doc_id):
+        doc = Document.query.get_or_404(doc_id)
+        base = os.path.realpath(app.config.get("UPLOAD_DIR", "./uploads"))
+        path = os.path.realpath(doc.stored_path or "")
+        if not path.startswith(base + os.sep) and path != base:
+            abort(403)
+        try:
+            return send_file(path, as_attachment=True, download_name=doc.filename or os.path.basename(path))
+        except Exception:
+            abort(404)
 
     @app.errorhandler(403)
     def forbidden(_e):

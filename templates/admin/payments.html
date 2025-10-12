@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Платежи — Админ{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+{% block content %}
+<div class="container" style="max-width:1200px; margin:24px auto; padding:0 24px;">
+  <h1>Платежи</h1>
+  <div class="card">
+    <div class="card-head"><h2>Список платежей</h2></div>
+    <div class="card-body">
+      <div class="table">
+        <div class="table-row head">
+          <div>User ID</div>
+          <div>Дата</div>
+          <div>Сумма</div>
+          <div>Статус</div>
+          <div>Invoice</div>
+        </div>
+        {% for p in payments %}
+        <div class="table-row">
+          <div>{{ p.user_id }}</div>
+          <div>{{ (p.paid_at or p.created_at).strftime('%d.%m.%Y %H:%M') }}</div>
+          <div>{{ (p.amount or 0)/100 }} {{ p.currency or 'EUR' }}</div>
+          <div>{{ p.status or '—' }}</div>
+          <div>{{ p.stripe_invoice_id or '—' }}</div>
+        </div>
+        {% else %}
+        <div class="table-row"><div class="muted">Нет платежей.</div></div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

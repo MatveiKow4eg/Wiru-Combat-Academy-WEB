@@ -2,6 +2,10 @@
 {% block title %}{{ _('Редактировать расписание') }}{% endblock %}
 {% block content %}
 <section class="container pad-y">
+  <div class="toolbar" style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+    <a href="javascript:history.back()" class="btn" aria-label="Назад">← {{ _('Назад') }}</a>
+    <a href="{{ url_for('profile') }}" class="btn btn-accent">{{ _('Профиль') }}</a>
+  </div>
   <h1>{{ _('Редактировать расписание') }}</h1>
   <form method="post" class="form small">
     {{ form.csrf_token }}

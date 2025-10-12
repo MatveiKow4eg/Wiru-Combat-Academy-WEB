@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Пользователь #{{ user.id }} — Админ{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+{% block content %}
+<div class="container" style="max-width:1200px; margin:24px auto; padding:0 24px;">
+  <h1>Пользователь #{{ user.id }}</h1>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><h2>Профиль</h2></div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div>
+            <label>ФИО</label>
+            <div class="value">{{ user.full_name or '—' }}</div>
+          </div>
+          <div>
+            <label>Email</label>
+            <div class="value">{{ user.email }}</div>
+          </div>
+          <div>
+            <label>Логин</label>
+            <div class="value">{{ user.username or '—' }}</div>
+          </div>
+          <div>
+            <label>Группа</label>
+            <div class="value">{{ user.group_name or '—' }}</div>
+          </div>
+          <div>
+            <label>Уровень</label>
+            <div class="value">{{ user.level or '—' }}</div>
+          </div>
+          <div>
+            <label>Роль</label>
+            <div class="value">{{ user.role }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Подписки</h2></div>
+      <div class="card-body">
+        <div class="table">
+          <div class="table-row head">
+            <div>Статус</div>
+            <div>Тариф (price_id)</div>
+            <div>period_end</div>
+          </div>
+          {% for s in subs %}
+          <div class="table-row">
+            <div>{{ s.status or '—' }}</div>
+            <div>{{ s.stripe_price_id or '—' }}</div>
+            <div>{% if s.current_period_end %}{{ s.current_period_end.strftime('%d.%m.%Y') }}{% else %}—{% endif %}</div>
+          </div>
+          {% else %}
+          <div class="table-row"><div class="muted">Нет подписок.</div></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Платежи</h2></div>
+      <div class="card-body">
+        <div class="table">
+          <div class="table-row head">
+            <div>��ата</div>
+            <div>Сумма</div>
+            <div>Статус</div>
+            <div>Invoice</div>
+          </div>
+          {% for p in payments %}
+          <div class="table-row">
+            <div>{{ (p.paid_at or p.created_at).strftime('%d.%m.%Y %H:%M') }}</div>
+            <div>{{ (p.amount or 0)/100 }} {{ p.currency or 'EUR' }}</div>
+            <div>{{ p.status or '—' }}</div>
+            <div>{{ p.stripe_invoice_id or '—' }}</div>
+          </div>
+          {% else %}
+          <div class="table-row"><div class="muted">Нет платежей.</div></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>Документы</h2></div>
+      <div class="card-body">
+        <div class="table">
+          <div class="table-row head">
+            <div>Имя файла</div>
+            <div>Заметка</div>
+            <div>Размер</div>
+            <div>Дата</div>
+          </div>
+          {% for d in docs %}
+          <div class="table-row">
+            <div>{{ d.filename }}</div>
+            <div>{{ d.note or '—' }}</div>
+            <div>{{ (d.size_bytes or 0) // 1024 }} KB</div>
+            <div>{{ d.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</div>
+          </div>
+          {% else %}
+          <div class="table-row"><div class="muted">Нет документов.</div></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

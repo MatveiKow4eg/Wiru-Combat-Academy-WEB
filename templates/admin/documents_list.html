@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Документы — Админ{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+{% block content %}
+<div class="container" style="max-width:1200px; margin:24px auto; padding:0 24px;">
+  <h1 style="margin:0 0 16px;">Документы пользователей</h1>
+  <form method="get" class="form" style="margin-bottom:12px; display:flex; gap:8px;">
+    <input class="input" type="text" name="q" placeholder="Поиск по имени/заметке" value="{{ q or '' }}" style="max-width:360px;">
+    <input class="input" type="number" name="user_id" placeholder="User ID" value="{{ user_id or '' }}" style="max-width:160px;">
+    <button class="btn" type="submit">Фильтр</button>
+  </form>
+  <div class="card">
+    <div class="card-head"><h2>Список документов</h2></div>
+    <div class="card-body">
+      <div class="table">
+        <div class="table-row head">
+          <div>User ID</div>
+          <div>Имя файла</div>
+          <div>Размер</div>
+          <div>Дата</div>
+          <div>Действия</div>
+        </div>
+        {% for d in docs %}
+        <div class="table-row">
+          <div>{{ d.user_id }}</div>
+          <div>{{ d.filename }}</div>
+          <div>{{ (d.size_bytes or 0) // 1024 }} KB</div>
+          <div>{{ d.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</div>
+          <div><a class="btn" href="{{ url_for('admin_document_download', doc_id=d.id) }}">Скачать</a></div>
+        </div>
+        {% else %}
+        <div class="table-row"><div class="muted">Нет документов.</div></div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

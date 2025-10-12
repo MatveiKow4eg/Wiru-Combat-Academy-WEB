@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Участники — Админ{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+{% block content %}
+<div class="container" style="max-width:1200px; margin:24px auto; padding:0 24px;">
+  <div class="toolbar" style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
+    <a href="javascript:history.back()" class="btn" aria-label="Назад">← Назад</a>
+    <a href="{{ url_for('profile') }}" class="btn btn-accent">Профиль</a>
+  </div>
+  <h1>Участники</h1>
+  <form method="get" class="form" style="display:flex; gap:8px; margin-bottom:12px;">
+    {{ form.csrf_token }}
+    {{ form.q(class_='input', placeholder='Поиск по email/ФИО/логину') }}
+    <button class="btn">Искать</button>
+  </form>
+  <div class="card">
+    <div class="card-head"><h2>Список пользователей</h2></div>
+    <div class="card-body">
+      <div class="table">
+        <div class="table-row head">
+          <div>ID</div>
+          <div>ФИО/Логин</div>
+          <div>Email</div>
+          <div>Группа</div>
+          <div>Роль</div>
+          <div>Действия</div>
+        </div>
+        {% for u in users %}
+        <div class="table-row">
+          <div>{{ u.id }}</div>
+          <div>{{ u.full_name or u.username or '—' }}</div>
+          <div>{{ u.email }}</div>
+          <div>{{ u.group_name or '—' }}</div>
+          <div>{{ u.role }}</div>
+          <div><a class="btn" href="{{ url_for('admin_user_detail', user_id=u.id) }}">Открыть</a></div>
+        </div>
+        {% else %}
+        <div class="table-row"><div class="muted">Нет пользователей.</div></div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,11 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, PasswordField, SelectField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 
 class LoginForm(FlaskForm):
     email = StringField("Email or username", validators=[DataRequired(), Length(max=255)])
-    password = PasswordField("Password", validators=[DataRequired(), Length(min=6, max=128)])
+    password = PasswordField("Password", validators=[DataRequired(), Length(min=8, max=128)])
     remember = BooleanField("Remember me")
     submit = SubmitField("Sign in")
 
@@ -15,7 +16,7 @@ class RegisterForm(FlaskForm):
     username = StringField("Username", validators=[Optional(), Length(max=80)])
     password = PasswordField(
         "Password",
-        validators=[DataRequired(), Length(min=6, max=128)],
+        validators=[DataRequired(), Length(min=8, max=128)],
     )
     confirm = PasswordField(
         "Confirm Password",
@@ -53,3 +54,21 @@ class SignupForm(FlaskForm):
         choices=[("boxing", "Boxing"), ("wrestling", "Wrestling"), ("mma", "MMA")],
     )
     submit = SubmitField("Sign up")
+
+
+class PasswordChangeForm(FlaskForm):
+    old_password = PasswordField("Current Password", validators=[DataRequired(), Length(min=8, max=128)])
+    new_password = PasswordField("New Password", validators=[DataRequired(), Length(min=8, max=128)])
+    confirm = PasswordField("Confirm New Password", validators=[DataRequired(), EqualTo("new_password", message="Passwords must match")])
+    submit = SubmitField("Change password")
+
+
+class DocumentUploadForm(FlaskForm):
+    file = FileField("File", validators=[FileRequired(message="Choose a file"), FileAllowed(["pdf", "jpg", "jpeg", "png"], "PDF or Image only!")])
+    note = StringField("Note", validators=[Optional(), Length(max=500)])
+    submit = SubmitField("Upload")
+
+
+class UserSearchForm(FlaskForm):
+    q = StringField("Поиск", validators=[Optional(), Length(max=255)])
+    submit = SubmitField("Search")
