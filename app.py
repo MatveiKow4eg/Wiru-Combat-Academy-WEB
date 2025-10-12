@@ -220,8 +220,8 @@ def create_app():
     @app.route("/login", methods=["GET", "POST"])
     def login():
         if current_user.is_authenticated:
-            # already logged in: route by role
-            return redirect(url_for("admin_dashboard" if current_user.role == 'admin' else "profile"))
+            # already logged in: go to profile
+            return redirect(url_for("profile"))
         form = LoginForm()
         if form.validate_on_submit():
             ident = (form.email.data or '').strip()
@@ -232,10 +232,8 @@ def create_app():
                 login_user(user, remember=form.remember.data)
                 flash(_("Добро пожаловать!"))
                 nxt = request.args.get("next")
-                if nxt and is_safe_next(nxt):
+                if nxt and is_safe_next(nxt) and not nxt.startswith('/admin'):
                     return redirect(nxt)
-                if user.role == 'admin':
-                    return redirect(url_for("admin_dashboard"))
                 return redirect(url_for("profile"))
             flash(_("Неверный email/имя пользователя или пароль"))
         return render_template("auth/login.html", form=form)
@@ -274,7 +272,7 @@ def create_app():
     @app.route("/admin/login", methods=["GET", "POST"])
     def admin_login():
         if current_user.is_authenticated and current_user.role == 'admin':
-            return redirect(url_for("admin_dashboard"))
+            return redirect(url_for("profile"))
         form = LoginForm()
         if form.validate_on_submit():
             ident = (form.email.data or '').strip()
@@ -284,10 +282,8 @@ def create_app():
             if user and user.role == 'admin' and user.is_active and user.check_password(form.password.data):
                 login_user(user, remember=form.remember.data)
                 flash(_("Добро пожаловать в админ-панель!"))
-                nxt = request.args.get("next")
-                if nxt and is_safe_next(nxt):
-                    return redirect(nxt)
-                return redirect(url_for("admin_dashboard"))
+                # Always redirect to profile after admin login
+                return redirect(url_for("profile"))
             flash(_("Неверный email/имя пользователя или пароль"))
         return render_template("admin/login.html", form=form)
 

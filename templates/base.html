@@ -24,11 +24,7 @@
     .header-actions { gap: 16px; }
     .auth-ctrls { display:flex; align-items:center; gap: 14px; }
     .lang-switch { margin-right: 6px; }
-    /* header auth controls */
-    .header-actions .header-link {
-      color: #ddd; text-transform: uppercase; font-size: 14px; font-weight: 600;
-    }
-    .header-actions .header-link:hover { color: var(--accent); }
+    /* header user avatar */
     .header-actions .user-avatar {
       width: 36px; height: 36px;
       display: inline-flex; align-items: center; justify-content: center;
@@ -76,16 +72,13 @@
         {% if not current_user.is_authenticated %}
           <a class="btn" href="{{ url_for('login') }}">{{ _('Войти') }}</a>
         {% else %}
-          {% if current_user.role == 'admin' %}
-            <a class="header-link" href="{{ url_for('admin_dashboard') }}">{{ _('Админ-панель') }}</a>
-          {% endif %}
           <a href="{{ url_for('profile') }}" class="user-avatar" title="{{ _('Профиль') }}" aria-label="{{ _('Профиль') }}">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M20 21a8 8 0 0 0-16 0"></path>
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
           </a>
-          <a class="header-link" href="{{ url_for('logout') }}">{{ _('Выход') }}</a>
+          <a href="{{ url_for('logout') }}">{{ _('Выход') }}</a>
         {% endif %}
       </div>
       <button class="burger" aria-label="Menu" onclick="toggleMenu()">☰</button>

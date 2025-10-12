@@ -30,7 +30,7 @@
     <div class="card">
       <h3 style="margin-bottom:10px;">{{ _('Мой аккаунт') }}</h3>
       <form method="post">
-        {{ csrf_token() }}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" name="action" value="update_account">
         <div class="form-row">
           <label style="color:#ccc; margin-bottom:6px;">{{ _('Имя/Ник') }}</label>
@@ -50,7 +50,7 @@
     <div class="card">
       <h3 style="margin-bottom:10px;">{{ _('Безопасность') }}</h3>
       <form method="post">
-        {{ csrf_token() }}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <input type="hidden" name="action" value="change_password">
         <div class="form-row">
           <label style="color:#ccc; margin-bottom:6px;">{{ _('Текущий пароль') }}</label>
@@ -99,7 +99,7 @@
       <p style="color:#bbb;">{{ _('Пока что здесь заглушка. Можно добавить список активных сессий и кнопку:') }}</p>
       <div class="form-row">
         <form method="post" onsubmit="return confirm('{{ _('Вы уверены, что хотите выйти на всех устройствах?') }}');">
-          {{ csrf_token() }}
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <input type="hidden" name="action" value="logout_all">
           <button class="btn" type="button" disabled>{{ _('Выйти со всех устройств') }}</button>
         </form>
