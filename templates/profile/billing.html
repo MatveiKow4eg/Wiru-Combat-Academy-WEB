@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Абонемент и оплаты — Wiru Combat Academy{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+{% block content %}
+<div class="profile-layout">
+  <aside class="sidebar" aria-label="Навигация профиля">
+    <div class="sidebar-header">
+      <div class="avatar"><span>{{ (current_user.full_name or current_user.username or current_user.email)[:1]|upper }}</span></div>
+      <div class="user-meta">
+        <div class="user-name">{{ current_user.full_name or current_user.username or current_user.email }}</div>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a class="nav-item" href="/profile">Главная</a>
+      <a class="nav-item active" href="/billing">Абонемент</a>
+      <a class="nav-item" href="/documents">Документы</a>
+      {% if current_user.role == 'admin' %}
+      <div class="divider"></div>
+      <div class="nav-label">Админ</div>
+      <a class="nav-item" href="/admin/users">Участники</a>
+      <a class="nav-item" href="/admin/billing/subscriptions">Подписки</a>
+      <a class="nav-item" href="/admin/billing/payments">Платежи</a>
+      {% endif %}
+    </nav>
+  </aside>
+
+  <section class="content">
+    <div class="card">
+      <div class="card-head"><h2>Текущий абонемент</h2></div>
+      <div class="card-body">
+        {% if active_sub %}
+        <div class="status-line">
+          <span class="chip status-{{ active_sub.status }}">{{ active_sub.status }}</span>
+          {% if active_sub.current_period_end %}
+            <span class="muted">до {{ active_sub.current_period_end.strftime('%d.%m.%Y') }}</span>
+          {% endif %}
+        </div>
+        {% else %}
+          <p class="muted">Подписка не активна.</p>
+        {% endif %}
+        <div class="actions">
+          <button class="btn btn-accent" onclick="createCheckout('{{ config.STRIPE_PRICE_MONTHLY }}')">Продлить (месяц)</button>
+          <button class="btn" onclick="createCheckout('{{ config.STRIPE_PRICE_YEARLY }}')">Перейти на годовой</button>
+          {% if customer_id %}
+          <button class="btn" onclick="openPortal()">Управлять подпиской</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h2>История оплат</h2></div>
+      <div class="card-body">
+        <div class="table">
+          <div class="table-row head">
+            <div>Дата</div>
+            <div>Сумма</div>
+            <div>Статус</div>
+            <div>Invoice</div>
+          </div>
+          {% for p in payments %}
+          <div class="table-row">
+            <div>{{ (p.paid_at or p.created_at).strftime('%d.%m.%Y %H:%M') }}</div>
+            <div>{{ (p.amount or 0)/100 }} {{ p.currency or 'EUR' }}</div>
+            <div><span class="chip status-{{ p.status }}">{{ p.status }}</span></div>
+            <div>
+              {% if p.stripe_invoice_id %}
+                <a href="https://invoice.stripe.com/i/{{ p.stripe_invoice_id }}" target="_blank" rel="noopener">{{ p.stripe_invoice_id }}</a>
+              {% else %} — {% endif %}
+            </div>
+          </div>
+          {% else %}
+            <div class="table-row"><div class="muted">Платежей пока нет.</div></div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+async function createCheckout(price_id){
+  const resp = await fetch('/billing/checkout/session', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({price_id})});
+  const data = await resp.json();
+  if (data.url) window.location = data.url; else alert('Ошибка создания сессии оплаты');
+}
+async function openPortal(){
+  const resp = await fetch('/billing/portal', {method:'POST'});
+  const data = await resp.json();
+  if (data.url) window.location = data.url; else alert('Ошибка открытия портала');
+}
+</script>
+{% endblock %}

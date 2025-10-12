@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block title %}Профиль — Wiru Combat Academy{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+{% block content %}
+<div class="profile-layout">
+  <aside class="sidebar" aria-label="Навигация профиля">
+    <div class="sidebar-header">
+      <div class="avatar">
+        <span>{{ (current_user.full_name or current_user.username or current_user.email)[:1]|upper }}</span>
+      </div>
+      <div class="user-meta">
+        <div class="user-name">{{ current_user.full_name or current_user.username or current_user.email }}</div>
+        {% set last_sub = current_user.subscriptions.order_by(models.Subscription.created_at.desc()).first() if current_user.is_authenticated else None %}
+        {% if last_sub and last_sub.status %}
+          <div class="chip status-{{ last_sub.status|replace(' ','_') }}">{{ last_sub.status }}</div>
+        {% else %}
+          <div class="chip status-none">нет подписки</div>
+        {% endif %}
+      </div>
+    </div>
+    <nav class="side-nav">
+      <a class="nav-item active" href="{{ url_for('profile') }}">Главная</a>
+      <a class="nav-item" href="{{ url_for('schedule_page') }}">Расписание</a>
+      <a class="nav-item" href="{{ url_for('contact') }}">Связаться</a>
+      <div class="divider"></div>
+      <a class="nav-item" href="{{ url_for('profile') }}">Профиль</a>
+      <a class="nav-item" href="/billing">Абонемент</a>
+      <a class="nav-item" href="/documents">Документы</a>
+      {% if current_user.role == 'admin' %}
+      <div class="divider"></div>
+      <div class="nav-label">Админ</div>
+      <a class="nav-item" href="/admin/users">Участники</a>
+      <a class="nav-item" href="/admin/billing/subscriptions">Подписки</a>
+      <a class="nav-item" href="/admin/schedule">Расписание</a>
+      {% endif %}
+    </nav>
+  </aside>
+
+  <section class="content">
+    {% set sub = last_sub %}
+    {% if sub and sub.current_period_end %}
+      {% set now_ts = now.timestamp() %}
+      {% set end_ts = sub.current_period_end.timestamp() %}
+      {% set secs = (end_ts - now_ts) %}
+      {% set days_left = (secs // 86400)|int %}
+      {% if days_left < 7 and days_left >= 0 %}
+      <div class="banner warning" role="status" aria-live="polite">
+        Подписка истекает через {{ days_left }} дн.
+      </div>
+      {% endif %}
+    {% endif %}
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-head">
+          <h2>Account Management</h2>
+        </div>
+        <div class="card-body">
+          <div class="avatar-upload">
+            <div class="avatar large"><span>{{ (current_user.full_name or current_user.username or current_user.email)[:1]|upper }}</span></div>
+            <form method="post" action="#" enctype="multipart/form-data" onsubmit="alert('Загрузка аватара — заглушка'); return false;">
+              <label class="btn" for="avatarFile">Загрузить фото</label>
+              <input id="avatarFile" type="file" name="avatar" accept="image/*" style="display:none;">
+            </form>
+          </div>
+
+          <form method="post" action="{{ url_for('profile') }}" class="form" aria-label="Смена пароля">
+            <input type="hidden" name="action" value="change_password">
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Текущий пароль</label>
+                <input class="input" type="password" name="current_password" minlength="8" required>
+              </div>
+              <div class="form-field">
+                <label>Новый пароль</label>
+                <input class="input" type="password" name="new_password" minlength="8" required>
+              </div>
+              <div class="form-field">
+                <label>Подтверждение</label>
+                <input class="input" type="password" name="confirm_password" minlength="8" required>
+              </div>
+            </div>
+            <button class="btn btn-accent" type="submit">Сменить пароль</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Profile Information</h2>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div>
+              <label>ФИО</label>
+              <div class="value">{{ current_user.full_name or '—' }}</div>
+            </div>
+            <div>
+              <label>Уровень</label>
+              <div class="value">{{ current_user.level or '—' }}</div>
+            </div>
+            <div>
+              <label>Группа</label>
+              <div class="value">{{ current_user.group_name or '—' }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Subscription Status</h2>
+        </div>
+        <div class="card-body">
+          {% if sub %}
+            <div class="status-line">
+              <span class="chip status-{{ sub.status }}">{{ sub.status or '—' }}</span>
+              {% if sub.current_period_end %}
+                <span class="muted">до {{ sub.current_period_end.strftime('%d.%m.%Y') }}</span>
+              {% endif %}
+            </div>
+          {% else %}
+            <p class="muted">Подписка не активна.</p>
+          {% endif %}
+          <div class="actions">
+            <a href="/billing" class="btn btn-accent">Продлить</a>
+            <a href="{{ url_for('schedule_page') }}" class="btn">Посмотреть расписание</a>
+            <a href="{{ url_for('contact') }}" class="btn">Связаться с тренером</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>
+{% endblock %}

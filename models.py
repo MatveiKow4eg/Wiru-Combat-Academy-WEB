@@ -39,6 +39,11 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True)  # optional for compatibility
     password_hash = db.Column(db.String(255), nullable=False)
 
+    # Public profile fields (optional for this project, can be extended)
+    full_name = db.Column(db.String(255))
+    level = db.Column(db.String(120))
+    group_name = db.Column(db.String(120))
+
     # Roles: 'user' | 'admin' (default 'user')
     role = db.Column(db.String(10), index=True, nullable=False, default='user')
 
@@ -50,6 +55,11 @@ class User(UserMixin, db.Model):
     # NOTE: In new code prefer checking self.role == 'admin'. Keep this column in sync where needed.
     is_admin = db.Column(db.Boolean, default=False)
 
+    # Relationships
+    subscriptions = db.relationship('Subscription', backref='user', lazy='dynamic', cascade="all, delete-orphan")
+    payments = db.relationship('Payment', backref='user', lazy='dynamic', cascade="all, delete-orphan")
+    documents = db.relationship('Document', backref='user', lazy='dynamic', cascade="all, delete-orphan")
+
     # Password helpers
     def set_password(self, plain: str) -> None:
         self.password_hash = generate_password_hash(plain)
@@ -59,6 +69,42 @@ class User(UserMixin, db.Model):
 
     def __repr__(self) -> str:
         return f"<User id={self.id} email={self.email!r} role={self.role!r}>"
+
+
+class Subscription(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
+    stripe_customer_id = db.Column(db.String(120), index=True)
+    stripe_subscription_id = db.Column(db.String(120), index=True)
+    stripe_price_id = db.Column(db.String(120), index=True)
+    status = db.Column(db.String(50), index=True)  # active | past_due | canceled | incomplete | trialing
+    current_period_end = db.Column(db.DateTime)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+
+class Payment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
+    stripe_invoice_id = db.Column(db.String(120), index=True)
+    amount = db.Column(db.Integer)  # amount in cents
+    currency = db.Column(db.String(10))
+    status = db.Column(db.String(50), index=True)
+    paid_at = db.Column(db.DateTime)
+    raw = db.Column(db.JSON)  # store raw event/invoice data
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
+
+class Document(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
+    filename = db.Column(db.String(255), nullable=False)
+    stored_path = db.Column(db.String(512), nullable=False)
+    mime = db.Column(db.String(120))
+    size_bytes = db.Column(db.Integer)
+    note = db.Column(db.String(500))
+    uploaded_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
 
 class Signup(db.Model):
