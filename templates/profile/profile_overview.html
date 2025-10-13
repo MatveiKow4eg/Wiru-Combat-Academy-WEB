@@ -57,7 +57,25 @@
               <label>{{ _('Имя') }}</label>
               <div class="value">{{ current_user.full_name or _('—') }}</div>
             </div>
-                      </div>
+            <div>
+              <label>{{ _('Подписка') }}</label>
+              <div class="value">
+                {% if sub %}
+                  {% if sub.status == 'active' %}
+                    {{ _('Активна') }}{% if sub.current_period_end %} {{ _('до') }} {{ sub.current_period_end.strftime('%d.%m.%Y') }}{% endif %}
+                  {% elif sub.status == 'past_due' %}
+                    {{ _('Просрочена') }}
+                  {% elif sub.status == 'canceled' %}
+                    {{ _('Отменена') }}
+                  {% else %}
+                    {{ sub.status or _('—') }}
+                  {% endif %}
+                {% else %}
+                  {{ _('—') }}
+                {% endif %}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -69,18 +87,19 @@
             <div class="table-row head">
               <div>{{ _('Имя файла') }}</div>
               <div>{{ _('Дата') }}</div>
-              <div></div>
             </div>
-            {% set docs_list = docs if docs is defined else current_user.documents.order_by(models.Document.uploaded_at.desc()).limit(5).all() %}
-            {% for d in docs_list %}
+            {% set last_doc = (docs[0] if docs is defined and docs|length > 0 else current_user.documents.order_by(models.Document.uploaded_at.desc()).first()) %}
+            {% if last_doc %}
             <div class="table-row">
-              <div>{{ d.filename }}</div>
-              <div>{{ d.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</div>
-              <div><a class="btn btn--sm" href="{{ url_for('document_download', doc_id=d.id) }}" target="_blank">{{ _('Открыть') }}</a></div>
+              <div>{{ last_doc.filename }}</div>
+              <div>{{ last_doc.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</div>
             </div>
             {% else %}
               <div class="table-row"><div class="muted">{{ _('Нет загруженных документов') }}</div></div>
-            {% endfor %}
+            {% endif %}
+          </div>
+          <div class="actions-center" style="margin-top: 12px;">
+            <a class="btn" href="{{ url_for('documents') }}">{{ _('Смотреть все документы') }}</a>
           </div>
         </div>
       </div>

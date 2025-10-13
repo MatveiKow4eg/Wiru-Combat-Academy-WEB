@@ -1,20 +1,160 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Расписание тренировок') }}{% endblock %}
+{% block title %}{{ _('РАСПИСАНИЕ') }}{% endblock %}
+{% block extra_css %}
+<style>
+  .cards.two{ grid-template-columns: 1fr; }
+  .actions-center{ text-align:center; margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .actions-center .btn{ min-width:220px; }
+  /* Schedule readable grid */
+  .schedule-grid{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:14px; }
+  @media (max-width: 900px){ .schedule-grid{ grid-template-columns: 1fr; } }
+  .day-card{ border:1px solid var(--border); border-radius:12px; background:#141414; overflow:hidden; transition: transform .18s ease, box-shadow .18s ease; }
+  .day-card:hover{ transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0,0,0,.45); }
+  .day-head{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid var(--border); color:#fff; font-weight:700; }
+  .day-code{ font-size:20px; letter-spacing:.5px; }
+  .day-full{ color:#aaa; font-size:12px; margin-left:8px; font-weight:500; }
+  .today-chip{ background:#103a27; color:#00d084; border:1px solid #0a3; padding:2px 8px; border-radius:999px; font-size:12px; }
+  .slots{ display:grid; gap:8px; padding:10px 12px; }
+  .slot{ display:grid; grid-template-columns: auto 1fr auto auto; gap:10px; align-items:center; padding:8px 10px; border:1px solid #222; border-radius:12px; background:#131313; }
+  .slot:hover{ background:#161616; }
+  .time-badge{ background:#1e1e1e; border:1px solid #2f2f2f; color:#fff; border-radius:6px; padding:4px 8px; font-weight:600; min-width:64px; text-align:center; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace; }
+  .activity{ color:#fff; font-weight:500; }
+  .coach-muted{ color:#aaa; font-size:14px; }
+  .badge-age{ background:#1b1b1b; border:1px solid #2a2a2a; color:#bbb; border-radius:999px; padding:2px 8px; font-size:12px; white-space:nowrap; }
+</style>
+{% endblock %}
 {% block content %}
 <section class="container pad-y">
   <h1>{{ _('Расписание тренировок') }}</h1>
-  <div class="table responsive">
-    <div class="table-head">
-      <div>{{ _('День') }}</div><div>{{ _('Время') }}</div><div>{{ _('Активность') }}</div><div>{{ _('Тренер') }}</div>
+  <div class="cards two">
+    <div class="card">
+            <div class="card-body">
+        {% set lang = session.get('lang', 'ru') %}
+        {% if lang == 'en' %}
+          {% set days = [
+            {'code':'Mon','full':'Monday'},
+            {'code':'Tue','full':'Tuesday'},
+            {'code':'Wed','full':'Wednesday'},
+            {'code':'Thu','full':'Thursday'},
+            {'code':'Fri','full':'Friday'},
+            {'code':'Sat','full':'Saturday'},
+            {'code':'Sun','full':'Sunday'}
+          ] %}
+        {% elif lang == 'et' %}
+          {% set days = [
+            {'code':'E','full':'Esmaspäev'},
+            {'code':'T','full':'Teisipäev'},
+            {'code':'K','full':'Kolmapäev'},
+            {'code':'N','full':'Neljapäev'},
+            {'code':'R','full':'Reede'},
+            {'code':'L','full':'Laupäev'},
+            {'code':'P','full':'Pühapäev'}
+          ] %}
+        {% else %}
+          {% set days = [
+            {'code':'Пн','full':'Понедельник'},
+            {'code':'Вт','full':'Вторник'},
+            {'code':'Ср','full':'Среда'},
+            {'code':'Чт','full':'Четверг'},
+            {'code':'Пт','full':'Пятница'},
+            {'code':'Сб','full':'Суббота'},
+            {'code':'Вс','full':'Воскресенье'}
+          ] %}
+        {% endif %}
+        {% set data = [
+          {'icon':'','name':'POKS','age':'5-7','time':'17:15','days':['T','N'],'coach': None},
+          {'icon':'','name':'POKS','age':'8-12','time':'17:00','days':['E','K'],'coach': None},
+          {'icon':'','name':'POKS','age':'13+','time':'18:30','days':['E','T','K','N','R'],'coach': None},
+
+          {'icon':'','name':'MAADLUS','age':'6-12','time':'16:00','days':['E','K'],'coach': None},
+          {'icon':'','name':'MAADLUS','age':'13+','time':'17:00','days':['E','K','R'],'coach': None},
+
+          {'icon':'','name':'MMA','age':None,'time':'18:00','days':['E','T','K','N','R'],'coach': None},
+          {'icon':'','name':'MMA','age':None,'time':'12:00','days':['L'],'coach': None},
+
+          {'icon':'','name':'Üldkehaline / Ringtreening (Naised)','age':None,'time':'19:00','days':['E','K','R'],'coach': None}
+        ] %}
+
+        {% set base_codes = ['E','T','K','N','R','L','P'] %}
+        <div class="schedule-grid">
+          {% for d in days %}
+            {% set idx = loop.index0 %}
+            {% set match_code = base_codes[idx] %}
+            {% set nsd = namespace(items=[]) %}
+            {% for s in data %}
+              {% if match_code in s.days %}
+                {% set _ = nsd.items.append(s) %}
+              {% endif %}
+            {% endfor %}
+            <div class="day-card">
+              <div class="day-head">
+                <div>
+                  <span class="day-code">{{ d.code }}</span>
+                  <span class="day-full">{{ d.full }}</span>
+                </div>
+                {% if idx == today %}<span class="today-chip">{{ _('Сегодня') }}</span>{% endif %}
+              </div>
+              <div class="slots">
+                {% for s in nsd.items|sort(attribute='time') %}
+                {% set age_text = None %}
+                {% if s.age %}
+                  {% if lang == 'ru' %}{% set suffix = 'лет' %}
+                  {% elif lang == 'en' %}{% set suffix = 'yrs' %}
+                  {% else %}{% set suffix = 'a' %}{% endif %}
+                  {% set age_text = (s.age.replace('-', '–') ~ ' ' ~ suffix) %}
+                {% endif %}
+                <div class="slot">
+                  <span class="time-badge">{{ s.time }}</span>
+                  {% set nm_key = (s.name or '')|upper %}
+                  {% if nm_key == 'MM' %}{% set nm_key = 'MMA' %}{% endif %}
+                  {% if nm_key in ['POKS','MAADLUS','MMA'] %}
+                    {% if lang == 'ru' %}
+                      {% set nm_disp = 'БОКС' if nm_key == 'POKS' else ('БОРЬБА' if nm_key == 'MAADLUS' else 'ММА') %}
+                    {% elif lang == 'en' %}
+                      {% set nm_disp = 'BOXING' if nm_key == 'POKS' else ('WRESTLING' if nm_key == 'MAADLUS' else 'MMA') %}
+                    {% else %}
+                      {% set nm_disp = nm_key %}
+                    {% endif %}
+                  {% else %}
+                    {% set nm_disp = s.name %}
+                  {% endif %}
+                  <span class="activity">{{ nm_disp }}</span>
+                  {% if age_text %}<span class="badge-age">{{ age_text }}</span>{% else %}<span></span>{% endif %}
+                  <span class="coach-muted">{{ s.coach or '' }}</span>
+                </div>
+                {% else %}
+                <div class="slot">
+                  <span class="time-badge">—</span>
+                  <span class="coach-muted">{{ _('Нет занятий') }}</span>
+                  <span></span>
+                  <span></span>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
     </div>
-    {% for s in schedule %}
-    <div class="table-row {% if s.day_of_week == today %}today{% endif %}">
-      <div>{{ [_('Пн'), _('Вт'), _('Ср'), _('Чт'), _('Пт'), _('Сб'), _('Вс')][s.day_of_week] }}</div>
-      <div>{{ s.time }}</div>
-      <div id="{{ s.activity|lower }}">{% if loop.first %}{% endif %}{{ s.activity }}</div>
-      <div>{{ s.coach or '-' }}</div>
+    <div class="card">
+      <div class="card-head"><h2>{{ _('Абонементы') }}</h2></div>
+      <div class="card-body">
+        <p class="muted">{{ _('Выберите удобный абонемент для занятий:') }}</p>
+        <div class="actions-center">
+          <button class="btn btn-accent" onclick="createCheckout('{{ config.STRIPE_PRICE_MONTHLY }}')">{{ _('Купить месячный') }}</button>
+          <button class="btn" onclick="createCheckout('{{ config.STRIPE_PRICE_YEARLY }}')">{{ _('Купить годовой') }}</button>
+        </div>
+      </div>
     </div>
-    {% endfor %}
   </div>
 </section>
+<script>
+async function createCheckout(price_id){
+  try{
+    const resp = await fetch('/billing/checkout/session', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({price_id})});
+    const data = await resp.json();
+    if (data.url) window.location = data.url; else alert('{{ _('Ошибка создания сессии оплаты') }}');
+  }catch(e){ alert('{{ _('Ошибка сети') }}'); }
+}
+</script>
 {% endblock %}

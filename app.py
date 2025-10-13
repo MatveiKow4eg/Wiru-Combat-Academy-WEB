@@ -793,7 +793,7 @@ def create_app():
                     return redirect(url_for('profile_edit'))
             db.session.commit()
             flash(_("Профиль обновлён."), 'success')
-            return redirect(url_for('profile_edit'))
+            return redirect(url_for('profile_edit', cleared=1))
         elif request.method == 'POST':
             flash(_("Ошибка валидации формы."), 'error')
 
@@ -831,6 +831,21 @@ def create_app():
             abort(404)
 
     # Documents routes
+
+    @app.route("/documents/<int:doc_id>/view") 
+    @login_required
+    def document_view(doc_id):
+        doc = Document.query.get_or_404(doc_id)
+        if doc.user_id != current_user.id and getattr(current_user, 'role', 'user') != 'admin':
+            abort(403)
+        base = os.path.realpath(app.config.get("UPLOAD_DIR", "./uploads"))
+        path = os.path.realpath(doc.stored_path or "")
+        if not path.startswith(base + os.sep) and path != base:
+            abort(403)
+        try:
+            return send_file(path, as_attachment=False, download_name=doc.filename or os.path.basename(path), mimetype=doc.mime or None)
+        except Exception:
+            abort(404)
     @app.route("/documents", methods=["GET"]) 
     @login_required
     def documents():

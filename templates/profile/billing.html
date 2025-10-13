@@ -2,6 +2,23 @@
 {% block title %}{{ _('Абонемент и оплаты') }} — Wiru Combat Academy{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+<style>
+  .actions-center{ text-align:center; margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .btn-secondary{ background:#1b1b1b; border:1px solid #303030; color:#ddd; }
+  .btn-secondary:hover{ border-color: var(--accent); color:#fff; }
+  .state-active{ color:#00d084; font-weight:600; }
+  .state-expired{ color:#f0c04a; font-weight:600; }
+  .state-none{ color:#aaa; }
+  .bill-empty{ text-align:center; padding:12px 6px; }
+  .bill-empty .icon{ font-size:42px; opacity:.8; margin-bottom:4px; }
+    .plans{ margin-top:16px; }
+  .plans .btn{ min-width: 220px; }
+  .table-row:hover{ background:#171717; }
+  @media (max-width: 768px){
+    .actions-center .btn{ width:100%; }
+    .plans .btn{ width:100%; }
+  }
+</style>
 {% endblock %}
 {% block content %}
 <div class="profile-layout">
@@ -12,27 +29,76 @@
     <div class="card">
       <div class="card-head"><h2>{{ _('Текущий абонемент') }}</h2></div>
       <div class="card-body">
-        {% if active_sub %}
-        <div class="status-line">
-          <span class="chip status-{{ active_sub.status }}">{{ active_sub.status }}</span>
-          {% if active_sub.current_period_end %}
-            <span class="muted">{{ _('до') }} {{ active_sub.current_period_end.strftime('%d.%m.%Y') }}</span>
+        {% set sub = active_sub %}
+        {% set has_sub = sub is not none %}
+        {% set is_active = has_sub and (sub.status == 'active' or (sub.current_period_end and sub.current_period_end > now)) %}
+        {% set is_expired = has_sub and not is_active %}
+
+        {% if not has_sub %}
+          <div class="bill-empty">
+            <div class="icon">🏋️‍♂️</div>
+            <p class="muted">{{ _('У вас пока нет активного абонемента.') }}</p>
+            <div class="actions-center">
+              <a class="btn btn-accent" href="#plans">{{ _('Посмотреть абонементы') }}</a>
+              <a class="btn btn-secondary" href="#payments">{{ _('История оплат') }}</a>
+            </div>
+                      </div>
+        {% elif is_active %}
+          {% set plan_type = 'Месячный' if sub.stripe_price_id == config.STRIPE_PRICE_MONTHLY else ('Годовой' if sub.stripe_price_id == config.STRIPE_PRICE_YEARLY else '—') %}
+          <div class="info-grid">
+            <div>
+              <label>{{ _('Тип') }}</label>
+              <div class="value">{{ plan_type }}</div>
+            </div>
+            <div>
+              <label>{{ _('Дата начала') }}</label>
+              <div class="value">{{ (sub.created_at or now).strftime('%d.%m.%Y') }}</div>
+            </div>
+            <div>
+              <label>{{ _('Дата окончания') }}</label>
+              <div class="value">{{ sub.current_period_end.strftime('%d.%m.%Y') if sub.current_period_end else '—' }}</div>
+            </div>
+            <div>
+              <label>{{ _('Статус') }}</label>
+              <div class="value state-active">{{ _('активна') }} ✅</div>
+            </div>
+          </div>
+          <div class="actions-center">
+            <button class="btn btn-accent" onclick="createCheckout('{{ config.STRIPE_PRICE_MONTHLY }}')">{{ _('Продлить абонемент') }}</button>
+            <a class="btn btn-secondary" href="#plans">{{ _('Посмотреть доступные тарифы') }}</a>
+          </div>
+        {% elif is_expired %}
+          {% if sub.current_period_end %}
+            {% set days_past = ((now.timestamp() - sub.current_period_end.timestamp()) // 86400)|int %}
+          {% else %}
+            {% set days_past = None %}
           {% endif %}
-        </div>
-        {% else %}
-          <p class="muted">{{ _('Подписка не активна.') }}</p>
+          <p class="muted">
+            {% if days_past is not none and days_past > 0 %}
+              {{ _('Подписка истекла') }} {{ days_past }} {{ _('дн. назад.') }}
+            {% else %}
+              {{ _('Подписка истекла.') }}
+            {% endif %}
+          </p>
+          <div class="actions-center">
+            <button class="btn btn-accent" onclick="createCheckout('{{ config.STRIPE_PRICE_MONTHLY }}')">{{ _('Оформить заново') }}</button>
+            <a class="btn btn-secondary" href="#plans">{{ _('Посмотреть тарифы') }}</a>
+          </div>
         {% endif %}
-        <div class="actions">
-          <button class="btn btn-accent" onclick="createCheckout('{{ config.STRIPE_PRICE_MONTHLY }}')">{{ _('Продлить (месяц)') }}</button>
-          <button class="btn" onclick="createCheckout('{{ config.STRIPE_PRICE_YEARLY }}')">{{ _('Перейти на годовой') }}</button>
-          {% if customer_id %}
-          <button class="btn" onclick="openPortal()">{{ _('Управлять подпиской') }}</button>
-          {% endif %}
+
+        <div class="plans" id="plans">
+          <div class="actions-center">
+            <button class="btn btn-accent" onclick="createCheckout('{{ config.STRIPE_PRICE_MONTHLY }}')">{{ _('Купить месячный') }}</button>
+            <button class="btn btn-secondary" onclick="createCheckout('{{ config.STRIPE_PRICE_YEARLY }}')">{{ _('Купить годовой') }}</button>
+            {% if customer_id %}
+              <button class="btn btn-secondary" onclick="openPortal()">{{ _('Управлять подпиской') }}</button>
+            {% endif %}
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="payments">
       <div class="card-head"><h2>{{ _('История оплат') }}</h2></div>
       <div class="card-body">
         <div class="table">
@@ -54,7 +120,7 @@
             </div>
           </div>
           {% else %}
-            <div class="table-row"><div class="muted">{{ _('Платежей пока нет.') }}</div></div>
+            <div class="table-row"><div class="muted">{{ _('У вас пока не было оплат.') }}</div></div>
           {% endfor %}
         </div>
       </div>

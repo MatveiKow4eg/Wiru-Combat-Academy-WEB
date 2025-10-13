@@ -69,6 +69,7 @@
       .header .nav{ justify-self: center; }
     }
   </style>
+  </style>
 </head>
 <body>
 <header class="header">
@@ -88,7 +89,7 @@
       </div>
       <a href="{{ url_for('home') }}">{{ _('Главная') }}</a>
       <a href="{{ url_for('news_list') }}">{{ _('Новости') }}</a>
-      <a href="{{ url_for('schedule_page') }}">{{ _('Расписание') }}</a>
+      <a href="{{ url_for('schedule_page') }}">{{ _('Тренировки') }}</a>
       <a href="{{ url_for('trainers_page') }}">{{ _('Тренеры') }}</a>
       <a href="{{ url_for('contact') }}">{{ _('Контакты') }}</a>
             <a href="{{ url_for('signup') }}" class="btn btn-accent nav-cta" style="margin-top:auto; display:block; text-align:center;">{{ _('Записаться') }}</a>

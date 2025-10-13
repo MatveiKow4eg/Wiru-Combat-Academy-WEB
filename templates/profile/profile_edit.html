@@ -8,14 +8,13 @@
   .page-subtitle{ color: var(--muted); margin: 0 0 16px; }
 
   /* Cards spacing and sizing */
-  .card{ padding:24px; margin-bottom:32px; }
-  .card-head h2{ margin: 0 0 12px; }
+    .card-head h2{ margin: 0 0 12px; }
 
   /* Layout */
   .grid-2{ display:grid; grid-template-columns: 360px 1fr; gap:20px; }
 
   /* Avatar preview */
-  .avatar-preview{ width:96px; height:96px; border-radius:50%; overflow:hidden; border:1px solid #333; background:#1a1a1a; display:flex; align-items:center; justify-content:center; margin: 0 auto 12px; }
+  .avatar-preview{ width:128px; height:128px; border-radius:50%; overflow:hidden; border:1px solid #333; background: radial-gradient(120px 120px at 50% 40%, #1d1d1d, #141414); display:flex; align-items:center; justify-content:center; margin: 0 auto 12px; box-shadow: 0 0 0 2px rgba(224,37,37,0.35), 0 0 22px rgba(224,37,37,0.12); }
   .avatar-preview img{ display:block; width:100%; height:100%; object-fit:cover; }
   .avatar-preview span{ color:#ddd; font-weight:700; font-size:28px; }
 
@@ -67,14 +66,18 @@
               <label for="avatar-file" class="btn btn-accent btn--sm">{{ _('Загрузить фото') }}</label>
               {{ form.avatar(class_='input', id='avatar-file', style='display:none', title=_('Максимальный размер: 2 МБ')) }}
             </div>
-            {% set _parts = (current_user.full_name or '').split(' ', 1) %}
-            <div class="form-field form-field--center">
-              <label>{{ _('Имя') }}</label>
-              <input class="input" type="text" name="first_name" value="{{ _parts[0] if _parts and _parts[0] else '' }}" placeholder="{{ _('—') }}">
+            <div class="profile-hero">
+              <div class="profile-name">{{ current_user.full_name or current_user.username or current_user.email }}</div>
             </div>
-            <div class="form-field form-field--center">
-              <label>{{ _('Фамилия') }}</label>
-              <input class="input" type="text" name="last_name" value="{{ _parts[1] if _parts|length > 1 else '' }}" placeholder="{{ _('—') }}">
+                        <div class="form-row two">
+              <div class="form-field">
+                <label>{{ _('Имя') }}</label>
+                <input class="input" type="text" name="first_name" value="" placeholder="{{ _('—') }}" autocomplete="off" spellcheck="false">
+              </div>
+              <div class="form-field">
+                <label>{{ _('Фамилия') }}</label>
+                <input class="input" type="text" name="last_name" value="" placeholder="{{ _('—') }}" autocomplete="off" spellcheck="false">
+              </div>
             </div>
             <input type="hidden" name="full_name" id="full_name_hidden" value="{{ current_user.full_name or '' }}">
             <input type="hidden" name="username" value="{{ current_user.username or '' }}">
@@ -87,11 +90,11 @@
     </div>
 
     <!-- Block 2: Security / password change -->
-    <div class="card">
+    <div class="card card--security">
       <div class="card-head"><h2>{{ _('Безопасность') }}</h2></div>
       <div class="card-body">
-        <form method="post" action="{{ url_for('profile_edit') }}" class="form form-vertical" aria-label="{{ _('Смена пароля') }}">
-          {{ csrf_token() }}
+        <form method="post" action="{{ url_for('profile_edit') }}" class="form form-vertical security-form" aria-label="{{ _('Смена пароля') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
           <input type="hidden" name="action" value="change_password">
           <div class="form-grid">
             <div class="form-field">
@@ -141,15 +144,27 @@
   });
 })();
 
-// Compose full_name from first/last on submit
+// Compose full_name on submit only and keep inputs empty by default
 (function(){
   const form = document.getElementById('profile-form');
   if (!form) return;
+  const firstInput = form.querySelector('input[name="first_name"]');
+  const lastInput = form.querySelector('input[name="last_name"]');
+  const hidden = form.querySelector('#full_name_hidden');
+
+  // Clear on init and next frame to avoid browser autofill
+  if (firstInput) firstInput.value = '';
+  if (lastInput) lastInput.value = '';
+  requestAnimationFrame(() => {
+    if (firstInput) firstInput.value = '';
+    if (lastInput) lastInput.value = '';
+  });
+
   form.addEventListener('submit', function(){
-    const first = (form.querySelector('input[name="first_name"]')?.value || '').trim();
-    const last = (form.querySelector('input[name="last_name"]')?.value || '').trim();
-    const hidden = form.querySelector('#full_name_hidden');
-    if (hidden) hidden.value = (first + ' ' + last).trim();
+    const first = (firstInput?.value || '').trim();
+    const last = (lastInput?.value || '').trim();
+    const composed = (first + ' ' + last).trim();
+    if (hidden && composed){ hidden.value = composed; }
   });
 })();
 </script>

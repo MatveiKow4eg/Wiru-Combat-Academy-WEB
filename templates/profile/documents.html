@@ -2,6 +2,13 @@
 {% block title %}{{ _('Документы') }} — Wiru Combat Academy{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+<style>
+  .viewer-overlay{ position: fixed; inset: 0; background: rgba(0,0,0,.8); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 24px; }
+  .viewer-box{ position: relative; width: min(1200px, 92vw); height: min(80vh, 900px); background: #0f0f0f; border: 1px solid #333; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,.6); overflow: hidden; }
+  .viewer-iframe{ width: 100%; height: 100%; border: 0; background: #111; display: block; }
+  .viewer-close{ position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; border: 1px solid var(--accent); border-radius: 10px; padding: 10px 16px; cursor: pointer; z-index: 1001; }
+  .viewer-close:hover{ background: var(--accent-hover); border-color: var(--accent-hover); }
+</style>
 {% endblock %}
 {% block content %}
 <div class="profile-layout">
@@ -29,6 +36,7 @@
       </div>
     </div>
 
+    
     <div class="card">
       <div class="card-head"><h2>{{ _('Мои документы') }}</h2></div>
       <div class="card-body">
@@ -37,12 +45,17 @@
             <div>{{ _('Имя файла') }}</div>
             <div>{{ _('Размер') }}</div>
             <div>{{ _('Дата') }}</div>
+            <div>{{ _('Действия') }}</div>
           </div>
           {% for d in docs %}
           <div class="table-row">
             <div>{{ d.filename }}</div>
             <div>{{ (d.size_bytes or 0) // 1024 }} KB</div>
             <div>{{ d.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</div>
+            <div>
+              <a class="btn btn--sm btn-view" href="{{ url_for('document_view', doc_id=d.id) }}" data-url="{{ url_for('document_view', doc_id=d.id) }}">{{ _('Смотреть') }}</a>
+              <a class="btn btn--sm btn--edit" href="{{ url_for('document_download', doc_id=d.id) }}" download>{{ _('Скачать') }}</a>
+            </div>
           </div>
           {% else %}
             <div class="table-row"><div class="muted">{{ _('Нет загруженных документов.') }}</div></div>
@@ -50,6 +63,58 @@
         </div>
       </div>
     </div>
+  <div class="viewer-overlay" id="docOverlay" aria-hidden="true">
+    <div class="viewer-box" role="dialog" aria-modal="true" aria-label="{{ _('Просмотр документа') }}">
+      <iframe class="viewer-iframe" id="overlayFrame"></iframe>
+    </div>
+    <button class="viewer-close" type="button" id="closeOverlay">{{ _('Закрыть') }}</button>
+  </div>
   </section>
 </div>
+
+<script>
+// Overlay viewer for documents
+(function(){
+  const overlay = document.getElementById('docOverlay');
+  const frame = document.getElementById('overlayFrame');
+  const closeBtn = document.getElementById('closeOverlay');
+
+  function openOverlay(url){
+    if (!overlay || !frame) return;
+    frame.src = url;
+    overlay.style.display = 'flex';
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeOverlay(){
+    if (!overlay || !frame) return;
+    overlay.style.display = 'none';
+    overlay.setAttribute('aria-hidden', 'true');
+    frame.src = 'about:blank';
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a.btn-view');
+    if (a){
+      e.preventDefault();
+      const url = a.getAttribute('data-url') || a.getAttribute('href');
+      openOverlay(url);
+      return;
+    }
+    if (overlay && e.target === overlay){
+      closeOverlay();
+    }
+  });
+
+  if (closeBtn){
+    closeBtn.addEventListener('click', closeOverlay);
+  }
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape'){
+      closeOverlay();
+    }
+  });
+})();
+</script>
 {% endblock %}
