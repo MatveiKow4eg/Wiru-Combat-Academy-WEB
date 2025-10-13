@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, SubmitField, PasswordField, SelectField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
 from flask_wtf.file import FileField, FileAllowed, FileRequired
+from flask_babel import gettext as _
 
 
 class LoginForm(FlaskForm):
@@ -61,6 +62,33 @@ class PasswordChangeForm(FlaskForm):
     new_password = PasswordField("New Password", validators=[DataRequired(), Length(min=8, max=128)])
     confirm = PasswordField("Confirm New Password", validators=[DataRequired(), EqualTo("new_password", message="Passwords must match")])
     submit = SubmitField("Change password")
+
+
+class ProfileEditForm(FlaskForm):
+    full_name = StringField("Full name", validators=[Optional(), Length(max=255)])
+    username = StringField("Username", validators=[Optional(), Length(max=80)])
+    level = SelectField(
+        "Level",
+        validators=[Optional()],
+        choices=[
+            ("", _("—")),
+            ("beginner", _("Beginner")),
+            ("intermediate", _("Intermediate")),
+            ("advanced", _("Advanced")),
+        ],
+    )
+    group_name = SelectField(
+        "Group",
+        validators=[Optional()],
+        choices=[
+            ("", _("—")),
+            ("A", "A"),
+            ("B", "B"),
+            ("C", "C"),
+        ],
+    )
+    avatar = FileField("Avatar", validators=[Optional(), FileAllowed(["jpg", "jpeg", "png"], _("Images only"))])
+    submit = SubmitField(_("Save changes"))
 
 
 class DocumentUploadForm(FlaskForm):

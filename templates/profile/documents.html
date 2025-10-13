@@ -1,60 +1,42 @@
 {% extends 'base.html' %}
-{% block title %}Документы — Wiru Combat Academy{% endblock %}
+{% block title %}{{ _('Документы') }} — Wiru Combat Academy{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
 {% endblock %}
 {% block content %}
 <div class="profile-layout">
-  <aside class="sidebar" aria-label="Навигация профиля">
-    <div class="sidebar-header">
-      <div class="avatar"><span>{{ (current_user.full_name or current_user.username or current_user.email)[:1]|upper }}</span></div>
-      <div class="user-meta">
-        <div class="user-name">{{ current_user.full_name or current_user.username or current_user.email }}</div>
-      </div>
-    </div>
-    <nav class="side-nav">
-      <a class="nav-item" href="/profile">Главная</a>
-      <a class="nav-item" href="/billing">Абонемент</a>
-      <a class="nav-item active" href="/documents">Документы</a>
-      {% if current_user.role == 'admin' %}
-      <div class="divider"></div>
-      <div class="nav-label">Админ</div>
-      <a class="nav-item" href="/admin/users">Участники</a>
-      <a class="nav-item" href="/admin/billing/subscriptions">Подписки</a>
-      <a class="nav-item" href="/admin/billing/payments">Платежи</a>
-      {% endif %}
-    </nav>
-  </aside>
+  {% set active_tab = 'documents' %}
+  {% include 'profile/_profile_nav.html' %}
 
   <section class="content">
     <div class="card">
-      <div class="card-head"><h2>Загрузка документа</h2></div>
+      <div class="card-head"><h2>{{ _('Загрузка документа') }}</h2></div>
       <div class="card-body">
         <form method="post" action="/documents/upload" enctype="multipart/form-data" class="form" aria-label="Загрузка документа">
           {{ form.csrf_token }}
           <div class="form-grid">
             <div class="form-field">
-              <label>Файл (pdf, jpg, png)</label>
+              <label>{{ _('Файл (pdf, jpg, png)') }}</label>
               {{ form.file(class_='input') }}
             </div>
             <div class="form-field">
-              <label>Заметка</label>
+              <label>{{ _('Заметка') }}</label>
               {{ form.note(class_='input') }}
             </div>
           </div>
-          <button class="btn btn-accent" type="submit">Загрузить</button>
+          <button class="btn btn-accent" type="submit">{{ _('Загрузить') }}</button>
         </form>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-head"><h2>Мои документы</h2></div>
+      <div class="card-head"><h2>{{ _('Мои документы') }}</h2></div>
       <div class="card-body">
         <div class="table">
           <div class="table-row head">
-            <div>Имя файла</div>
-            <div>Размер</div>
-            <div>Дата</div>
+            <div>{{ _('Имя файла') }}</div>
+            <div>{{ _('Размер') }}</div>
+            <div>{{ _('Дата') }}</div>
           </div>
           {% for d in docs %}
           <div class="table-row">
@@ -63,7 +45,7 @@
             <div>{{ d.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</div>
           </div>
           {% else %}
-            <div class="table-row"><div class="muted">Нет загруженных документов.</div></div>
+            <div class="table-row"><div class="muted">{{ _('Нет загруженных документов.') }}</div></div>
           {% endfor %}
         </div>
       </div>

@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Профиль') }} — Wiru Combat Academy{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+<style>
+  /* Page heading */
+  .page-title{ font-size:22px; font-weight:700; margin: 4px 0 4px; }
+  .page-subtitle{ color: var(--muted); margin: 0 0 16px; }
+
+  /* Cards spacing and sizing */
+  .card{ padding:24px; margin-bottom:32px; }
+  .card-head h2{ margin: 0 0 12px; }
+
+  /* Layout */
+  .grid-2{ display:grid; grid-template-columns: 360px 1fr; gap:20px; }
+
+  /* Avatar preview */
+  .avatar-preview{ width:96px; height:96px; border-radius:50%; overflow:hidden; border:1px solid #333; background:#1a1a1a; display:flex; align-items:center; justify-content:center; margin: 0 auto 12px; }
+  .avatar-preview img{ display:block; width:100%; height:100%; object-fit:cover; }
+  .avatar-preview span{ color:#ddd; font-weight:700; font-size:28px; }
+
+  /* Forms */
+  .form-vertical .form-field{ display:block; }
+  .form-vertical .form-field label{ display:block; margin-bottom:6px; }
+  .note{ font-size: 12px; color:#aaa; margin-top: 6px; text-align:center; }
+
+  .actions-center{ text-align:center; }
+  .actions-center .btn{ min-width: 220px; }
+  .btn--sm{ padding:6px 10px; font-size: 13px; }
+  .profile-card-center{ max-width: 420px; margin: 0 auto; }
+  .form-narrow{ max-width: 540px; margin: 0 auto; }
+  .card-body > .form.form-vertical{ max-width: 540px; margin-left:auto; margin-right:auto; }
+  .form-field--center{ text-align:center; }
+  .form-field--center .input{ max-width:360px; margin:0 auto; }
+
+  @media (max-width: 1024px){
+    .grid-2{ grid-template-columns: 320px 1fr; }
+  }
+  @media (max-width: 768px){
+    .grid-2{ grid-template-columns: 1fr; }
+    .btn--full-mobile{ width:100%; display:block; }
+  }
+</style>
+{% endblock %}
+{% block content %}
+<div class="profile-layout">
+  {% set active_tab = 'edit' %}
+  {% include 'profile/_profile_nav.html' %}
+
+  <section class="content">
+    
+    <!-- Block 1: Профиль и личные данные -->
+    <div class="card">
+      <div class="card-head"><h2>{{ _('Профиль') }}</h2></div>
+      <div class="card-body">
+        <form id="profile-form" method="post" action="{{ url_for('profile_edit') }}" enctype="multipart/form-data" class="form form-vertical" aria-label="{{ _('Редактирование профиля') }}">
+          {{ form.csrf_token }}
+          <div class="profile-card-center form-vertical">
+            <div class="avatar-preview" id="avatarPreview">
+              {% if current_user.avatar_path %}
+                <img id="avatarPreviewImg" src="{{ url_for('profile_avatar') }}" alt="avatar">
+              {% else %}
+                <span id="avatarPreviewInitial">{{ (current_user.full_name or current_user.username or current_user.email)[:1]|upper }}</span>
+              {% endif %}
+            </div>
+            <div class="actions-center" style="margin-bottom:12px;">
+              <label for="avatar-file" class="btn btn-accent btn--sm">{{ _('Загрузить фото') }}</label>
+              {{ form.avatar(class_='input', id='avatar-file', style='display:none', title=_('Максимальный размер: 2 МБ')) }}
+            </div>
+            {% set _parts = (current_user.full_name or '').split(' ', 1) %}
+            <div class="form-field form-field--center">
+              <label>{{ _('Имя') }}</label>
+              <input class="input" type="text" name="first_name" value="{{ _parts[0] if _parts and _parts[0] else '' }}" placeholder="{{ _('—') }}">
+            </div>
+            <div class="form-field form-field--center">
+              <label>{{ _('Фамилия') }}</label>
+              <input class="input" type="text" name="last_name" value="{{ _parts[1] if _parts|length > 1 else '' }}" placeholder="{{ _('—') }}">
+            </div>
+            <input type="hidden" name="full_name" id="full_name_hidden" value="{{ current_user.full_name or '' }}">
+            <input type="hidden" name="username" value="{{ current_user.username or '' }}">
+            <div class="actions-center" style="margin-top: 16px;">
+              <button class="btn btn-accent btn--full-mobile" type="submit">{{ _('Сохранить изменения') }}</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Block 2: Security / password change -->
+    <div class="card">
+      <div class="card-head"><h2>{{ _('Безопасность') }}</h2></div>
+      <div class="card-body">
+        <form method="post" action="{{ url_for('profile_edit') }}" class="form form-vertical" aria-label="{{ _('Смена пароля') }}">
+          {{ csrf_token() }}
+          <input type="hidden" name="action" value="change_password">
+          <div class="form-grid">
+            <div class="form-field">
+              <label>{{ _('Текущий пароль') }}</label>
+              <input class="input" type="password" name="current_password" minlength="8" required>
+            </div>
+            <div class="form-field">
+              <label>{{ _('Новый пароль') }}</label>
+              <input class="input" type="password" name="new_password" minlength="8" required>
+            </div>
+            <div class="form-field">
+              <label>{{ _('Подтверждение') }}</label>
+              <input class="input" type="password" name="confirm_password" minlength="8" required>
+            </div>
+          </div>
+          <div class="actions-center" style="margin-top: 12px;">
+            <button class="btn btn-accent btn--sm btn--full-mobile" type="submit">{{ _('Сменить пароль') }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+// Preview selected avatar file
+(function(){
+  const input = document.getElementById('avatar-file');
+  if (!input) return;
+  input.addEventListener('change', function(){
+    const file = this.files && this.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    let img = document.getElementById('avatarPreviewImg');
+    const init = document.getElementById('avatarPreviewInitial');
+    if (!img){
+      img = document.createElement('img');
+      img.id = 'avatarPreviewImg';
+      const box = document.getElementById('avatarPreview');
+      if (box){
+        box.innerHTML = '';
+        box.appendChild(img);
+      }
+    }
+    if (init && init.parentNode) init.parentNode.removeChild(init);
+    img.src = url;
+  });
+})();
+
+// Compose full_name from first/last on submit
+(function(){
+  const form = document.getElementById('profile-form');
+  if (!form) return;
+  form.addEventListener('submit', function(){
+    const first = (form.querySelector('input[name="first_name"]')?.value || '').trim();
+    const last = (form.querySelector('input[name="last_name"]')?.value || '').trim();
+    const hidden = form.querySelector('#full_name_hidden');
+    if (hidden) hidden.value = (first + ' ' + last).trim();
+  });
+})();
+</script>
+{% endblock %}

@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from config import Config
 from models import db, News, Schedule, Trainer, Signup, User, Subscription, Payment, Document
 import models as models
-from forms import LoginForm, RegisterForm, NewsForm, ScheduleForm, SignupForm, DocumentUploadForm, UserSearchForm
+from forms import LoginForm, RegisterForm, NewsForm, ScheduleForm, SignupForm, DocumentUploadForm, UserSearchForm, ProfileEditForm
 
 import os
 import secrets
@@ -75,6 +75,8 @@ def run_simple_migrations(app):
                     add_cols_sql.append("ALTER TABLE user ADD COLUMN created_at DATETIME")
                 if "is_admin" not in cols:
                     add_cols_sql.append("ALTER TABLE user ADD COLUMN is_admin BOOLEAN")
+                if "avatar_path" not in cols:
+                    add_cols_sql.append("ALTER TABLE user ADD COLUMN avatar_path VARCHAR(512)")
                 for stmt in add_cols_sql:
                     conn.exec_driver_sql(stmt)
 
@@ -430,7 +432,16 @@ def create_app():
     @app.route("/billing")
     @login_required
     def billing_home():
-        return redirect(url_for("profile", tab="billing"))
+        try:
+            active_sub = current_user.subscriptions.order_by(Subscription.created_at.desc()).first()
+        except Exception:
+            active_sub = None
+        try:
+            payments = current_user.payments.order_by(Payment.created_at.desc()).limit(50).all()
+        except Exception:
+            payments = []
+        customer_id = active_sub.stripe_customer_id if active_sub and active_sub.stripe_customer_id else None
+        return render_template("profile/billing.html", active_sub=active_sub, payments=payments, customer_id=customer_id)
 
     @app.route("/billing/checkout/session", methods=["POST"]) 
     @login_required
@@ -611,8 +622,7 @@ def create_app():
     @app.route("/profile", methods=["GET", "POST"])
     @login_required
     def profile():
-        # Determine which form/tab was submitted
-        action = request.form.get('action') if request.method == 'POST' else None
+        return redirect(url_for("profile_overview"))
 
         # Update account (username/email)
         if action == 'update_account':
@@ -693,11 +703,143 @@ def create_app():
 
         return render_template("profile/overview.html", last_sub=last_sub, active_sub=active_sub, payments=payments, customer_id=customer_id, form=form, docs=docs)
 
+    # Profile routes (split Overview vs Edit)
+    @app.route("/profile/overview")
+    @login_required
+    def profile_overview():
+        try:
+            last_sub = current_user.subscriptions.order_by(Subscription.created_at.desc()).first()
+        except Exception:
+            last_sub = None
+        try:
+            docs = current_user.documents.order_by(Document.uploaded_at.desc()).limit(5).all()
+        except Exception:
+            docs = []
+        return render_template("profile/profile_overview.html", last_sub=last_sub, docs=docs)
+
+    @app.route("/profile/edit", methods=["GET", "POST"]) 
+    @login_required
+    def profile_edit():
+        form = ProfileEditForm(obj=current_user)
+        action = request.form.get('action') if request.method == 'POST' else None
+
+        # Change password section
+        if action == 'change_password':
+            current_pwd = request.form.get('current_password') or ''
+            new_pwd = request.form.get('new_password') or ''
+            confirm_pwd = request.form.get('confirm_password') or ''
+            if not current_user.check_password(current_pwd):
+                flash(_("Текущий пароль неверен."), 'error')
+                return redirect(url_for('profile_edit'))
+            if len(new_pwd) < 8:
+                flash(_("Новый пароль слишком короткий."), 'error')
+                return redirect(url_for('profile_edit'))
+            if new_pwd != confirm_pwd:
+                flash(_("Пароли не совпадают."), 'error')
+                return redirect(url_for('profile_edit'))
+            current_user.set_password(new_pwd)
+            db.session.commit()
+            flash(_("Пароль успешно изменён."), 'success')
+            return redirect(url_for('profile_edit'))
+
+        # Main profile form
+        if form.validate_on_submit():
+            new_username = (form.username.data or '').strip() or None
+            if new_username != current_user.username:
+                if new_username and User.query.filter(User.username == new_username, User.id != current_user.id).first():
+                    flash(_("Это имя пользователя уже занято."), 'error')
+                    return redirect(url_for('profile_edit'))
+                current_user.username = new_username
+            current_user.full_name = (form.full_name.data or '').strip() or None
+            if getattr(current_user, 'role', 'user') == 'admin':
+                current_user.level = (form.level.data or '').strip() or None
+                current_user.group_name = (form.group_name.data or '').strip() or None
+            # Avatar upload handling (optional)
+            try:
+                f = form.avatar.data
+            except Exception:
+                f = None
+            if f and getattr(f, 'filename', None):
+                filename = f.filename or ''
+                ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+                allowed = set(app.config.get("ALLOWED_UPLOAD_EXTENSIONS", {"jpg","jpeg","png"}))
+                if ext not in allowed:
+                    flash(_("Недопустимый тип файла"), 'error')
+                    return redirect(url_for('profile_edit'))
+                max_bytes = int(app.config.get("MAX_UPLOAD_MB", 15)) * 1024 * 1024
+                content_len = request.content_length or 0
+                if content_len and content_len > max_bytes + 8192:
+                    flash(_("Файл слишком большой"), 'error')
+                    return redirect(url_for('profile_edit'))
+                import uuid
+                user_dir = os.path.join(app.config.get("UPLOAD_DIR", "./uploads"), str(current_user.id))
+                os.makedirs(user_dir, exist_ok=True)
+                stored_name = f"avatar_{uuid.uuid4().hex}.{ext}"
+                stored_path = os.path.join(user_dir, stored_name)
+                try:
+                    f.save(stored_path)
+                    size_bytes = os.path.getsize(stored_path)
+                    if size_bytes > max_bytes:
+                        os.remove(stored_path)
+                        flash(_("Файл слишком большой"), 'error')
+                        return redirect(url_for('profile_edit'))
+                    current_user.avatar_path = stored_path
+                except Exception:
+                    try:
+                        if os.path.exists(stored_path): os.remove(stored_path)
+                    except Exception:
+                        pass
+                    flash(_("Ошибка сохранения файла"), 'error')
+                    return redirect(url_for('profile_edit'))
+            db.session.commit()
+            flash(_("Профиль обновлён."), 'success')
+            return redirect(url_for('profile_edit'))
+        elif request.method == 'POST':
+            flash(_("Ошибка валидации формы."), 'error')
+
+        return render_template("profile/profile_edit.html", form=form)
+
+    @app.route("/profile/avatar")
+    @login_required
+    def profile_avatar():
+        path = current_user.avatar_path or ''
+        if not path:
+            abort(404)
+        base = os.path.realpath(app.config.get("UPLOAD_DIR", "./uploads"))
+        real = os.path.realpath(path)
+        if not real.startswith(base + os.sep) and real != base:
+            abort(403)
+        try:
+            return send_file(real)
+        except Exception:
+            abort(404)
+
+    # User document download (owner/admin)
+    @app.route("/documents/<int:doc_id>/download") 
+    @login_required
+    def document_download(doc_id):
+        doc = Document.query.get_or_404(doc_id)
+        if doc.user_id != current_user.id and getattr(current_user, 'role', 'user') != 'admin':
+            abort(403)
+        base = os.path.realpath(app.config.get("UPLOAD_DIR", "./uploads"))
+        path = os.path.realpath(doc.stored_path or "")
+        if not path.startswith(base + os.sep) and path != base:
+            abort(403)
+        try:
+            return send_file(path, as_attachment=True, download_name=doc.filename or os.path.basename(path))
+        except Exception:
+            abort(404)
+
     # Documents routes
     @app.route("/documents", methods=["GET"]) 
     @login_required
     def documents():
-        return redirect(url_for("profile", tab="documents"))
+        form = DocumentUploadForm()
+        try:
+            docs = current_user.documents.order_by(Document.uploaded_at.desc()).all()
+        except Exception:
+            docs = []
+        return render_template("profile/documents.html", form=form, docs=docs)
 
     @app.route("/documents/upload", methods=["POST"]) 
     @login_required
@@ -748,7 +890,7 @@ def create_app():
         db.session.add(doc)
         db.session.commit()
         flash(_("Документ загружен"), 'success')
-        return redirect(url_for("profile", tab="documents"))
+        return redirect(url_for("documents"))
 
     @app.route("/admin/documents")
     @admin_required

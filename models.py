@@ -55,6 +55,9 @@ class User(UserMixin, db.Model):
     # NOTE: In new code prefer checking self.role == 'admin'. Keep this column in sync where needed.
     is_admin = db.Column(db.Boolean, default=False)
 
+    # Avatar image path (stored file path within UPLOAD_DIR)
+    avatar_path = db.Column(db.String(512))
+
     # Relationships
     subscriptions = db.relationship('Subscription', backref='user', lazy='dynamic', cascade="all, delete-orphan")
     payments = db.relationship('Payment', backref='user', lazy='dynamic', cascade="all, delete-orphan")

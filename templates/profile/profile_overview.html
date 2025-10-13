@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}{{ _('Профиль') }} — Wiru Combat Academy{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+<style>
+  .overview-card-actions{ position: relative; }
+  .overview-edit-link{
+    position:absolute; right:0; top:0; transform: translateY(-50%);
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:14px; color:#fff; background:#1a1a1a; border:1px solid #333; border-radius:8px; padding:6px 10px; text-decoration:none;
+  }
+  .overview-edit-link:hover{ border-color: var(--accent); color:#fff; background:#222; }
+  .info-grid{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px; }
+  .info-grid .value{ color:#fff; font-weight:500; }
+  .muted{ color:#aaa; }
+  @media (max-width: 900px){ .info-grid{ grid-template-columns:1fr; } }
+</style>
+{% endblock %}
+{% block content %}
+<div class="profile-layout">
+  <!-- Sidebar -->
+  {% set active_tab = 'overview' %}
+  {% include 'profile/_profile_nav.html' %}
+
+  <!-- Content -->
+  <section class="content">
+    {% set sub = last_sub if last_sub is defined else (current_user.subscriptions.order_by(models.Subscription.created_at.desc()).first() if current_user.is_authenticated else None) %}
+    {% if sub and sub.current_period_end %}
+      {% set now_ts = now.timestamp() %}
+      {% set end_ts = sub.current_period_end.timestamp() %}
+      {% set secs = (end_ts - now_ts) %}
+      {% set days_left = (secs // 86400)|int %}
+      {% if days_left < 7 and days_left >= 0 %}
+      <div class="banner warning" role="status" aria-live="polite">
+        {{ _('Подписка истекает через') }} {{ days_left }} {{ _('дн.') }}
+      </div>
+      {% endif %}
+    {% endif %}
+
+    <div class="grid">
+      <!-- Header card: avatar + name + statuses -->
+      <div class="card overview-card-actions">
+        <div class="card-head">
+          <h2>{{ _('Главная') }}</h2>
+                  </div>
+        <div class="card-body">
+          {% include 'profile/_profile_header.html' %}
+        </div>
+      </div>
+
+      <!-- Personal and account info read-only -->
+      <div class="card">
+        <div class="card-head"><h2>{{ _('Профиль') }}</h2></div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div>
+              <label>{{ _('Имя') }}</label>
+              <div class="value">{{ current_user.full_name or _('—') }}</div>
+            </div>
+                      </div>
+        </div>
+      </div>
+
+      <!-- Documents short block -->
+      <div class="card">
+        <div class="card-head"><h2>{{ _('Документы') }}</h2></div>
+        <div class="card-body">
+          <div class="table">
+            <div class="table-row head">
+              <div>{{ _('Имя файла') }}</div>
+              <div>{{ _('Дата') }}</div>
+              <div></div>
+            </div>
+            {% set docs_list = docs if docs is defined else current_user.documents.order_by(models.Document.uploaded_at.desc()).limit(5).all() %}
+            {% for d in docs_list %}
+            <div class="table-row">
+              <div>{{ d.filename }}</div>
+              <div>{{ d.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</div>
+              <div><a class="btn btn--sm" href="{{ url_for('document_download', doc_id=d.id) }}" target="_blank">{{ _('Открыть') }}</a></div>
+            </div>
+            {% else %}
+              <div class="table-row"><div class="muted">{{ _('Нет загруженных документов') }}</div></div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <!-- System/meta info -->
+      <div class="card">
+        <div class="card-head"><h2>{{ _('Система') }}</h2></div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div>
+              <label>{{ _('Язык интерфейса') }}</label>
+              <div class="value">{{ (session.get('lang') or 'ru')|upper }}</div>
+            </div>
+            <div>
+              <label>{{ _('Дата регистрации') }}</label>
+              <div class="value">{{ (current_user.created_at or now).strftime('%d.%m.%Y') }}</div>
+            </div>
+            <div>
+              <label>ID</label>
+              <div class="value">{{ current_user.id }}</div>
+            </div>
+            <div>
+              <label>{{ _('Статистика посещений') }}</label>
+              <div class="value">{{ _('—') }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+{% endblock %}

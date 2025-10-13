@@ -6,10 +6,10 @@ html,body{background:var(--bg); color:var(--text);}
 *{box-sizing:border-box}
 
 .profile-layout{display:grid; grid-template-columns: 280px 1fr; gap:24px; max-width:1200px; margin:24px auto; padding:0 24px;}
-.sidebar{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px;}
+.sidebar{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; width:280px; position:sticky; top:16px; align-self:start; max-height:calc(100vh - 48px); overflow:auto;}
 .sidebar-header{display:flex; gap:12px; align-items:center; margin-bottom:16px;}
 .avatar{width:40px;height:40px;border-radius:50%;background:#222;border:1px solid #333;display:flex;align-items:center;justify-content:center;color:#ddd;font-weight:700}
-.avatar.large{width:72px;height:72px;font-size:24px}
+.avatar.large{width:120px;height:120px;font-size:28px; box-shadow: 0 0 0 2px rgba(224,37,37,0.35), 0 0 18px rgba(224,37,37,0.15);}
 .user-meta .user-name{font-weight:600}
 .chip{display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid #333;background:#161616;color:#ddd;font-size:12px}
 .chip.status-active{color:#00d084;border-color:#0a3}
@@ -25,10 +25,27 @@ html,body{background:var(--bg); color:var(--text);}
 
 .content .grid{display:grid; gap:16px}
 @media (min-width:1024px){ .content .grid{grid-template-columns:1fr 1fr} }
-.card{background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow);}
-.card-head{padding:14px 16px; border-bottom:1px solid var(--border);}
-.card-head h2{margin:0; color:var(--head); font-size:18px}
-.card-body{padding:16px}
+.card{
+  background: linear-gradient(180deg, #1c1c1c, #151515);
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.45);
+  animation: fadeUp .25s ease both;
+}
+.card-head{padding:16px 18px; border-bottom:1px solid var(--border);}
+.card-head h2{margin:0; color:var(--head); font-size:20px; line-height:1.25}
+.card-head .subtitle{ color: var(--muted); font-size: 14px; margin-top: 4px; }
+.card-body{padding:20px}
+
+/* variant for security block */
+.card.card--security{ background: linear-gradient(180deg, #181818, #121212); }
+.card.card--security .card-head h2{ color: #d0d0d0; font-size:18px }
+
+/* vertical spacing between top-level cards inside .content */
+.content > .card{ margin-bottom:32px; }
+.content > .card:last-child{ margin-bottom:0; }
+
+@keyframes fadeUp{ from{ opacity:0; transform: translateY(6px);} to{ opacity:1; transform:none;} }
 
 .btn{display:inline-block; padding:10px 14px; border-radius:10px; background:#181818; border:1px solid #303030; color:#ddd; text-decoration:none; cursor:pointer}
 .btn:hover{border-color:var(--accent); color:#fff}
@@ -36,12 +53,25 @@ html,body{background:var(--bg); color:var(--text);}
 .btn.btn-accent{background:var(--accent); border-color:var(--accent); color:#fff}
 .btn.btn-accent:hover{background:var(--accent-hover); border-color:var(--accent-hover)}
 
-.input{width:100%; background:#121212; border:1px solid #2a2a2a; color:#eee; padding:10px 12px; border-radius:10px}
+.input{width:100%; background:#181818; border:1px solid #2f2f2f; color:#eee; padding:10px 12px; border-radius:10px}
 .input:focus{border-color:var(--accent); outline:none}
 
 .form-grid{display:grid; gap:12px}
 @media (min-width:1024px){ .form-grid{grid-template-columns:1fr 1fr 1fr} }
 .info-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+
+/* name inputs side by side */
+.form-row.two{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+.form-row.two .form-field{ text-align:center; }
+.form-row.two .form-field .input{ max-width: 260px; margin: 0 auto; }
+@media (max-width: 768px){
+  .form-row.two{ grid-template-columns: 1fr; }
+}
+
+/* buttons sizing and hover light */
+.actions-center .btn.btn-accent{ min-width: 220px; }
+.actions-center .btn.btn-accent.btn--sm{ min-width: 180px; }
+.btn.btn-accent:hover{ filter: brightness(1.05); }
 
 .banner.warning{background:#2b230a; border:1px solid #806c1a; color:#ffd666; padding:12px 14px; border-radius:10px; margin-bottom:16px}
 
@@ -56,4 +86,5 @@ html,body{background:var(--bg); color:var(--text);}
 
 @media (max-width:900px){
   .profile-layout{grid-template-columns: 1fr}
+  .sidebar{position:static; max-height:none; width:auto;}
 }

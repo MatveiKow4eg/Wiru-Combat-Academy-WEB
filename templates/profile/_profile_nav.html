@@ -1,0 +1,32 @@
+<aside class="sidebar" aria-label="{{ _('Навигация профиля') }}">
+  <div class="sidebar-header">
+    <div class="avatar">
+      <span>{{ (current_user.full_name or current_user.username or current_user.email)[:1]|upper }}</span>
+    </div>
+    <div class="user-meta">
+      <div class="user-name">{{ current_user.full_name or current_user.username or current_user.email }}</div>
+      {% set _last_sub = last_sub if last_sub is defined else (current_user.subscriptions.order_by(models.Subscription.created_at.desc()).first() if current_user.is_authenticated else None) %}
+      {% if _last_sub and _last_sub.status %}
+        <div class="chip status-{{ _last_sub.status|replace(' ','_') }}">{{ _last_sub.status }}</div>
+      {% else %}
+        <div class="chip status-none">{{ _('нет подписки') }}</div>
+      {% endif %}
+    </div>
+  </div>
+  {% set _active = active_tab|default('overview') %}
+  <nav class="side-nav">
+    <a class="nav-item {{ 'active' if _active == 'overview' else '' }}" href="{{ url_for('profile_overview') }}">{{ _('Главная') }}</a>
+    <div class="divider"></div>
+    <div class="nav-label">{{ _('Разделы') }}</div>
+    <a class="nav-item {{ 'active' if _active == 'edit' else '' }}" href="{{ url_for('profile_edit') }}">{{ _('Профиль') }}</a>
+    <a class="nav-item {{ 'active' if _active == 'billing' else '' }}" href="{{ url_for('billing_home') }}">{{ _('Абонемент') }}</a>
+    <a class="nav-item {{ 'active' if _active == 'documents' else '' }}" href="{{ url_for('documents') }}">{{ _('Документы') }}</a>
+    {% if current_user.role == 'admin' %}
+    <div class="divider"></div>
+    <div class="nav-label">{{ _('Админ') }}</div>
+    <a class="nav-item" href="/admin/users">{{ _('Участники') }}</a>
+    <a class="nav-item" href="/admin/billing/subscriptions">{{ _('Подписки') }}</a>
+    <a class="nav-item" href="/admin/schedule">{{ _('Расписание') }}</a>
+    {% endif %}
+  </nav>
+</aside>
