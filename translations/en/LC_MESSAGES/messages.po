@@ -221,7 +221,7 @@ msgstr "CHANGE YOU"
 msgid "ФОКУС"
 msgstr "FOCUS"
 
-msgid "РАЗВИВАЙ РЕАКЦИЮ, СКОРОСТЬ И КООРДИНАЦИЮ."
+msgid "РАЗВИВАЙ РЕАКЦИЮ, СКОРОС��Ь И КООРДИНАЦИЮ."
 msgstr "Develop reaction, speed and coordination."
 
 msgid "МИНУТ ИНТЕНСИВА"
@@ -325,7 +325,7 @@ msgstr "Discipline"
 
 # trainers page message
 msgid "Скоро здесь появятся тренеры."
-msgstr "Trainers will appear here soon."
+msgstr "Coaches are coming soon."
 
 # long paragraphs (trans blocks)
 msgid "Раскрой свой потенциал в нашей Академии единоборств.<br>Подними свой уровень и стань сильнее с нами."
@@ -336,3 +336,128 @@ msgstr "A new sports center has opened in Ida-Virumaa — WIRU COMBAT ACADEMY, f
 
 msgid "Академия объединяет сильную команду тренеров во главе с чемпионом Эстонии Кириллом Сериковым и стала современной площадкой, где каждый может развиваться, укреплять здоровье и воспитывать уверенность, дисциплину и командный дух."
 msgstr "The Academy brings together a strong team of coaches led by Estonian champion Kirill Serikov and has become a modern venue where everyone can develop, improve health, and foster confidence, discipline and team spirit."
+
+# =====================
+# Plans / Subscriptions (EN)
+# =====================
+msgid "plans.title"
+msgstr "Subscriptions"
+
+msgid "plans.subtitle"
+msgstr "Choose the format and discipline that fits your goals."
+
+msgid "plans.note"
+msgstr "*Check timetable and group availability on the schedule page."
+
+# Tabs
+msgid "plans.tabs.boxing"
+msgstr "Boxing"
+
+msgid "plans.tabs.wrestling"
+msgstr "Wrestling"
+
+msgid "plans.tabs.mma"
+msgstr "MMA"
+
+msgid "plans.tabs.all"
+msgstr "All gyms"
+
+# Titles and descriptions
+msgid "plans.titles.month_1"
+msgstr "1 month"
+
+msgid "plans.titles.month_3"
+msgstr "3 months"
+
+msgid "plans.titles.month_12"
+msgstr "12 months"
+
+msgid "plans.descr.1m"
+msgstr "A starter to get you going. All directions included."
+
+msgid "plans.descr.3m"
+msgstr "Save with a period payment. Priority booking."
+
+msgid "plans.descr.12m"
+msgstr "Maximum value and discipline. Bonus sessions."
+
+# Period / notes
+msgid "plans.period.month"
+msgstr "per month"
+
+msgid "plans.period.period"
+msgstr "per period"
+
+msgid "plans.includes_vat"
+msgstr "VAT included"
+
+# Badges / CTA
+msgid "plans.badge.best"
+msgstr "Best value"
+
+msgid "plans.cta.buy"
+msgstr "Buy"
+
+msgid "plans.cta.view"
+msgstr "View subscriptions"
+
+msgid "plans.cta.contact"
+msgstr "Contact"
+
+# Features
+msgid "plans.feature.boxing.all"
+msgstr "All boxing classes"
+
+msgid "plans.feature.boxing.kids_teen"
+msgstr "Kids 6–12 and Teens 13+"
+
+msgid "plans.feature.wrestling.all"
+msgstr "All wrestling classes"
+
+msgid "plans.feature.mma.all"
+msgstr "All MMA classes"
+
+msgid "plans.feature.all_gyms"
+msgstr "All gyms"
+
+msgid "plans.feature.unlimited"
+msgstr "Unlimited training"
+
+msgid "plans.feature.guest_1"
+msgstr "1 guest pass"
+
+msgid "plans.feature.guest_friend"
+msgstr "Guest pass for a friend"
+
+msgid "plans.feature.save_10"
+msgstr "Save 10%%"
+
+msgid "plans.feature.save_15"
+msgstr "Save 15%%"
+
+msgid "plans.feature.priority"
+msgstr "Priority booking"
+
+msgid "plans.feature.freeze_7"
+msgstr "Freeze 7 days"
+
+msgid "plans.feature.freeze_10"
+msgstr "Freeze 10 days"
+
+msgid "plans.feature.freeze_14"
+msgstr "Freeze 14 days"
+
+msgid "plans.feature.freeze_21"
+msgstr "Freeze 21 days"
+
+msgid "plans.feature.merch_10"
+msgstr "Merch discount 10%%"
+
+msgid "plans.feature.merch_15"
+msgstr "Merch discount 15%%"
+
+msgid "plans.feature.best_price"
+msgstr "Best price"
+
+msgid "plans.feature.max_benefit"
+msgstr "Maximum benefit"

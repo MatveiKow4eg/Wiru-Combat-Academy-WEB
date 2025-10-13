@@ -76,3 +76,129 @@ msgstr "Открыть расписание"
 #: templates/home.html
 msgid "Тренеры скоро появятся."
 msgstr "Тренеры скоро появятся."
+
+# =====================
+# Plans / Subscriptions
+# =====================
+
+msgid "plans.title"
+msgstr "Абонементы"
+
+msgid "plans.subtitle"
+msgstr "Выбери формат и дисциплину, которая подходит твоим целям."
+
+msgid "plans.note"
+msgstr "*Расписание и доступность групп уточняйте на странице расписания."
+
+# Tabs
+msgid "plans.tabs.boxing"
+msgstr "Бокс"
+
+msgid "plans.tabs.wrestling"
+msgstr "Борьба"
+
+msgid "plans.tabs.mma"
+msgstr "MMA"
+
+msgid "plans.tabs.all"
+msgstr "Все залы"
+
+# Titles and descriptions
+msgid "plans.titles.month_1"
+msgstr "1 месяц"
+
+msgid "plans.titles.month_3"
+msgstr "3 месяца"
+
+msgid "plans.titles.month_12"
+msgstr "12 месяцев"
+
+msgid "plans.descr.1m"
+msgstr "Старт для знакомства. Все направления включены."
+
+msgid "plans.descr.3m"
+msgstr "Экономия при оплате за период. Приоритет записи."
+
+msgid "plans.descr.12m"
+msgstr "Максимум выгоды и дисциплины. Бонусные занятия."
+
+# Period / notes
+msgid "plans.period.month"
+msgstr "в месяц"
+
+msgid "plans.period.period"
+msgstr "за период"
+
+msgid "plans.includes_vat"
+msgstr "Включает НДС"
+
+# Badges / CTA
+msgid "plans.badge.best"
+msgstr "Лучшее предложение"
+
+msgid "plans.cta.buy"
+msgstr "Купить"
+
+msgid "plans.cta.view"
+msgstr "Смотреть подписки"
+
+msgid "plans.cta.contact"
+msgstr "Связаться"
+
+# Features (examples)
+msgid "plans.feature.boxing.all"
+msgstr "Все тренировки бокса"
+
+msgid "plans.feature.boxing.kids_teen"
+msgstr "Группа 6–12 лет и 13+"
+
+msgid "plans.feature.wrestling.all"
+msgstr "Все тренировки борьбы"
+
+msgid "plans.feature.mma.all"
+msgstr "Все тренировки MMA"
+
+msgid "plans.feature.all_gyms"
+msgstr "Все залы"
+
+msgid "plans.feature.unlimited"
+msgstr "Безлимит тренировок"
+
+msgid "plans.feature.guest_1"
+msgstr "1 гостевой визит"
+
+msgid "plans.feature.guest_friend"
+msgstr "Гостевой для друга"
+
+msgid "plans.feature.save_10"
+msgstr "Экономия 10%%"
+
+msgid "plans.feature.save_15"
+msgstr "Экономия 15%%"
+
+msgid "plans.feature.priority"
+msgstr "Приоритет записи"
+
+msgid "plans.feature.freeze_7"
+msgstr "Заморозка 7 дней"
+
+msgid "plans.feature.freeze_10"
+msgstr "Заморозка 10 дней"
+
+msgid "plans.feature.freeze_14"
+msgstr "Заморозка 14 дней"
+
+msgid "plans.feature.freeze_21"
+msgstr "Заморозка 21 день"
+
+msgid "plans.feature.merch_10"
+msgstr "Скидка на мерч 10%%"
+
+msgid "plans.feature.merch_15"
+msgstr "Скидка на мерч 15%%"
+
+msgid "plans.feature.best_price"
+msgstr "Лучшая цена"
+
+msgid "plans.feature.max_benefit"
+msgstr "Максимум выгоды"

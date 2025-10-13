@@ -98,7 +98,7 @@ msgstr "P"
 msgid "Спасибо! Мы свяжемся с вами скоро."
 msgstr "Aitäh! Võtame Teiega peagi ühendust."
 
-msgid "Добро пожаловать в админ-панель!"
+msgid "Добро пожал��вать в админ-панель!"
 msgstr "Tere tulemast admin-paneeli!"
 
 msgid "Неверный логин или пароль."
@@ -251,45 +251,133 @@ msgstr "46 ja vanemad"
 msgid "Раскрой свой потенциал в нашей Академии единоборств.<br>Подними свой уровень и стань сильнее с нами."
 msgstr "Ava oma potentsiaal meie võitluskunsti akadeemias.<br>Tõsta oma taset ja muutu meiega tugevamaks."
 
-msgid "В Ида-Вирумаа появился новый спортивный центр — WIRU COMBAT ACADEMY, основанный Сирвеном Авакяном, Сиймом Нейссааром и Сиймом Пярком. Всего за три месяца их идея превратилась в реальность: двери клуба открылись для бокса, борьбы, ММА и функциональных тренировок. Сегодня это один из самы�� больших залов в Эстонии и крупнейший зал единоборств в Ида-Вирумаа."
+msgid "В Ида-Ви��умаа появился новый спортивный центр — WIRU COMBAT ACADEMY, основанный Сирвеном Авакяном, Сиймом Нейссааром и Сиймом Пярком. Всего за три месяца их идея превратилась в реальность: двери клуба открылись для бокса, борьбы, ММА и функциональных тренировок. Сегодня это один из самы�� больших залов в Эстонии и крупнейший зал единоборств в Ида-Вирумаа."
 msgstr "Ida-Virumaal avati uus spordikeskus — WIRU COMBAT ACADEMY, mille asutasid Sirven Avakyan, Siim Neissaar ja Siim Pärk. Vaid kolme kuuga muutus nende idee reaalsuseks: klubi uksed avati poksi, maadluse, MMA ja funktsionaalsete treeningute jaoks. Täna on see üks suurimaid saale Eestis ja suurim võitluskunstide saal Ida-Virumaal."
 
 msgid "Академия объединяет сильную команду тренеров во главе с чемпионом Эстонии Кириллом Сериковым и стала современной площадкой, где каждый может развиваться, укреплять здоровье и воспитывать уверенность, дисциплину и командный дух."
 msgstr "Akadeemia koondab tugeva treenerite meeskonna eesotsas Eesti meistri Kirill Serikoviga ja on saanud kaasaegseks kohaks, kus igaüks saab areneda, tugevdada tervist ning kasvatada enesekindlust, distsipliini ja meeskonnavaimu."
 
-# contact/signup/admin/login
-msgid "Email:"
-msgstr "E-post:"
+# =====================
+# Plans / Subscriptions (ET)
+# =====================
+msgid "plans.title"
+msgstr "Abonemendid"
 
-msgid "Email"
-msgstr "E-post"
+msgid "plans.subtitle"
+msgstr "Vali formaat ja distsipliin, mis sobib sinu eesmärkidega."
 
-msgid "Имя пользователя"
-msgstr "Kasutajanimi"
+msgid "plans.note"
+msgstr "*Kontrolli ajakavast tundide plaani ja gruppide saadavust."
 
-msgid "Пароль"
-msgstr "Parool"
+# Tabs
+msgid "plans.tabs.boxing"
+msgstr "Poks"
 
-msgid "Адрес: ул. Примерная, 1, Таллинн"
-msgstr "Aadress: Näide tn 1, Tallinn"
+msgid "plans.tabs.wrestling"
+msgstr "Maadlus"
 
-msgid "Телефон:"
-msgstr "Telefon:"
+msgid "plans.tabs.mma"
+msgstr "MMA"
 
-msgid "Здесь будет карта"
-msgstr "Siia tuleb kaart"
+msgid "plans.tabs.all"
+msgstr "Kõik saalid"
 
-msgid "Запись на тренировку"
-msgstr "Treeningule registreerimine"
+# Titles and descriptions
+msgid "plans.titles.month_1"
+msgstr "1 kuu"
 
-msgid "Имя"
-msgstr "Nimi"
+msgid "plans.titles.month_3"
+msgstr "3 kuud"
 
-msgid "Телефон"
-msgstr "Telefon"
+msgid "plans.titles.month_12"
+msgstr "12 kuud"
 
-msgid "Направление"
-msgstr "Suund"
+msgid "plans.descr.1m"
+msgstr "Alustuseks tutvumiseks. Kõik suunad kaasas."
 
-msgid "Скоро здесь появятся тренеры."
-msgstr "Treenerid ilmuvad peagi siia."
+msgid "plans.descr.3m"
+msgstr "Säästad perioodimaksega. Eelisjärjekord."
+
+msgid "plans.descr.12m"
+msgstr "Maksimaalne väärtus ja distsipliin. Boonustreeningud."
+
+# Period / notes
+msgid "plans.period.month"
+msgstr "kuu kohta"
+
+msgid "plans.period.period"
+msgstr "perioodi eest"
+
+msgid "plans.includes_vat"
+msgstr "KM hinna sees"
+
+# Badges / CTA
+msgid "plans.badge.best"
+msgstr "Parim valik"
+
+msgid "plans.cta.buy"
+msgstr "Osta"
+
+msgid "plans.cta.view"
+msgstr "Vaata abonemente"
+
+msgid "plans.cta.contact"
+msgstr "Võta ühendust"
+
+# Features
+msgid "plans.feature.boxing.all"
+msgstr "Kõik poksi treeningud"
+
+msgid "plans.feature.boxing.kids_teen"
+msgstr "Lapsed 6–12 ja noored 13+"
+
+msgid "plans.feature.wrestling.all"
+msgstr "Kõik maadluse treeningud"
+
+msgid "plans.feature.mma.all"
+msgstr "Kõik MMA treeningud"
+
+msgid "plans.feature.all_gyms"
+msgstr "Kõik saalid"
+
+msgid "plans.feature.unlimited"
+msgstr "Piiramatu treening"
+
+msgid "plans.feature.guest_1"
+msgstr "1 külaliskutse"
+
+msgid "plans.feature.guest_friend"
+msgstr "Külaliskutse sõbrale"
+
+msgid "plans.feature.save_10"
+msgstr "Säästa 10%%"
+
+msgid "plans.feature.save_15"
+msgstr "Säästa 15%%"
+
+msgid "plans.feature.priority"
+msgstr "Eelisjärjekord"
+
+msgid "plans.feature.freeze_7"
+msgstr "Külmutus 7 päeva"
+
+msgid "plans.feature.freeze_10"
+msgstr "Külmutus 10 päeva"
+
+msgid "plans.feature.freeze_14"
+msgstr "Külmutus 14 päeva"
+
+msgid "plans.feature.freeze_21"
+msgstr "Külmutus 21 päeva"
+
+msgid "plans.feature.merch_10"
+msgstr "Merchi soodustus 10%%"
+
+msgid "plans.feature.merch_15"
+msgstr "Merchi soodustus 15%%"
+
+msgid "plans.feature.best_price"
+msgstr "Parim hind"
+
+msgid "plans.feature.max_benefit"
+msgstr "Maksimaalne kasu"

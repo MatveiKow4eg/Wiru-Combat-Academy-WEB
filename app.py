@@ -176,7 +176,9 @@ def create_app():
     # Template globals
     @app.context_processor
     def inject_now_and_langs():
-        return dict(now=datetime.utcnow(), LANGUAGES=app.config["LANGUAGES"], models=models, config=app.config)
+        # 't' is a safe gettext helper to avoid Jinja i18n extension's percent-formatting.
+        # Use it in templates when translating arbitrary strings that may contain '%'.
+        return dict(now=datetime.utcnow(), LANGUAGES=app.config["LANGUAGES"], models=models, config=app.config, t=_)
 
     # Utilities
     def is_safe_next(target: str) -> bool:

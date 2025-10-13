@@ -9,7 +9,6 @@
   .schedule-grid{ display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:14px; }
   @media (max-width: 900px){ .schedule-grid{ grid-template-columns: 1fr; } }
   .day-card{ border:1px solid var(--border); border-radius:12px; background:#141414; overflow:hidden; transition: transform .18s ease, box-shadow .18s ease; }
-  .day-card:hover{ transform: translateY(-2px); box-shadow: 0 10px 26px rgba(0,0,0,.45); }
   .day-head{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid var(--border); color:#fff; font-weight:700; }
   .day-code{ font-size:20px; letter-spacing:.5px; }
   .day-full{ color:#aaa; font-size:12px; margin-left:8px; font-weight:500; }
@@ -21,6 +20,54 @@
   .activity{ color:#fff; font-weight:500; }
   .coach-muted{ color:#aaa; font-size:14px; }
   .badge-age{ background:#1b1b1b; border:1px solid #2a2a2a; color:#bbb; border-radius:999px; padding:2px 8px; font-size:12px; white-space:nowrap; }
+/* Plans (subscriptions) */
+  .plans-section{ margin-top: 2.5rem; }
+  .plans-header{ text-align:center; margin-bottom: 1.5rem; }
+  .plans-title{ color: var(--head); font-size: 1.75rem; font-weight:800; margin: 0; }
+  .plans-subtitle{ color: var(--muted); margin-top: .5rem; }
+
+  .plans-grid{ display:grid; grid-template-columns: 1fr; gap: 20px; }
+  @media (min-width: 640px){ .plans-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+  @media (min-width: 1024px){ .plans-grid{ grid-template-columns: repeat(3, minmax(0,1fr)); } }
+
+  .plan-card{ background: var(--panel); border:1px solid var(--border); border-radius:16px; box-shadow: 0 6px 20px rgba(0,0,0,.25); display:flex; flex-direction:column; padding: 1.25rem; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; min-height:100%; }
+  .plan-card:hover{ transform: translateY(-3px); box-shadow: 0 14px 32px rgba(0,0,0,.35); }
+  .plan-card.featured{ border-color: var(--accent); box-shadow: 0 0 0 1px rgba(224,37,37,.5), 0 12px 28px rgba(224,37,37,.15); }
+
+  .plan-badge{ align-self:flex-start; background: rgba(224,37,37,.1); color: var(--accent); border:1px solid var(--accent); padding:2px 8px; border-radius:999px; font-size:.75rem; font-weight:600; margin-bottom:.5rem; }
+
+  .plan-head{ margin-bottom:.75rem; }
+  .plan-name{ color: var(--text); font-size: 1.25rem; font-weight:700; margin:0; }
+  .plan-desc{ color: var(--muted); margin-top:.25rem; font-size:.95rem; }
+
+  .plan-price{ color: var(--text); font-size: 2rem; font-weight:800; margin:.75rem 0 0; display:flex; align-items: baseline; gap:.5rem; }
+  .plan-period{ color: var(--muted); font-size:.9rem; }
+  .plan-price-note{ color: var(--muted); font-size:.8rem; margin-top:.25rem; }
+
+  .plan-features{ list-style:none; padding:0; margin:1rem 0; display:grid; gap:.5rem; }
+  .plan-feature{ display:flex; align-items:flex-start; gap:.5rem; color: var(--text); }
+  .plan-feature svg{ flex:0 0 auto; width:18px; height:18px; color:#44c767; }
+  .plan-feature span{ flex:1 1 auto; }
+
+  .plan-cta{ margin-top:auto; display:flex; gap:.5rem; align-items:center; }
+  .plan-cta .btn{ width:100%; }
+
+  .btn-accent{ background: var(--accent); border-color: var(--accent); color:#fff; }
+  .btn-accent:hover{ background: var(--accent-hover); border-color: var(--accent-hover); }
+  .btn-outline{ background: transparent; border:1px solid var(--border); color: var(--text); }
+  .btn-outline:hover{ border-color: var(--accent); }
+
+  .btn:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn[disabled]{ opacity:.7; cursor:not-allowed; }
+
+  /* Tabs */
+  .plans-tabs{ display:flex; gap:1rem; border-bottom:1px solid var(--border); margin: 1rem 0 1.25rem; overflow:auto; }
+  .plans-tab{ appearance:none; background:transparent; border:0; color: var(--text); padding:.75rem 1rem; cursor:pointer; font-weight:600; border-bottom:2px solid transparent; }
+  .plans-tab[aria-selected="true"]{ color: var(--accent); border-bottom-color: var(--accent); }
+  .plans-tab:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+  .plans-panels{}
+  .plans-panel[hidden]{ display:none; }
+  .plans-footnote{ color: var(--muted); font-size:.85rem; margin-top:1rem; text-align:center; }
 </style>
 {% endblock %}
 {% block content %}
@@ -62,17 +109,17 @@
           ] %}
         {% endif %}
         {% set data = [
-          {'icon':'','name':'POKS','age':'5-7','time':'17:15','days':['T','N'],'coach': None},
-          {'icon':'','name':'POKS','age':'8-12','time':'17:00','days':['E','K'],'coach': None},
-          {'icon':'','name':'POKS','age':'13+','time':'18:30','days':['E','T','K','N','R'],'coach': None},
+          {'icon':'','name':'POKS','age':'5-7','time':'17:15','days':['T','N'],'coach': none},
+          {'icon':'','name':'POKS','age':'8-12','time':'17:00','days':['E','K'],'coach': none},
+          {'icon':'','name':'POKS','age':'13+','time':'18:30','days':['E','T','K','N','R'],'coach': none},
 
-          {'icon':'','name':'MAADLUS','age':'6-12','time':'16:00','days':['E','K'],'coach': None},
-          {'icon':'','name':'MAADLUS','age':'13+','time':'17:00','days':['E','K','R'],'coach': None},
+          {'icon':'','name':'MAADLUS','age':'6-12','time':'16:00','days':['E','K'],'coach': none},
+          {'icon':'','name':'MAADLUS','age':'13+','time':'17:00','days':['E','K','R'],'coach': none},
 
-          {'icon':'','name':'MMA','age':None,'time':'18:00','days':['E','T','K','N','R'],'coach': None},
-          {'icon':'','name':'MMA','age':None,'time':'12:00','days':['L'],'coach': None},
+          {'icon':'','name':'MMA','age': none,'time':'18:00','days':['E','T','K','N','R'],'coach': none},
+          {'icon':'','name':'MMA','age': none,'time':'12:00','days':['L'],'coach': none},
 
-          {'icon':'','name':'Üldkehaline / Ringtreening (Naised)','age':None,'time':'19:00','days':['E','K','R'],'coach': None}
+          {'icon':'','name':'Üldkehaline / Ringtreening (Naised)','age': none,'time':'19:00','days':['E','K','R'],'coach': none}
         ] %}
 
         {% set base_codes = ['E','T','K','N','R','L','P'] %}
@@ -92,11 +139,11 @@
                   <span class="day-code">{{ d.code }}</span>
                   <span class="day-full">{{ d.full }}</span>
                 </div>
-                {% if idx == today %}<span class="today-chip">{{ _('Сегодня') }}</span>{% endif %}
+                <span class="today-chip" data-day="{{ match_code }}" hidden>{{ _('Сегодня') }}</span>
               </div>
               <div class="slots">
                 {% for s in nsd.items|sort(attribute='time') %}
-                {% set age_text = None %}
+                {% set age_text = none %}
                 {% if s.age %}
                   {% if lang == 'ru' %}{% set suffix = 'лет' %}
                   {% elif lang == 'en' %}{% set suffix = 'yrs' %}
@@ -136,25 +183,164 @@
         </div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-head"><h2>{{ _('Абонементы') }}</h2></div>
-      <div class="card-body">
-        <p class="muted">{{ _('Выберите удобный абонемент для занятий:') }}</p>
-        <div class="actions-center">
-          <button class="btn btn-accent" onclick="createCheckout('{{ config.STRIPE_PRICE_MONTHLY }}')">{{ _('Купить месячный') }}</button>
-          <button class="btn" onclick="createCheckout('{{ config.STRIPE_PRICE_YEARLY }}')">{{ _('Купить годовой') }}</button>
+    </div>
+</section>
+
+<section class="container pad-y plans-section" aria-labelledby="plans-title">
+  <header class="plans-header">
+    <h2 id="plans-title" class="plans-title">{{ _('plans.title') }}</h2>
+    <p class="plans-subtitle">{{ _('plans.subtitle') }}</p>
+  </header>
+
+  <nav class="plans-tabs" role="tablist" aria-label="{{ _('plans.title') }}">
+    <button class="plans-tab" role="tab" id="tab-boxing" data-key="boxing" aria-controls="panel-boxing" aria-selected="false">{{ _('plans.tabs.boxing') }}</button>
+    <button class="plans-tab" role="tab" id="tab-wrestling" data-key="wrestling" aria-controls="panel-wrestling" aria-selected="false">{{ _('plans.tabs.wrestling') }}</button>
+    <button class="plans-tab" role="tab" id="tab-mma" data-key="mma" aria-controls="panel-mma" aria-selected="false">{{ _('plans.tabs.mma') }}</button>
+    <button class="plans-tab" role="tab" id="tab-all" data-key="all" aria-controls="panel-all" aria-selected="false">{{ _('plans.tabs.all') }}</button>
+  </nav>
+
+  {% if not plans_by_discipline is defined %}
+    {% set pbd = {
+      'boxing': [
+        { 'id':'bx_1m', 'price_eur':45, 'period_label':'plans.period.month', 'features':['plans.feature.boxing.all','plans.feature.boxing.kids_teen','plans.feature.guest_1'], 'is_featured': false, 'is_available': true, 'cta_type':'buy', 'link':'/checkout?plan=bx_1m' },
+        { 'id':'bx_3m', 'price_eur':120, 'period_label':'plans.period.period', 'features':['plans.feature.save_10','plans.feature.priority','plans.feature.freeze_7'], 'is_featured': true, 'is_available': true, 'cta_type':'buy', 'link':'/checkout?plan=bx_3m' },
+        { 'id':'bx_12m', 'price_eur':420, 'period_label':'plans.period.period', 'features':['plans.feature.best_price','plans.feature.merch_10','plans.feature.freeze_14'], 'is_featured': false, 'is_available': true, 'cta_type':'buy', 'link':'/checkout?plan=bx_12m' }
+      ],
+      'wrestling': [
+        { 'id':'wr_1m', 'price_eur':45, 'period_label':'plans.period.month', 'features':['plans.feature.wrestling.all','plans.feature.unlimited','plans.feature.guest_1'], 'is_featured': false, 'is_available': true, 'cta_type':'buy', 'link':'/checkout?plan=wr_1m' },
+        { 'id':'wr_3m', 'price_eur':120, 'period_label':'plans.period.period', 'features':['plans.feature.save_10','plans.feature.priority','plans.feature.freeze_7'], 'is_featured': true, 'is_available': true, 'cta_type':'buy', 'link':'/checkout?plan=wr_3m' },
+        { 'id':'wr_12m', 'price_eur':420, 'period_label':'plans.period.period', 'features':['plans.feature.best_price','plans.feature.merch_10','plans.feature.freeze_14'], 'is_featured': false, 'is_available': true, 'cta_type':'buy', 'link':'/checkout?plan=wr_12m' }
+      ],
+      'mma': [
+        { 'id':'mma_1m', 'price_eur':45, 'period_label':'plans.period.month', 'features':['plans.feature.mma.all','plans.feature.unlimited','plans.feature.guest_1'], 'is_featured': false, 'is_available': true, 'cta_type':'buy', 'link':'/checkout?plan=mma_1m' },
+        { 'id':'mma_3m', 'price_eur':120, 'period_label':'plans.period.period', 'features':['plans.feature.save_10','plans.feature.priority','plans.feature.freeze_7'], 'is_featured': true, 'is_available': true, 'cta_type':'buy', 'link':'/checkout?plan=mma_3m' },
+        { 'id':'mma_12m', 'price_eur':420, 'period_label':'plans.period.period', 'features':['plans.feature.best_price','plans.feature.merch_10','plans.feature.freeze_14'], 'is_featured': false, 'is_available': true, 'cta_type':'buy', 'link':'/checkout?plan=mma_12m' }
+      ],
+      'all': [
+        { 'id':'all_1m', 'price_eur':65, 'period_label':'plans.period.month', 'features':['plans.feature.all_gyms','plans.feature.unlimited','plans.feature.guest_friend'], 'is_featured': false, 'is_available': true, 'cta_type':'buy', 'link':'/checkout?plan=all_1m' },
+        { 'id':'all_3m', 'price_eur':180, 'period_label':'plans.period.period', 'features':['plans.feature.save_15','plans.feature.priority','plans.feature.freeze_10'], 'is_featured': true, 'is_available': true, 'cta_type':'buy', 'link':'/checkout?plan=all_3m' },
+        { 'id':'all_12m', 'price_eur':600, 'period_label':'plans.period.period', 'features':['plans.feature.max_benefit','plans.feature.merch_15','plans.feature.freeze_21'], 'is_featured': false, 'is_available': true, 'cta_type':'buy', 'link':'/checkout?plan=all_12m' }
+      ]
+    } %}
+  {% else %}
+    {% set pbd = plans_by_discipline %}
+  {% endif %}
+
+  {% set active_plan_ids = active_plan_ids if active_plan_ids is defined else (current_user.active_subscriptions if current_user.is_authenticated and current_user.active_subscriptions is defined else []) %}
+  {% set active_disciplines = active_disciplines if active_disciplines is defined else (current_user.active_disciplines if current_user.is_authenticated and current_user.active_disciplines is defined else []) %}
+
+  {% set order = ['boxing','wrestling','mma','all'] %}
+  <div class="plans-panels">
+    {% for key in order %}
+      {% set plans = pbd.get(key, []) %}
+      {% set user_has_active_for_pane = current_user.is_authenticated and (key in active_disciplines or (plans|map(attribute='id')|select('in', active_plan_ids)|list|length > 0)) %}
+      <div id="panel-{{ key }}" class="plans-panel" role="tabpanel" aria-labelledby="tab-{{ key }}" data-key="{{ key }}" hidden>
+        <div class="plans-grid" role="list">
+          {% for p in plans %}
+            {% set effective_cta = 'view' if (user_has_active_for_pane or (p.is_available is defined and not p.is_available)) else (p.cta_type or 'view') %}
+            <article class="plan-card{% if p.is_featured %} featured{% endif %}" role="listitem">
+              {% if p.is_featured %}<span class="plan-badge">{{ _('plans.badge.best') }}</span>{% endif %}
+              <header class="plan-head">
+                <h3 class="plan-name">{{ _('plans.titles.' ~ ('month_1' if p.id.endswith('1m') else ('month_3' if p.id.endswith('3m') else 'month_12'))) }}</h3>
+                <p class="plan-desc">{{ _('plans.descr.' ~ ('1m' if p.id.endswith('1m') else ('3m' if p.id.endswith('3m') else '12m'))) }}</p>
+              </header>
+              <div class="plan-price">
+                <span>€{{ p.price_eur }}</span>
+                {% if p.period_label %}<span class="plan-period">{{ _(p.period_label) }}</span>{% endif %}
+              </div>
+              <div class="plan-price-note">{{ _('plans.includes_vat') }}</div>
+              {% if p.features %}
+                <ul class="plan-features">
+                  {% for f in p.features %}
+                    <li class="plan-feature">
+                      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg>
+                      <span>{% if f is string and f.startswith('plans.') %}{{ t(f) }}{% else %}{{ f }}{% endif %}</span>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+              <div class="plan-cta">
+                {% if effective_cta == 'buy' %}
+                  <button class="btn btn-accent" type="button" onclick="onPlanCtaClick(event, 'buy', '{{ p.link }}')">{{ _('plans.cta.buy') }}</button>
+                {% else %}
+                  <a class="btn btn-outline plan-link" href="{{ '/profile/subscriptions' if user_has_active_for_pane else (p.link or '/billing/plans') }}">{{ _('plans.cta.view') }}</a>
+                {% endif %}
+              </div>
+            </article>
+          {% endfor %}
         </div>
       </div>
-    </div>
+    {% endfor %}
   </div>
+
+  <p class="plans-footnote">{{ _('plans.note') }}</p>
 </section>
+
 <script>
 async function createCheckout(price_id){
   try{
     const resp = await fetch('/billing/checkout/session', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({price_id})});
     const data = await resp.json();
-    if (data.url) window.location = data.url; else alert('{{ _('Ошибка создания сессии оплаты') }}');
-  }catch(e){ alert('{{ _('Ошибка сети') }}'); }
+    if (data.url) window.location = data.url; else alert("{{ _('Ошибка создания сессии оплаты') }}");
+  }catch(e){ alert("{{ _('Ошибка сети') }}"); }
+}
+
+// Mark today's day with the "Сегодня" chip
+(function(){
+  try{
+    const base = ['E','T','K','N','R','L','P']; // Mon..Sun
+    const code = base[(new Date().getDay() + 6) % 7]; // map JS 0..6 (Sun..Sat) to Mon..Sun index
+    document.querySelectorAll('.day-head .today-chip').forEach(el => {
+      if (el.getAttribute('data-day') === code) {
+        el.hidden = false;
+      } else {
+        el.remove();
+      }
+    });
+  }catch(e){ /* no-op */ }
+})();
+
+// Tabs: sync with URL hash and toggle panels
+(function(){
+  const mapKey = (hash) => {
+    switch ((hash || '').toLowerCase()){
+      case '#boxing': return 'boxing';
+      case '#wrestling': return 'wrestling';
+      case '#mma': return 'mma';
+      default: return 'all';
+    }
+  };
+  const tabs = Array.from(document.querySelectorAll('.plans-tab'));
+  const panels = Array.from(document.querySelectorAll('.plans-panel'));
+  const setActive = (key) => {
+    tabs.forEach(btn => btn.setAttribute('aria-selected', btn.getAttribute('data-key') === key ? 'true' : 'false'));
+    panels.forEach(p => {
+      if (p.getAttribute('data-key') === key) p.removeAttribute('hidden'); else p.setAttribute('hidden','');
+    });
+  };
+  const sync = () => setActive(mapKey(location.hash));
+  tabs.forEach(btn => btn.addEventListener('click', () => {
+    const key = btn.getAttribute('data-key');
+    const target = key === 'boxing' ? '#boxing' : key === 'wrestling' ? '#wrestling' : key === 'mma' ? '#mma' : '#all';
+    if (location.hash !== target) location.hash = target; else sync();
+  }));
+  window.addEventListener('hashchange', sync);
+  sync();
+})();
+function onPlanCtaClick(ev, cta, link){
+  const btn = ev.currentTarget;
+  if (cta === 'buy'){
+    btn.disabled = true;
+    btn.setAttribute('aria-busy','true');
+    const isPath = typeof link === 'string' && link.startsWith('/');
+    const action = isPath ? Promise.resolve().then(()=>{ window.location = link; }) : createCheckout(link);
+    action.finally(()=>{
+      btn.disabled = false;
+      btn.removeAttribute('aria-busy');
+    });
+  } else if (link){
+    window.location = link;
+  }
 }
 </script>
 {% endblock %}
