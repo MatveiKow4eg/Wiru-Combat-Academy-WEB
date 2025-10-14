@@ -101,6 +101,15 @@ def run_simple_migrations(app):
                 # Create indexes (avoid creating a unique index on username to prevent failures on duplicates)
                 conn.exec_driver_sql("CREATE UNIQUE INDEX IF NOT EXISTS ux_user_email ON user(email)")
                 conn.exec_driver_sql("CREATE INDEX IF NOT EXISTS ix_user_role ON user(role)")
+
+                # Schedule table migrations
+                try:
+                    sched_cols = conn.exec_driver_sql("PRAGMA table_info('schedule')").fetchall()
+                    s_cols = {row[1] for row in sched_cols}
+                    if "discipline" not in s_cols:
+                        conn.exec_driver_sql("ALTER TABLE schedule ADD COLUMN discipline VARCHAR(50)")
+                except Exception:
+                    pass
         except Exception:
             app.logger.warning("User table migration skipped or failed. Consider using Alembic.")
 
@@ -186,6 +195,16 @@ def create_app():
             return False
         # Only allow relative URLs (no netloc)
         return urlparse(target).netloc == ""
+
+    def valid_time(s: str) -> bool:
+        try:
+            parts = (s or '').split(":")
+            if len(parts) != 2:
+                return False
+            h, m = int(parts[0]), int(parts[1])
+            return 0 <= h <= 23 and 0 <= m <= 59
+        except Exception:
+            return False
 
     # Public routes
     @app.route("/")
@@ -374,10 +393,13 @@ def create_app():
     def admin_edit_schedule():
         form = ScheduleForm()
         if form.validate_on_submit():
+            disc = form.discipline.data if hasattr(form, 'discipline') else None
+            labels = {"boxing":"Boxing","wrestling":"Wrestling","mma":"MMA"}
             item = Schedule(
                 day_of_week=form.day_of_week.data,
                 time=form.time.data,
-                activity=form.activity.data,
+                activity=labels.get(disc),
+                discipline=disc,
                 coach=form.coach.data,
             )
             db.session.add(item)
@@ -390,6 +412,122 @@ def create_app():
         return render_template(
             "admin/edit_schedule.html", form=form, schedule=schedule
         )
+
+    @app.route("/admin/schedule/data")
+    @admin_required
+    def admin_schedule_data():
+        items = Schedule.query.order_by(Schedule.day_of_week.asc(), Schedule.time.asc()).all()
+        return jsonify([
+            {
+                "id": i.id,
+                "day_of_week": i.day_of_week,
+                "time": i.time,
+                "activity": i.activity,
+                "discipline": i.discipline,
+                "coach": i.coach,
+            }
+            for i in items
+        ])
+
+    @app.route("/admin/schedule/item", methods=["POST"])
+    @admin_required
+    def admin_schedule_create():
+        try:
+            data = request.get_json(silent=True) or {}
+        except Exception:
+            data = {}
+        day = data.get("day_of_week")
+        time = (data.get("time") or "").strip()
+        activity = (data.get("activity") or "").strip()
+        coach = (data.get("coach") or "").strip() or None
+        discipline = (data.get("discipline") or "").strip().lower() or None
+        if not isinstance(day, int) or day < 0 or day > 6:
+            return jsonify({"error": "invalid day_of_week"}), 400
+        if not time or not valid_time(time):
+            return jsonify({"error": "invalid time"}), 400
+        if not discipline or discipline not in {"boxing","wrestling","mma"}:
+            return jsonify({"error": "invalid discipline"}), 400
+        if not activity:
+            labels = {"boxing":"Boxing","wrestling":"Wrestling","mma":"MMA"}
+            activity = labels.get(discipline)
+        item = Schedule(day_of_week=day, time=time, activity=activity, coach=coach, discipline=discipline)
+        db.session.add(item)
+        db.session.commit()
+        return jsonify({
+            "ok": True,
+            "item": {
+                "id": item.id,
+                "day_of_week": item.day_of_week,
+                "time": item.time,
+                "activity": item.activity,
+                "discipline": item.discipline,
+                "coach": item.coach,
+            },
+        })
+
+    @app.route("/admin/schedule/item/<int:item_id>", methods=["PUT", "PATCH"])
+    @admin_required
+    def admin_schedule_update(item_id):
+        item = Schedule.query.get_or_404(item_id)
+        try:
+            data = request.get_json(silent=True) or {}
+        except Exception:
+            data = {}
+        if "day_of_week" in data:
+            day = data.get("day_of_week")
+            if not isinstance(day, int) or day < 0 or day > 6:
+                return jsonify({"error": "invalid day_of_week"}), 400
+            item.day_of_week = day
+        if "time" in data:
+            time = (data.get("time") or "").strip()
+            if not time or not valid_time(time):
+                return jsonify({"error": "invalid time"}), 400
+            item.time = time
+        if "activity" in data:
+            activity = (data.get("activity") or "").strip()
+            if not activity:
+                return jsonify({"error": "activity required"}), 400
+            item.activity = activity
+        if "coach" in data:
+            coach = (data.get("coach") or "").strip() or None
+            item.coach = coach
+        if "discipline" in data:
+            disc = (data.get("discipline") or "").strip().lower() or None
+            if not disc or disc not in {"boxing","wrestling","mma"}:
+                return jsonify({"error": "invalid discipline"}), 400
+            item.discipline = disc
+            labels = {"boxing":"Boxing","wrestling":"Wrestling","mma":"MMA"}
+            item.activity = labels.get(disc, item.activity)
+        db.session.commit()
+        return jsonify({"ok": True})
+
+    @app.route("/admin/schedule/item/<int:item_id>", methods=["DELETE"])
+    @admin_required
+    def admin_schedule_delete(item_id):
+        item = Schedule.query.get_or_404(item_id)
+        db.session.delete(item)
+        db.session.commit()
+        return jsonify({"ok": True})
+
+    @app.route("/admin/schedule/copy_day", methods=["POST"])
+    @admin_required
+    def admin_schedule_copy_day():
+        try:
+            data = request.get_json(silent=True) or {}
+        except Exception:
+            data = {}
+        src = data.get("source_day")
+        dst = data.get("target_day")
+        replace = bool(data.get("replace"))
+        if not all(isinstance(x, int) and 0 <= x <= 6 for x in [src, dst]):
+            return jsonify({"error": "invalid day values"}), 400
+        if replace:
+            Schedule.query.filter_by(day_of_week=dst).delete()
+        src_items = Schedule.query.filter_by(day_of_week=src).all()
+        for it in src_items:
+            db.session.add(Schedule(day_of_week=dst, time=it.time, activity=it.activity, discipline=it.discipline, coach=it.coach))
+        db.session.commit()
+        return jsonify({"ok": True, "created": len(src_items)})
 
     # Admin: Users list and detail
     @app.route("/admin/users")
@@ -979,7 +1117,15 @@ def seed_if_empty():
             (4, "20:00", "MMA", "Ivan"),
         ]
         for d, t, a, c in base:
-            db.session.add(Schedule(day_of_week=d, time=t, activity=a, coach=c))
+            disc = None
+            al = (a or '').lower()
+            if al.startswith('box'):
+                disc = 'boxing'
+            elif al.startswith('wrest'):
+                disc = 'wrestling'
+            elif al.startswith('mma'):
+                disc = 'mma'
+            db.session.add(Schedule(day_of_week=d, time=t, activity=a, coach=c, discipline=disc))
     if Trainer.query.count() == 0:
         trainers = [
             ("Alex Strong", "Мастер спорта по боксу.", "/static/images/boxing.svg"),

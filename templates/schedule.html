@@ -22,8 +22,8 @@
   .badge-age{ background:#1b1b1b; border:1px solid #2a2a2a; color:#bbb; border-radius:999px; padding:2px 8px; font-size:12px; white-space:nowrap; }
 /* Plans (subscriptions) */
   .plans-section{ margin-top: 2.5rem; }
-  .plans-header{ text-align:center; margin-bottom: 1.5rem; }
-  .plans-title{ color: var(--head); font-size: 1.75rem; font-weight:800; margin: 0; }
+  .plans-header{ text-align:left; margin-bottom: 1.5rem; }
+  .plans-title{ color: var(--head); font-size: clamp(32px, 6vw, 64px); font-weight:700; margin: 0 0 .5rem; }
   .plans-subtitle{ color: var(--muted); margin-top: .5rem; }
 
   .plans-grid{ display:grid; grid-template-columns: 1fr; gap: 20px; }
@@ -108,75 +108,38 @@
             {'code':'Вс','full':'Воскресенье'}
           ] %}
         {% endif %}
-        {% set data = [
-          {'icon':'','name':'POKS','age':'5-7','time':'17:15','days':['T','N'],'coach': none},
-          {'icon':'','name':'POKS','age':'8-12','time':'17:00','days':['E','K'],'coach': none},
-          {'icon':'','name':'POKS','age':'13+','time':'18:30','days':['E','T','K','N','R'],'coach': none},
-
-          {'icon':'','name':'MAADLUS','age':'6-12','time':'16:00','days':['E','K'],'coach': none},
-          {'icon':'','name':'MAADLUS','age':'13+','time':'17:00','days':['E','K','R'],'coach': none},
-
-          {'icon':'','name':'MMA','age': none,'time':'18:00','days':['E','T','K','N','R'],'coach': none},
-          {'icon':'','name':'MMA','age': none,'time':'12:00','days':['L'],'coach': none},
-
-          {'icon':'','name':'Üldkehaline / Ringtreening (Naised)','age': none,'time':'19:00','days':['E','K','R'],'coach': none}
-        ] %}
 
         {% set base_codes = ['E','T','K','N','R','L','P'] %}
         <div class="schedule-grid">
           {% for d in days %}
             {% set idx = loop.index0 %}
-            {% set match_code = base_codes[idx] %}
-            {% set nsd = namespace(items=[]) %}
-            {% for s in data %}
-              {% if match_code in s.days %}
-                {% set _ = nsd.items.append(s) %}
-              {% endif %}
-            {% endfor %}
+            {% set items = (schedule | selectattr('day_of_week', 'equalto', idx) | list) | sort(attribute='time') %}
             <div class="day-card">
               <div class="day-head">
                 <div>
                   <span class="day-code">{{ d.code }}</span>
                   <span class="day-full">{{ d.full }}</span>
                 </div>
-                <span class="today-chip" data-day="{{ match_code }}" hidden>{{ _('Сегодня') }}</span>
+                <span class="today-chip" data-day="{{ base_codes[idx] }}" hidden>{{ _('Сегодня') }}</span>
               </div>
               <div class="slots">
-                {% for s in nsd.items|sort(attribute='time') %}
-                {% set age_text = none %}
-                {% if s.age %}
-                  {% if lang == 'ru' %}{% set suffix = 'лет' %}
-                  {% elif lang == 'en' %}{% set suffix = 'yrs' %}
-                  {% else %}{% set suffix = 'a' %}{% endif %}
-                  {% set age_text = (s.age.replace('-', '–') ~ ' ' ~ suffix) %}
-                {% endif %}
-                <div class="slot">
-                  <span class="time-badge">{{ s.time }}</span>
-                  {% set nm_key = (s.name or '')|upper %}
-                  {% if nm_key == 'MM' %}{% set nm_key = 'MMA' %}{% endif %}
-                  {% if nm_key in ['POKS','MAADLUS','MMA'] %}
-                    {% if lang == 'ru' %}
-                      {% set nm_disp = 'БОКС' if nm_key == 'POKS' else ('БОРЬБА' if nm_key == 'MAADLUS' else 'ММА') %}
-                    {% elif lang == 'en' %}
-                      {% set nm_disp = 'BOXING' if nm_key == 'POKS' else ('WRESTLING' if nm_key == 'MAADLUS' else 'MMA') %}
-                    {% else %}
-                      {% set nm_disp = nm_key %}
-                    {% endif %}
-                  {% else %}
-                    {% set nm_disp = s.name %}
-                  {% endif %}
-                  <span class="activity">{{ nm_disp }}</span>
-                  {% if age_text %}<span class="badge-age">{{ age_text }}</span>{% else %}<span></span>{% endif %}
-                  <span class="coach-muted">{{ s.coach or '' }}</span>
-                </div>
+                {% if items and items|length > 0 %}
+                  {% for it in items %}
+                    <div class="slot">
+                      <span class="time-badge">{{ it.time }}</span>
+                      <span class="activity">{{ it.activity }}</span>
+                      <span></span>
+                      <span class="coach-muted">{{ it.coach or '' }}</span>
+                    </div>
+                  {% endfor %}
                 {% else %}
-                <div class="slot">
-                  <span class="time-badge">—</span>
-                  <span class="coach-muted">{{ _('Нет занятий') }}</span>
-                  <span></span>
-                  <span></span>
-                </div>
-                {% endfor %}
+                  <div class="slot">
+                    <span class="time-badge">—</span>
+                    <span class="coach-muted">{{ _('Нет занятий') }}</span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                {% endif %}
               </div>
             </div>
           {% endfor %}
@@ -188,11 +151,11 @@
 
 <section class="container pad-y plans-section" aria-labelledby="plans-title">
   <header class="plans-header">
-    <h2 id="plans-title" class="plans-title">{{ _('plans.title') }}</h2>
-    <p class="plans-subtitle">{{ _('plans.subtitle') }}</p>
+    <h1 id="plans-title" class="plans-title">{{ _('Абонементы') }}</h1>
+    <p class="plans-subtitle">{{ _('Выбери формат и дисциплину, которая подходит твоим целям.') }}</p>
   </header>
 
-  <nav class="plans-tabs" role="tablist" aria-label="{{ _('plans.title') }}">
+  <nav class="plans-tabs" role="tablist" aria-label="{{ _('Абонементы') }}">
     <button class="plans-tab" role="tab" id="tab-boxing" data-key="boxing" aria-controls="panel-boxing" aria-selected="false">{{ _('plans.tabs.boxing') }}</button>
     <button class="plans-tab" role="tab" id="tab-wrestling" data-key="wrestling" aria-controls="panel-wrestling" aria-selected="false">{{ _('plans.tabs.wrestling') }}</button>
     <button class="plans-tab" role="tab" id="tab-mma" data-key="mma" aria-controls="panel-mma" aria-selected="false">{{ _('plans.tabs.mma') }}</button>

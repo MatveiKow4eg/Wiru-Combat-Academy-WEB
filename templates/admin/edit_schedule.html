@@ -1,48 +1,297 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Редактировать расписание') }}{% endblock %}
+{% block title %}{{ _('Редактор расписания') }}{% endblock %}
+{% block extra_css %}
+<style>
+  .toolbar{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+  .days-tabs{ display:flex; gap:6px; border-bottom:1px solid var(--border); margin-top:6px; overflow:auto; }
+  .days-tab{ appearance:none; background:transparent; color:var(--text); padding:8px 12px; border:0; border-bottom:2px solid transparent; cursor:pointer; font-weight:700; }
+  .days-tab[aria-selected="true"]{ color: var(--accent); border-bottom-color: var(--accent); }
+
+  .copy-bar{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin: 10px 0 14px; }
+  .copy-bar .input{ height: 36px; }
+
+  .sched-card{ background: var(--panel); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  .sched-head{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-bottom:1px solid var(--border); }
+  .sched-title{ margin:0; font-size:20px; }
+
+  .sched-table{ width:100%; border-collapse: collapse; }
+  .sched-table th, .sched-table td{ padding:10px 10px; border-bottom:1px solid #232323; text-align:left; }
+  .sched-table th{ color:#bbb; font-weight:600; background:#171717; }
+  .sched-table tr:hover td{ background:#141414; }
+  .sched-actions{ display:flex; gap:6px; flex-wrap:wrap; }
+  .btn.btn--sm{ padding:6px 10px; font-size:12px; border-radius:6px; }
+
+  .row-editing td{ background:#181818 !important; }
+  .row-add td{ background:#121212; }
+
+  .input.time{ width:92px; }
+  .input.coach{ min-width:160px; }
+  .select-day{ height:32px; }
+
+  .muted{ color: var(--muted) }
+</style>
+{% endblock %}
 {% block content %}
 <section class="container pad-y">
-  <div class="toolbar" style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
-    <a href="javascript:history.back()" class="btn" aria-label="Назад">← {{ _('Назад') }}</a>
-    <a href="{{ url_for('profile') }}" class="btn btn-accent">{{ _('Профиль') }}</a>
+  <div class="toolbar">
+    <a class="btn" href="{{ url_for('admin_dashboard') }}">← {{ _('Админ') }}</a>
+    <a class="btn" href="{{ url_for('schedule_page') }}">{{ _('Открыть публичное расписание') }}</a>
   </div>
-  <h1>{{ _('Редактировать расписание') }}</h1>
-  <form method="post" class="form small">
-    {{ form.csrf_token }}
-    <div class="form-row">
-      <label>{{ _('День недели') }}</label>
-      {{ form.day_of_week(class="input") }}
-    </div>
-    <div class="form-row">
-      <label>{{ _('Время') }}</label>
-      {{ form.time(class="input") }}
-    </div>
-    <div class="form-row">
-      <label>{{ _('Активность') }}</label>
-      {{ form.activity(class="input") }}
-    </div>
-    <div class="form-row">
-      <label>{{ _('Тренер') }}</label>
-      {{ form.coach(class="input") }}
-    </div>
-    <div class="form-row">
-      {{ form.submit(class="btn btn-accent") }}
-    </div>
-  </form>
+  <h1>{{ _('Редактор расписания') }}</h1>
 
-  <h2 class="mt">{{ _('Текущее расписание') }}</h2>
-  <div class="table responsive">
-    <div class="table-head">
-      <div>{{ _('День') }}</div><div>{{ _('Время') }}</div><div>{{ _('Активность') }}</div><div>{{ _('Тренер') }}</div>
+  <nav class="days-tabs" role="tablist" aria-label="{{ _('Дни недели') }}">
+    <button class="days-tab" role="tab" data-day="0" aria-selected="true">{{ _('Понедельник') }}</button>
+    <button class="days-tab" role="tab" data-day="1" aria-selected="false">{{ _('Вторник') }}</button>
+    <button class="days-tab" role="tab" data-day="2" aria-selected="false">{{ _('Среда') }}</button>
+    <button class="days-tab" role="tab" data-day="3" aria-selected="false">{{ _('Четверг') }}</button>
+    <button class="days-tab" role="tab" data-day="4" aria-selected="false">{{ _('Пятница') }}</button>
+    <button class="days-tab" role="tab" data-day="5" aria-selected="false">{{ _('Суббота') }}</button>
+    <button class="days-tab" role="tab" data-day="6" aria-selected="false">{{ _('Воскресенье') }}</button>
+  </nav>
+
+  <div class="copy-bar">
+    <span class="muted">{{ _('Копировать день') }}:</span>
+    <select id="copy-src" class="input" style="max-width:180px">
+      <option value="" disabled selected>{{ _('Из') }}</option>
+      <option value="0">{{ _('Понедельник') }}</option>
+      <option value="1">{{ _('Вторник') }}</option>
+      <option value="2">{{ _('Среда') }}</option>
+      <option value="3">{{ _('Четверг') }}</option>
+      <option value="4">{{ _('Пятница') }}</option>
+      <option value="5">{{ _('Суббота') }}</option>
+      <option value="6">{{ _('Воскресенье') }}</option>
+    </select>
+    <span class="muted">→</span>
+    <select id="copy-dst" class="input" style="max-width:180px">
+      <option value="" disabled selected>{{ _('В') }}</option>
+      <option value="0">{{ _('Понедельник') }}</option>
+      <option value="1">{{ _('Вторник') }}</option>
+      <option value="2">{{ _('Среда') }}</option>
+      <option value="3">{{ _('Четверг') }}</option>
+      <option value="4">{{ _('Пятница') }}</option>
+      <option value="5">{{ _('Суббота') }}</option>
+      <option value="6">{{ _('Воскресенье') }}</option>
+    </select>
+    <label style="display:flex; align-items:center; gap:6px;">
+      <input type="checkbox" id="copy-replace"> {{ _('Заменить существующие') }}
+    </label>
+    <button class="btn btn-accent" id="copy-btn">{{ _('Скопировать') }}</button>
+    <span id="copy-status" class="muted"></span>
+  </div>
+
+  <div class="sched-card">
+    <div class="sched-head">
+      <h2 id="day-title" class="sched-title"></h2>
+      <span class="muted" id="count-info"></span>
     </div>
-    {% for s in schedule %}
-    <div class="table-row">
-      <div>{{ [_('Пн'), _('Вт'), _('Ср'), _('Чт'), _('Пт'), _('Сб'), _('Вс')][s.day_of_week] }}</div>
-      <div>{{ s.time }}</div>
-      <div>{{ s.activity }}</div>
-      <div>{{ s.coach or '-' }}</div>
+    <div class="sched-body">
+      <table class="sched-table" aria-describedby="day-title">
+        <thead>
+          <tr>
+            <th style="width:110px">{{ _('Время') }}</th>
+            <th>{{ _('Активность') }}</th>
+            <th style="width:160px">{{ _('Дисциплина') }}</th>
+            <th style="width:220px">{{ _('Тренер') }}</th>
+            <th style="width:320px">{{ _('Действия') }}</th>
+          </tr>
+        </thead>
+        <tbody id="add-row" class="row-add">
+          <tr>
+            <td><input type="time" class="input time" id="add-time" required></td>
+            <td><input type="text" class="input" id="add-activity" placeholder="{{ _('Например: Бокс 13+') }}" required></td>
+            <td>
+              <select class="input" id="add-discipline" required>
+                <option value="" disabled selected>{{ _('Выберите') }}</option>
+                <option value="boxing">{{ _('Бокс') }}</option>
+                <option value="wrestling">{{ _('Борьба') }}</option>
+                <option value="mma">{{ _('ММА') }}</option>
+              </select>
+            </td>
+            <td><input type="text" class="input coach" id="add-coach" placeholder="{{ _('Например: Иван') }}"></td>
+            <td>
+              <div class="sched-actions">
+                <button class="btn btn-accent btn--sm" id="add-btn">{{ _('Добавить') }}</button>
+                <span class="muted">{{ _('Быстрое добавление для выбранного дня') }}</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        <tbody id="list"></tbody>
+      </table>
     </div>
-    {% endfor %}
   </div>
 </section>
+
+<script>
+// CSRF token helper (meta/input/cookie)
+function getCookie(name){
+  const m = document.cookie.match(new RegExp('(^| )'+name+'=([^;]+)'));
+  return m ? decodeURIComponent(m[2]) : '';
+}
+const CSRF_TOKEN = (function(){
+  const meta = document.querySelector('meta[name="csrf-token"]');
+  if(meta && meta.content) return meta.content;
+  const input = document.querySelector('input[name="csrf_token"]');
+  if(input && input.value) return input.value;
+  const cookie = getCookie('csrf_token');
+  return cookie || '';
+})();
+
+const DAY_FULL = [
+  '{{ _('Понедельник') }}','{{ _('Вторник') }}','{{ _('Среда') }}','{{ _('Четверг') }}','{{ _('Пятница') }}','{{ _('Суббота') }}','{{ _('Воскресенье') }}'
+];
+
+let ALL = [];
+let ACTIVE_DAY = (function(){ const js = new Date().getDay(); return js === 0 ? 6 : js - 1; })();
+
+function h(tag, attrs={}, ...children){
+  const el = document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs||{})){
+    if(k === 'class') el.className = v;
+    else if(k === 'html') el.innerHTML = v;
+    else if(k.startsWith('on')) el.addEventListener(k.slice(2), v);
+    else if(v != null) el.setAttribute(k, v);
+  }
+  for(const c of children){
+    if(c == null) continue;
+    if(typeof c === 'string') el.appendChild(document.createTextNode(c)); else el.appendChild(c);
+  }
+  return el;
+}
+
+async function api(path, opts={}){
+  const headers = Object.assign({ 'Content-Type':'application/json' }, opts.headers||{});
+  if (CSRF_TOKEN) headers['X-CSRFToken'] = CSRF_TOKEN;
+  const resp = await fetch(path, Object.assign({}, opts, { headers }));
+  const data = await resp.json().catch(()=>({}));
+  if(!resp.ok){ throw new Error(data.error || ('HTTP '+resp.status)); }
+  return data;
+}
+
+async function load(){
+  ALL = await api('/admin/schedule/data');
+  render();
+}
+
+function setActiveDay(day){
+  ACTIVE_DAY = day;
+  document.querySelectorAll('.days-tab').forEach(btn => {
+    const sel = Number(btn.getAttribute('data-day')) === ACTIVE_DAY;
+    btn.setAttribute('aria-selected', sel ? 'true' : 'false');
+  });
+  render();
+}
+
+function render(){
+  document.getElementById('day-title').textContent = DAY_FULL[ACTIVE_DAY];
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  const rows = ALL.filter(x => x.day_of_week === ACTIVE_DAY).sort((a,b)=>a.time.localeCompare(b.time));
+  document.getElementById('count-info').textContent = `${rows.length} {{ _('занятий') }}`;
+  rows.forEach(it => list.appendChild(rowView(it)));
+}
+
+function rowView(it){
+  const tr = h('tr');
+  tr.appendChild(h('td', {}, it.time));
+  tr.appendChild(h('td', {}, it.activity));
+  const discLabel = it.discipline === 'boxing' ? '{{ _('Бокс') }}' : (it.discipline === 'wrestling' ? '{{ _('Борьба') }}' : (it.discipline === 'mma' ? '{{ _('ММА') }}' : '—'));
+  tr.appendChild(h('td', {}, discLabel));
+  tr.appendChild(h('td', {}, it.coach || '—'));
+
+  const daySelect = h('select', {class:'select-day'});
+  for(let i=0;i<7;i++){
+    const opt = h('option', {value:String(i)}, DAY_FULL[i]);
+    if(i === ACTIVE_DAY) opt.selected = true;
+    daySelect.appendChild(opt);
+  }
+  const actions = h('td', {},
+    h('div', {class:'sched-actions'},
+      h('button', {class:'btn btn--sm', onclick: ()=>startEdit(tr, it)}, '{{ _('Изменить') }}'),
+      h('button', {class:'btn btn--sm btn--danger', onclick: ()=>doDelete(it)}, '{{ _('Удалить') }}'),
+      h('span', {class:'muted'}, ' | '),
+      daySelect,
+      h('button', {class:'btn btn--sm', title:'{{ _('Перенести на выбранный день') }}', onclick: async()=>{
+        const to = Number(daySelect.value);
+        if(to === it.day_of_week) return;
+        await api(`/admin/schedule/item/${it.id}`, { method:'PUT', body: JSON.stringify({ day_of_week: to }) });
+        await load();
+      }}, '→ {{ _('Перенести') }}'),
+      h('button', {class:'btn btn--sm', title:'{{ _('Дублировать на выбранный день') }}', onclick: async()=>{
+        const to = Number(daySelect.value);
+        await api('/admin/schedule/item', { method:'POST', body: JSON.stringify({ day_of_week: to, time: it.time, activity: it.activity, discipline: it.discipline, coach: it.coach }) });
+        await load();
+      }}, '⊕ {{ _('Дублировать') }}')
+    )
+  );
+  tr.appendChild(actions);
+  return tr;
+}
+
+function startEdit(tr, it){
+  tr.classList.add('row-editing');
+  tr.innerHTML = '';
+  const time = h('input', {class:'input time', type:'time', value: it.time, required:true});
+  const activity = h('input', {class:'input', type:'text', value: it.activity, required:true});
+  const disc = h('select', {class:'input', required:true});
+  [['', '{{ _('Выберите') }}'], ['boxing','{{ _('Бокс') }}'], ['wrestling','{{ _('Борьба') }}'], ['mma','{{ _('ММА') }}']].forEach(([v, lbl])=>{
+    const o = h('option', {value:v}, lbl); if(v === (it.discipline||'')) o.selected = true; disc.appendChild(o);
+  });
+  const coach = h('input', {class:'input coach', type:'text', value: it.coach || ''});
+  tr.appendChild(h('td', {}, time));
+  tr.appendChild(h('td', {}, activity));
+  tr.appendChild(h('td', {}, disc));
+  tr.appendChild(h('td', {}, coach));
+  tr.appendChild(h('td', {}, h('div', {class:'sched-actions'},
+    h('button', {class:'btn btn-accent btn--sm', onclick: async()=>{
+      const payload = { time: time.value.trim(), activity: activity.value.trim(), discipline: (disc.value||'').trim(), coach: coach.value.trim() || null };
+      try{ await api(`/admin/schedule/item/${it.id}`, { method:'PUT', body: JSON.stringify(payload) }); await load(); }catch(e){ alert(e.message); }
+    }}, '{{ _('Сохранить') }}'),
+    h('button', {class:'btn btn--sm', onclick: ()=>load()}, '{{ _('Отмена') }}')
+  )));
+}
+
+async function doDelete(it){
+  if(!confirm('{{ _('Удалить тренировку?') }}')) return;
+  try{ await api(`/admin/schedule/item/${it.id}`, { method:'DELETE' }); await load(); }catch(e){ alert(e.message); }
+}
+
+// Add new
+async function onAdd(){
+  const time = document.getElementById('add-time');
+  const activity = document.getElementById('add-activity');
+  const coach = document.getElementById('add-coach');
+  const disc = document.getElementById('add-discipline');
+  if(!time.value || !activity.value || !disc.value) return;
+  const payload = { day_of_week: ACTIVE_DAY, time: time.value, activity: activity.value.trim(), discipline: disc.value, coach: (coach.value||'').trim() || null };
+  try{ await api('/admin/schedule/item', { method:'POST', body: JSON.stringify(payload) }); time.value=''; activity.value=''; disc.value=''; coach.value=''; await load(); }catch(e){ alert(e.message); }
+}
+
+document.getElementById('add-btn').addEventListener('click', (e)=>{ e.preventDefault(); onAdd(); });
+
+// Copy day block
+async function copyDay(){
+  const src = Number(document.getElementById('copy-src').value);
+  const dst = Number(document.getElementById('copy-dst').value);
+  const replace = document.getElementById('copy-replace').checked;
+  const status = document.getElementById('copy-status');
+  if(Number.isNaN(src) || Number.isNaN(dst)) return;
+  try{
+    status.textContent = '{{ _('Выполняется...') }}';
+    const res = await api('/admin/schedule/copy_day', { method:'POST', body: JSON.stringify({ source_day: src, target_day: dst, replace }) });
+    status.textContent = `{{ _('Готово') }} (+${res.created})`;
+    await load();
+  }catch(e){ status.textContent = e.message; }
+}
+
+document.getElementById('copy-btn').addEventListener('click', (e)=>{ e.preventDefault(); copyDay(); });
+
+// Tabs
+Array.from(document.querySelectorAll('.days-tab')).forEach(btn=>{
+  btn.addEventListener('click', ()=> setActiveDay(Number(btn.getAttribute('data-day'))));
+});
+
+setActiveDay(ACTIVE_DAY);
+load();
+</script>
 {% endblock %}

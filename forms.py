@@ -41,6 +41,11 @@ class ScheduleForm(FlaskForm):
     )
     time = StringField("Time", validators=[DataRequired()])
     activity = StringField("Activity", validators=[DataRequired()])
+    discipline = SelectField(
+        "Discipline",
+        validators=[DataRequired()],
+        choices=[("boxing", "Boxing"), ("wrestling", "Wrestling"), ("mma", "MMA")],
+    )
     coach = StringField("Coach")
     submit = SubmitField("Save")
 

@@ -21,6 +21,7 @@ class Schedule(db.Model):
     day_of_week = db.Column(db.Integer, nullable=False)
     time = db.Column(db.String(50), nullable=False)
     activity = db.Column(db.String(120), nullable=False)
+    discipline = db.Column(db.String(50))  # boxing | wrestling | mma (optional)
     coach = db.Column(db.String(120))
 
 
