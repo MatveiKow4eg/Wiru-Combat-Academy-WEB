@@ -108,6 +108,8 @@ def run_simple_migrations(app):
                     s_cols = {row[1] for row in sched_cols}
                     if "discipline" not in s_cols:
                         conn.exec_driver_sql("ALTER TABLE schedule ADD COLUMN discipline VARCHAR(50)")
+                    if "age" not in s_cols:
+                        conn.exec_driver_sql("ALTER TABLE schedule ADD COLUMN age VARCHAR(50)")
                 except Exception:
                     pass
         except Exception:
@@ -425,6 +427,7 @@ def create_app():
                 "activity": i.activity,
                 "discipline": i.discipline,
                 "coach": i.coach,
+                "age": i.age,
             }
             for i in items
         ])
@@ -441,16 +444,20 @@ def create_app():
         activity = (data.get("activity") or "").strip()
         coach = (data.get("coach") or "").strip() or None
         discipline = (data.get("discipline") or "").strip().lower() or None
+        age = (data.get("age") or "").strip() or None
         if not isinstance(day, int) or day < 0 or day > 6:
             return jsonify({"error": "invalid day_of_week"}), 400
         if not time or not valid_time(time):
             return jsonify({"error": "invalid time"}), 400
-        if not discipline or discipline not in {"boxing","wrestling","mma"}:
+        if not discipline or discipline not in {"boxing","wrestling","mma","other"}:
             return jsonify({"error": "invalid discipline"}), 400
-        if not activity:
-            labels = {"boxing":"Boxing","wrestling":"Wrestling","mma":"MMA"}
-            activity = labels.get(discipline)
-        item = Schedule(day_of_week=day, time=time, activity=activity, coach=coach, discipline=discipline)
+        labels = {"boxing":"Boxing","wrestling":"Wrestling","mma":"MMA"}
+        base = labels.get(discipline)
+        activity = base + (age and ' ' + age or '')
+        existing = Schedule.query.filter_by(day_of_week=day, time=time).first()
+        if existing:
+            return jsonify({"error": "schedule for this day and time already exists"}), 400
+        item = Schedule(day_of_week=day, time=time, activity=activity, coach=coach, discipline=discipline, age=age)
         db.session.add(item)
         db.session.commit()
         return jsonify({
@@ -493,11 +500,15 @@ def create_app():
             item.coach = coach
         if "discipline" in data:
             disc = (data.get("discipline") or "").strip().lower() or None
-            if not disc or disc not in {"boxing","wrestling","mma"}:
+            if not disc or disc not in {"boxing","wrestling","mma","other"}:
                 return jsonify({"error": "invalid discipline"}), 400
             item.discipline = disc
+        if "age" in data:
+            item.age = (data.get("age") or "").strip() or None
+        if "discipline" in data or "age" in data:
             labels = {"boxing":"Boxing","wrestling":"Wrestling","mma":"MMA"}
-            item.activity = labels.get(disc, item.activity)
+            base = labels.get(item.discipline, item.activity.split(' ')[0])
+            item.activity = base + (item.age and ' ' + item.age or '')
         db.session.commit()
         return jsonify({"ok": True})
 
@@ -524,10 +535,16 @@ def create_app():
         if replace:
             Schedule.query.filter_by(day_of_week=dst).delete()
         src_items = Schedule.query.filter_by(day_of_week=src).all()
+        created = 0
         for it in src_items:
-            db.session.add(Schedule(day_of_week=dst, time=it.time, activity=it.activity, discipline=it.discipline, coach=it.coach))
+            if not replace:
+                existing = Schedule.query.filter_by(day_of_week=dst, time=it.time).first()
+                if existing:
+                    continue
+            db.session.add(Schedule(day_of_week=dst, time=it.time, activity=it.activity, discipline=it.discipline, coach=it.coach, age=it.age))
+            created += 1
         db.session.commit()
-        return jsonify({"ok": True, "created": len(src_items)})
+        return jsonify({"ok": True, "created": created})
 
     # Admin: Users list and detail
     @app.route("/admin/users")
@@ -1111,21 +1128,28 @@ def seed_if_empty():
         )
         db.session.add(demo)
     if Schedule.query.count() == 0:
-        base = [
-            (0, "18:00", "Boxing", "Alex"),
-            (2, "19:00", "Wrestling", "Marta"),
-            (4, "20:00", "MMA", "Ivan"),
-        ]
-        for d, t, a, c in base:
-            disc = None
-            al = (a or '').lower()
-            if al.startswith('box'):
-                disc = 'boxing'
-            elif al.startswith('wrest'):
-                disc = 'wrestling'
-            elif al.startswith('mma'):
-                disc = 'mma'
-            db.session.add(Schedule(day_of_week=d, time=t, activity=a, coach=c, discipline=disc))
+        # Boxing (POKS)
+        db.session.add(Schedule(day_of_week=1, time="17:15", activity="POKS 5–7a", discipline="boxing", age="5–7a"))
+        db.session.add(Schedule(day_of_week=3, time="17:15", activity="POKS 5–7a", discipline="boxing", age="5–7a"))
+        db.session.add(Schedule(day_of_week=0, time="17:00", activity="POKS 8–12a", discipline="boxing", age="8–12a"))
+        db.session.add(Schedule(day_of_week=2, time="17:00", activity="POKS 8–12a", discipline="boxing", age="8–12a"))
+        for d in range(0, 5):  # E–R: Mon-Fri
+            db.session.add(Schedule(day_of_week=d, time="18:30", activity="POKS Noored & täiskasvanud", discipline="boxing", age="Noored & täiskasvanud"))
+
+        # Wrestling (MAADLUS)
+        db.session.add(Schedule(day_of_week=0, time="16:00", activity="MAADLUS 6–12a", discipline="wrestling", age="6–12a"))
+        db.session.add(Schedule(day_of_week=2, time="16:00", activity="MAADLUS 6–12a", discipline="wrestling", age="6–12a"))
+        for d in [0, 2, 4]:  # E, K, R
+            db.session.add(Schedule(day_of_week=d, time="17:00", activity="MAADLUS 13+", discipline="wrestling", age="13+"))
+
+        # MMA
+        for d in range(0, 5):  # Mon-Fri
+            db.session.add(Schedule(day_of_week=d, time="18:00", activity="MMA", discipline="mma"))
+        db.session.add(Schedule(day_of_week=5, time="12:00", activity="MMA", discipline="mma"))
+
+        # General
+        for d in [0, 2, 4]:  # E, K, R
+            db.session.add(Schedule(day_of_week=d, time="19:00", activity="Üldkehaline/Ringtreening (Naised)", discipline="other"))
     if Trainer.query.count() == 0:
         trainers = [
             ("Alex Strong", "Мастер спорта по боксу.", "/static/images/boxing.svg"),

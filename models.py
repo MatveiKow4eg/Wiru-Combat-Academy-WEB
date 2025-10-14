@@ -23,6 +23,7 @@ class Schedule(db.Model):
     activity = db.Column(db.String(120), nullable=False)
     discipline = db.Column(db.String(50))  # boxing | wrestling | mma (optional)
     coach = db.Column(db.String(120))
+    age = db.Column(db.String(50))
 
 
 class Trainer(db.Model):
