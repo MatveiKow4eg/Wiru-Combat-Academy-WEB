@@ -1128,28 +1128,64 @@ def seed_if_empty():
         )
         db.session.add(demo)
     if Schedule.query.count() == 0:
-        # Boxing (POKS)
-        db.session.add(Schedule(day_of_week=1, time="17:15", activity="POKS 5–7a", discipline="boxing", age="5–7a"))
-        db.session.add(Schedule(day_of_week=3, time="17:15", activity="POKS 5–7a", discipline="boxing", age="5–7a"))
-        db.session.add(Schedule(day_of_week=0, time="17:00", activity="POKS 8–12a", discipline="boxing", age="8–12a"))
-        db.session.add(Schedule(day_of_week=2, time="17:00", activity="POKS 8–12a", discipline="boxing", age="8–12a"))
-        for d in range(0, 5):  # E–R: Mon-Fri
-            db.session.add(Schedule(day_of_week=d, time="18:30", activity="POKS Noored & täiskasvanud", discipline="boxing", age="Noored & täiskasvanud"))
+        # Понедельник
+        db.session.add(Schedule(day_of_week=0, time="16:00", activity="Борьба 6–12 лет", discipline="wrestling", age="6–12a."))
+        db.session.add(Schedule(day_of_week=0, time="17:00", activity="Бокс 8–12 лет", discipline="boxing", age="8–12a."))
+        db.session.add(Schedule(day_of_week=0, time="17:00", activity="Борьба 13+ лет", discipline="wrestling", age="13+ a."))
+        db.session.add(Schedule(day_of_week=0, time="18:00", activity="ММА", discipline="mma"))
+        db.session.add(Schedule(day_of_week=0, time="18:30", activity="Бокс Молодежь и взрослые", discipline="boxing", age="Noored & täiskasvanud"))
+        db.session.add(Schedule(day_of_week=0, time="19:00", activity="Общая физическая/Круговая тренировка (Женщины)", discipline="other", age="(Naised)"))
 
-        # Wrestling (MAADLUS)
-        db.session.add(Schedule(day_of_week=0, time="16:00", activity="MAADLUS 6–12a", discipline="wrestling", age="6–12a"))
-        db.session.add(Schedule(day_of_week=2, time="16:00", activity="MAADLUS 6–12a", discipline="wrestling", age="6–12a"))
-        for d in [0, 2, 4]:  # E, K, R
-            db.session.add(Schedule(day_of_week=d, time="17:00", activity="MAADLUS 13+", discipline="wrestling", age="13+"))
+        # Вторник
+        db.session.add(Schedule(day_of_week=1, time="17:15", activity="Бокс 5–7 лет", discipline="boxing", age="5–7a"))
+        db.session.add(Schedule(day_of_week=1, time="18:00", activity="ММА", discipline="mma"))
+        db.session.add(Schedule(day_of_week=1, time="18:30", activity="Бокс Молодежь и взрослые", discipline="boxing", age="Noored & täiskasvanud"))
 
-        # MMA
-        for d in range(0, 5):  # Mon-Fri
-            db.session.add(Schedule(day_of_week=d, time="18:00", activity="MMA", discipline="mma"))
-        db.session.add(Schedule(day_of_week=5, time="12:00", activity="MMA", discipline="mma"))
+        # Среда
+        db.session.add(Schedule(day_of_week=2, time="16:00", activity="Борьба 6–12 лет", discipline="wrestling", age="6–12a"))
+        db.session.add(Schedule(day_of_week=2, time="17:00", activity="Бокс 8–12 лет", discipline="boxing", age="8–12a."))
+        db.session.add(Schedule(day_of_week=2, time="17:00", activity="Борьба 13+ лет", discipline="wrestling", age="13-99a"))
+        db.session.add(Schedule(day_of_week=2, time="18:00", activity="ММА", discipline="mma"))
+        db.session.add(Schedule(day_of_week=2, time="18:30", activity="Бокс Молодежь и взрослые", discipline="boxing", age="Noored & täiskasvanud"))
+        db.session.add(Schedule(day_of_week=2, time="19:00", activity="Общая физическая/Круговая тренировка (Женщины)", discipline="other", age="(Naised)"))
 
-        # General
-        for d in [0, 2, 4]:  # E, K, R
-            db.session.add(Schedule(day_of_week=d, time="19:00", activity="Üldkehaline/Ringtreening (Naised)", discipline="other"))
+        # Четверг
+        db.session.add(Schedule(day_of_week=3, time="17:15", activity="Бокс 5–7 лет", discipline="boxing", age="5–7a"))
+        db.session.add(Schedule(day_of_week=3, time="18:00", activity="ММА", discipline="mma"))
+        db.session.add(Schedule(day_of_week=3, time="18:30", activity="Бокс Молодежь и взрослые", discipline="boxing", age="Noored & täiskasvanud"))
+
+        # Пятница
+        db.session.add(Schedule(day_of_week=4, time="17:00", activity="Борьба 13+ лет", discipline="wrestling", age="13+ a."))
+        db.session.add(Schedule(day_of_week=4, time="18:00", activity="ММА", discipline="mma"))
+        db.session.add(Schedule(day_of_week=4, time="18:30", activity="Бокс Молодежь и взрослые", discipline="boxing", age="Noored & täiskasvanud"))
+        db.session.add(Schedule(day_of_week=4, time="19:00", activity="Общая физическая/Круговая тренировка (Женщины)", discipline="other", age="(Naised)"))
+
+        # Суббота
+        db.session.add(Schedule(day_of_week=5, time="12:00", activity="ММА", discipline="mma"))
+
+        # Воскресенье - пусто
+        # Бокс
+        db.session.add(Schedule(day_of_week=1, time="17:15", activity="Бокс 5-7 лет", discipline="boxing", age="5-7 лет"))
+        db.session.add(Schedule(day_of_week=3, time="17:15", activity="Бокс 5-7 лет", discipline="boxing", age="5-7 лет"))
+        db.session.add(Schedule(day_of_week=0, time="17:00", activity="Бокс 8-12 лет", discipline="boxing", age="8-12 лет"))
+        db.session.add(Schedule(day_of_week=2, time="17:00", activity="Бокс 8-12 лет", discipline="boxing", age="8-12 лет"))
+        for d in range(0, 5):  # Пн-Пт
+            db.session.add(Schedule(day_of_week=d, time="18:30", activity="Бокс ��олодежь и взрослые", discipline="boxing", age="Молодежь и взрослые"))
+
+        # Борьба
+        db.session.add(Schedule(day_of_week=0, time="16:00", activity="Борьба 6-12 лет", discipline="wrestling", age="6-12 лет"))
+        db.session.add(Schedule(day_of_week=2, time="16:00", activity="Борьба 6-12 лет", discipline="wrestling", age="6-12 лет"))
+        for d in [0, 2, 4]:  # Пн, Ср, Пт
+            db.session.add(Schedule(day_of_week=d, time="17:00", activity="Борьба 13+", discipline="wrestling", age="13+"))
+
+        # ММА
+        for d in range(0, 5):  # Пн-Пт
+            db.session.add(Schedule(day_of_week=d, time="18:00", activity="ММА", discipline="mma"))
+        db.session.add(Schedule(day_of_week=5, time="12:00", activity="ММА", discipline="mma"))
+
+        # Общая физическая/Круговая тренировка (Женщины)
+        for d in [0, 2, 4]:  # Пн, Ср, Пт
+            db.session.add(Schedule(day_of_week=d, time="19:00", activity="Общая физическая/Круговая тренировка (Женщины)", discipline="other"))
     if Trainer.query.count() == 0:
         trainers = [
             ("Alex Strong", "Мастер спорта по боксу.", "/static/images/boxing.svg"),

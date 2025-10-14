@@ -17,7 +17,7 @@
   .sched-title{ margin:0; font-size:20px; }
 
   .sched-list { display: flex; flex-direction: column; gap: 16px; padding: 12px; }
-  .card { background: #171717; border:1px solid var(--border); border-radius:12px; padding:12px; display:grid; grid-template-columns: 80px 1fr 120px 160px auto; gap:10px; align-items:center; transition: box-shadow 0.2s; }
+  .card { background: #171717; border:1px solid var(--border); border-radius:12px; padding:12px; display:grid; grid-template-columns: 80px 1fr auto; gap:10px; align-items:center; transition: box-shadow 0.2s; }
   .card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
   .card .actions { display:flex; gap:6px; flex-wrap:wrap; }
   .card.editing { background: #181818; }
@@ -72,7 +72,7 @@
       <option value="1">{{ _('Вторник') }}</option>
       <option value="2">{{ _('Среда') }}</option>
       <option value="3">{{ _('Четверг') }}</option>
-      <option value="4">{{ _('Пятниц��') }}</option>
+      <option value="4">{{ _('Пятница') }}</option>
       <option value="5">{{ _('Суббота') }}</option>
       <option value="6">{{ _('Воскресенье') }}</option>
     </select>
@@ -202,6 +202,7 @@ function render(){
 
 function cardView(it){
   const discLabel = it.discipline === 'boxing' ? '{{ _('Бокс') }}' : (it.discipline === 'wrestling' ? '{{ _('Борьба') }}' : (it.discipline === 'mma' ? '{{ _('ММА') }}' : (it.discipline === 'other' ? '{{ _('Другое') }}' : '—')));
+  const categoryAge = discLabel + (it.age ? ' ' + it.age : '');
   
   const daySelect = h('select', {class:'select-day'});
   for(let i=0;i<7;i++){
@@ -212,9 +213,7 @@ function cardView(it){
   
   const card = h('div', {class:'card'},
     h('div', {}, it.time),
-    h('div', {}, it.activity),
-    h('div', {}, discLabel),
-    h('div', {}, it.coach || ''),
+    h('div', {}, categoryAge),
     h('div', {class:'actions'},
       h('button', {class:'btn btn--sm', onclick: ()=>startEdit(card, it)}, '{{ _('Изменить') }}'),
       h('button', {class:'btn btn--sm btn--danger', onclick: ()=>doDelete(it)}, '{{ _('Удалить') }}'),
@@ -226,7 +225,7 @@ function cardView(it){
         await api(`/admin/schedule/item/${it.id}`, { method:'PUT', body: JSON.stringify({ day_of_week: to }) });
         await load();
       }}, '→ {{ _('Перенести') }}'),
-      h('button', {class:'btn btn--sm', title:'{{ _('Дублировать на выбранный день') }}', onclick: async()=>{
+      h('button', {class:'btn btn--sm', title:'{{ _('Дублировать на выбранный ден��') }}', onclick: async()=>{
         const to = Number(daySelect.value);
         await api('/admin/schedule/item', { method:'POST', body: JSON.stringify({ day_of_week: to, time: it.time, activity: it.activity, discipline: it.discipline, coach: it.coach, age: it.age }) });
         await load();
