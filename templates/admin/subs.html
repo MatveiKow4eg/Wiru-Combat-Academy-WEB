@@ -4,7 +4,8 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
 {% endblock %}
 {% block content %}
-<div class="container" style="max-width:1200px; margin:24px auto; padding:0 24px;">
+{# Страница админских подписок временно отключена #}
+<div class="container" style="max-width:1200px; margin:24px auto; padding:0 24px;" hidden>
   <div class="toolbar" style="display:flex; gap:8px; align-items:center; margin-bottom:12px;">
     <a href="javascript:history.back()" class="btn" aria-label="Назад">← Назад</a>
     <a href="{{ url_for('profile') }}" class="btn btn-accent">Профиль</a>

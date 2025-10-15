@@ -445,15 +445,29 @@ def create_app():
         coach = (data.get("coach") or "").strip() or None
         discipline = (data.get("discipline") or "").strip().lower() or None
         age = (data.get("age") or "").strip() or None
+        
+        # Debug logging
+        app.logger.info(f"Schedule create request: day={day}, time={time}, discipline={discipline}, activity={activity}, age={age}")
+        
         if not isinstance(day, int) or day < 0 or day > 6:
+            app.logger.error(f"Invalid day_of_week: {day}")
             return jsonify({"error": "invalid day_of_week"}), 400
         if not time or not valid_time(time):
+            app.logger.error(f"Invalid time: {time}")
             return jsonify({"error": "invalid time"}), 400
         if not discipline or discipline not in {"boxing","wrestling","mma","other"}:
+            app.logger.error(f"Invalid discipline: {discipline}")
             return jsonify({"error": "invalid discipline"}), 400
-        labels = {"boxing":"Boxing","wrestling":"Wrestling","mma":"MMA"}
-        base = labels.get(discipline)
-        activity = base + (age and ' ' + age or '')
+        # Build activity for discipline; preserve custom name for 'other'
+        labels = {"boxing":"Boxing","wrestling":"Wrestling","mma":"MMA","other":"Other"}
+        if discipline == "other":
+            if not activity:
+                app.logger.error(f"Activity required for 'other' discipline but got: {activity}")
+                return jsonify({"error": "activity required for 'other' discipline"}), 400
+            base = activity
+        else:
+            base = labels.get(discipline)
+        activity = (base or "Other") + ((' ' + age) if age else '')
         existing = Schedule.query.filter_by(day_of_week=day, time=time).first()
         if existing:
             return jsonify({"error": "schedule for this day and time already exists"}), 400
@@ -480,6 +494,8 @@ def create_app():
             data = request.get_json(silent=True) or {}
         except Exception:
             data = {}
+        prev_age = item.age
+        prev_activity = item.activity
         if "day_of_week" in data:
             day = data.get("day_of_week")
             if not isinstance(day, int) or day < 0 or day > 6:
@@ -507,8 +523,20 @@ def create_app():
             item.age = (data.get("age") or "").strip() or None
         if "discipline" in data or "age" in data:
             labels = {"boxing":"Boxing","wrestling":"Wrestling","mma":"MMA"}
-            base = labels.get(item.discipline, item.activity.split(' ')[0])
-            item.activity = base + (item.age and ' ' + item.age or '')
+            if item.discipline == "other":
+                # Use provided custom base if present; otherwise strip previous age suffix from existing activity
+                custom_base = (data.get("activity") or "").strip()
+                if not custom_base:
+                    txt = prev_activity or item.activity or ""
+                    if prev_age and isinstance(prev_age, str) and txt.endswith(' ' + prev_age):
+                        custom_base = txt[:-(len(prev_age)+1)]
+                    else:
+                        parts = txt.rsplit(' ', 1)
+                        custom_base = parts[0] if len(parts) == 2 else txt
+                base = custom_base or "Other"
+            else:
+                base = labels.get(item.discipline) or (item.activity.split(' ')[0] if item.activity else 'Training')
+            item.activity = base + ((' ' + item.age) if item.age else '')
         db.session.commit()
         return jsonify({"ok": True})
 

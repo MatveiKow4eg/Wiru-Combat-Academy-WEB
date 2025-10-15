@@ -17,6 +17,8 @@
         {{ email }}
       {% endif %}
     </div>
+    {# Скрыт статус подписки #}
+    {#
     {% set _sub = sub if sub is defined else (last_sub if last_sub is defined else (current_user.subscriptions.order_by(models.Subscription.created_at.desc()).first() if current_user.is_authenticated else None)) %}
     {% if _sub and _sub.status %}
       <div style="margin-top:6px;">
@@ -26,5 +28,6 @@
         {% endif %}
       </div>
     {% endif %}
+    #}
   </div>
 </div>

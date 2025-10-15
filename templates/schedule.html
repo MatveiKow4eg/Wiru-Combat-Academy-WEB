@@ -149,8 +149,12 @@
     </div>
 </section>
 
+{# Блок абонементов временно отключён #}
+{#
 <section class="container pad-y plans-section" aria-labelledby="plans-title">
   <header class="plans-header">
+#}
+{#
     <h1 id="plans-title" class="plans-title">{{ _('Абонементы') }}</h1>
     <p class="plans-subtitle">{{ _('Выбери формат и дисциплину, которая подходит твоим целям.') }}</p>
   </header>
@@ -238,8 +242,10 @@
 
   <p class="plans-footnote">{{ _('plans.note') }}</p>
 </section>
+#}
 
 <script>
+/* Отключено: инициирование оплаты
 async function createCheckout(price_id){
   try{
     const resp = await fetch('/billing/checkout/session', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({price_id})});
@@ -247,6 +253,7 @@ async function createCheckout(price_id){
     if (data.url) window.location = data.url; else alert("{{ _('Ошибка создания сессии оплаты') }}");
   }catch(e){ alert("{{ _('Ошибка сети') }}"); }
 }
+*/
 
 // Mark today's day with the "Сегодня" chip
 (function(){

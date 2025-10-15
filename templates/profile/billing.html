@@ -1,8 +1,10 @@
+{# === БЛОК ОТКЛЮЧЁН: Абонемент и оплаты ===
 {% extends 'base.html' %}
 {% block title %}{{ _('Абонемент и оплаты') }} — Wiru Combat Academy{% endblock %}
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
 <style>
+#}
   .actions-center{ text-align:center; margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
   .btn-secondary{ background:#1b1b1b; border:1px solid #303030; color:#ddd; }
   .btn-secondary:hover{ border-color: var(--accent); color:#fff; }
@@ -21,7 +23,8 @@
 </style>
 {% endblock %}
 {% block content %}
-<div class="profile-layout">
+{# Страница оплаты/абонемента временно отключена #}
+<div class="profile-layout" hidden>
   {% set active_tab = 'billing' %}
   {% include 'profile/_profile_nav.html' %}
 
@@ -141,3 +144,4 @@ async function openPortal(){
 }
 </script>
 {% endblock %}
+#}  {# конец отключенного блока #}

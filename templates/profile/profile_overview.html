@@ -24,6 +24,8 @@
 
   <!-- Content -->
   <section class="content">
+    {# Отключено: предупреждение об окончании подписки #}
+    {#
     {% set sub = last_sub if last_sub is defined else (current_user.subscriptions.order_by(models.Subscription.created_at.desc()).first() if current_user.is_authenticated else None) %}
     {% if sub and sub.current_period_end %}
       {% set now_ts = now.timestamp() %}
@@ -36,6 +38,7 @@
       </div>
       {% endif %}
     {% endif %}
+    #}
 
     <div class="grid">
       <!-- Header card: avatar + name + statuses -->
@@ -44,7 +47,7 @@
           <h2>{{ _('Главная') }}</h2>
                   </div>
         <div class="card-body">
-          {% include 'profile/_profile_header.html' %}
+          {# {% include 'profile/_profile_header.html' %} #}
         </div>
       </div>
 
@@ -57,6 +60,8 @@
               <label>{{ _('Имя') }}</label>
               <div class="value">{{ current_user.full_name or _('—') }}</div>
             </div>
+            {# Блок статуса подписки скрыт #}
+            {#
             <div>
               <label>{{ _('Подписка') }}</label>
               <div class="value">
@@ -75,6 +80,7 @@
                 {% endif %}
               </div>
             </div>
+            #}
           </div>
         </div>
       </div>

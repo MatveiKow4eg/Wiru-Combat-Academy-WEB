@@ -46,7 +46,7 @@
       <div class="divider"></div>
       <div class="nav-label">Разделы</div>
       <a class="nav-item" href="#" data-tab="overview">Профиль</a>
-      <a class="nav-item" href="#" data-tab="billing">Абонемент</a>
+      {# <a class="nav-item" href="#" data-tab="billing">Абонемент</a> #}
       <a class="nav-item" href="#" data-tab="documents">Документы</a>
       {% if current_user.role == 'admin' %}
       <div class="divider"></div>
@@ -61,7 +61,7 @@
   <section class="content">
     <div class="tabs" role="tablist">
       <a class="tab" role="tab" aria-controls="tab-overview" data-tab="overview" href="#overview">Профиль</a>
-      <a class="tab" role="tab" aria-controls="tab-billing" data-tab="billing" href="#billing">Абонемент</a>
+      {# <a class="tab" role="tab" aria-controls="tab-billing" data-tab="billing" href="#billing">Абонемент</a> #}
       <a class="tab" role="tab" aria-controls="tab-documents" data-tab="documents" href="#documents">Документы</a>
     </div>
 
@@ -138,8 +138,10 @@
       </div>
     </div>
 
+    {#
     <div id="tab-billing" class="tab-content">
       <div class="card">
+#}
         <div class="card-head"><h2>Текущий абонемент</h2></div>
         <div class="card-body">
           {% if active_sub %}
@@ -189,7 +191,7 @@
           </div>
         </div>
       </div>
-    </div>
+    {# </div> #}
 
     <div id="tab-documents" class="tab-content">
       <div class="card">
@@ -268,15 +270,18 @@
   setActive(getTab());
 })();
 
+// Отключено: функции оплаты
+/*
 async function createCheckout(price_id){
   const resp = await fetch('/billing/checkout/session', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({price_id})});
   const data = await resp.json();
-  if (data.url) window.location = data.url; else alert('Ошибка со��дания сессии оплаты');
+  if (data.url) window.location = data.url; else alert('Ошибка создания сессии оплаты');
 }
 async function openPortal(){
   const resp = await fetch('/billing/portal', {method:'POST'});
   const data = await resp.json();
   if (data.url) window.location = data.url; else alert('Ошибка открытия портала');
 }
+*/
 </script>
 {% endblock %}

@@ -2,347 +2,1190 @@
 {% block title %}{{ _('Редактор расписания') }}{% endblock %}
 {% block extra_css %}
 <style>
-  :root { --accent: #e02525; }
-  .toolbar{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
-  .days-tabs{ display:flex; gap:6px; border-bottom:1px solid var(--border); margin-top:6px; overflow:auto; }
-  .days-tab{ appearance:none; background:transparent; color:var(--text); padding:8px 12px; border:0; cursor:pointer; font-weight:700; transition: background 0.2s; }
-  .days-tab:hover { background: rgba(224,37,37,0.1); }
-  .days-tab[aria-selected="true"]{ background: var(--accent); color: white; border-radius: 8px 8px 0 0; }
-
-  .copy-bar{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin: 10px 0 14px; }
-  .copy-bar .input{ height: 36px; }
-
-  .sched-card{ background: var(--panel); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
-  .sched-head{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-bottom:1px solid var(--border); }
-  .sched-title{ margin:0; font-size:20px; }
-
-  .sched-list { display: flex; flex-direction: column; gap: 16px; padding: 12px; }
-  .card { background: #171717; border:1px solid var(--border); border-radius:12px; padding:12px; display:grid; grid-template-columns: 80px 1fr auto; gap:10px; align-items:center; transition: box-shadow 0.2s; }
-  .card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-  .card .actions { display:flex; gap:6px; flex-wrap:wrap; }
-  .card.editing { background: #181818; }
-  .add-card { background: #121212; margin-bottom: 16px; }
-
-  @media (max-width: 600px) {
-    .card { grid-template-columns: 1fr; gap: 8px; }
-    .card .actions { justify-content: center; }
+  :root {
+    --accent: #e02525;
+    --bg-primary: #0D0D0D;
+    --bg-secondary: #121212;
+    --surface: #1A1A1A;
+    --surface-hover: #1F1F1F;
+    --border: #2A2A2A;
+    --text-primary: #EDEDED;
+    --text-secondary: #9AA0A6;
+    --success: #34A853;
+    --danger: #EA4335;
+    --warning: #FBBC04;
   }
 
-  .btn { padding:8px 12px; border-radius:20px; box-shadow:0 2px 4px rgba(0,0,0,0.3); transition: box-shadow 0.2s, transform 0.2s; }
-  .btn:hover { box-shadow:0 4px 8px rgba(0,0,0,0.4); transform: translateY(-2px); }
-  .btn-accent { background: var(--accent); color: white; }
-  .btn--danger { background: #c00; color: white; }
-  .btn--sm { padding:6px 10px; font-size:12px; border-radius:16px; }
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
 
-  .input.time{ width:92px; }
-  .input.coach{ min-width:160px; }
-  .select-day{ height:32px; }
+  /* Page Layout */
+  .schedule-editor {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 16px 40px;
+  }
 
-  .muted{ color: var(--muted) }
+  /* Sticky Header */
+  .editor-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg-primary);
+    padding: 20px 0 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
 
-  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:100; justify-content:center; align-items:center; }
-  .modal-content { background:var(--panel); padding:20px; border-radius:12px; max-width:400px; text-align:center; }
-  .modal-content p { margin-bottom:16px; }
-  .modal-content .btn { margin:0 8px; }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .editor-title {
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* Days Tabs */
+  .days-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .days-tabs::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .days-tabs::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 2px;
+  }
+
+  .day-tab {
+    position: relative;
+    flex: 1;
+    min-width: 120px;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: center;
+  }
+
+  .day-tab:hover {
+    background: var(--surface);
+    border-color: var(--accent);
+  }
+
+  .day-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .day-tab.today:not(.active)::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  .day-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 6px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  /* Copy Day Bar */
+  .copy-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    flex-wrap: wrap;
+  }
+
+  .copy-bar-label {
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .copy-arrow {
+    color: var(--text-secondary);
+    font-size: 18px;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: #c91f1f;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(224, 37, 37, 0.3);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+
+  .btn-secondary:hover {
+    background: var(--surface);
+    border-color: var(--text-secondary);
+  }
+
+  .btn-danger {
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+  }
+
+  .btn-danger:hover {
+    background: rgba(234, 67, 53, 0.1);
+  }
+
+  .btn-sm {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .btn-icon {
+    padding: 8px;
+    width: 36px;
+    height: 36px;
+  }
+
+  /* Input Fields */
+  .input {
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: all 0.15s ease;
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(224, 37, 37, 0.1);
+  }
+
+  .input::placeholder {
+    color: var(--text-secondary);
+  }
+
+  .input.error {
+    border-color: var(--danger);
+  }
+
+  .input-error-text {
+    display: block;
+    margin-top: 4px;
+    color: var(--danger);
+    font-size: 12px;
+  }
+
+  .input-time {
+    width: 100px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .input-age {
+    width: 140px;
+  }
+
+  .input-coach {
+    min-width: 180px;
+  }
+
+  /* Add Panel */
+  .add-panel {
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .add-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .add-panel-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .add-panel-toggle {
+    color: var(--text-secondary);
+    transition: transform 0.2s ease;
+  }
+
+  .add-panel.collapsed .add-panel-toggle {
+    transform: rotate(-90deg);
+  }
+
+  .add-panel.collapsed .add-panel-body {
+    display: none;
+  }
+
+  .add-form {
+    display: grid;
+    grid-template-columns: 100px 1fr 140px 180px auto;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .add-form-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  .form-hint {
+    grid-column: 1 / -1;
+    margin-top: -4px;
+    color: var(--text-secondary);
+    font-size: 12px;
+  }
+
+  /* Schedule List */
+  .schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .schedule-card {
+    display: grid;
+    grid-template-columns: 24px 80px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: all 0.15s ease;
+  }
+
+  .schedule-card:hover {
+    background: var(--surface-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  .schedule-card.editing {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+  }
+
+  .drag-handle {
+    color: var(--text-secondary);
+    cursor: grab;
+    font-size: 18px;
+  }
+
+  .drag-handle:active {
+    cursor: grabbing;
+  }
+
+  .card-time {
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  .card-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  /* Edit Form in Card */
+  .edit-form {
+    grid-column: 2 / -1;
+    display: grid;
+    grid-template-columns: 100px 1fr 140px 180px auto;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .edit-form-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* Empty State */
+  .empty-state {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--text-secondary);
+  }
+
+  .empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  .empty-state-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .empty-state-text {
+    font-size: 14px;
+  }
+
+  /* Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal.active {
+    display: flex;
+  }
+
+  .modal-content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 480px;
+    width: 100%;
+  }
+
+  .modal-header {
+    margin-bottom: 16px;
+  }
+
+  .modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .modal-body {
+    margin-bottom: 24px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .modal-footer {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 14px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 300px;
+    animation: slideIn 0.2s ease;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .toast.success {
+    border-color: var(--success);
+  }
+
+  .toast.error {
+    border-color: var(--danger);
+  }
+
+  .toast-icon {
+    font-size: 20px;
+  }
+
+  .toast.success .toast-icon {
+    color: var(--success);
+  }
+
+  .toast.error .toast-icon {
+    color: var(--danger);
+  }
+
+  .toast-message {
+    flex: 1;
+    font-size: 14px;
+  }
+
+  /* Dropdown Menu */
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    min-width: 160px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 10;
+    padding: 4px;
+  }
+
+  .dropdown.active .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    color: var(--text-primary);
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.1s ease;
+  }
+
+  .dropdown-item:hover {
+    background: var(--surface-hover);
+  }
+
+  .dropdown-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 1199px) {
+    .add-form {
+      grid-template-columns: 100px 1fr 140px auto;
+    }
+    
+    .input-coach {
+      grid-column: 1 / -1;
+    }
+
+    .edit-form {
+      grid-template-columns: 100px 1fr 140px auto;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .editor-title {
+      font-size: 24px;
+    }
+
+    .day-tab {
+      min-width: 100px;
+      font-size: 13px;
+      padding: 10px 12px;
+    }
+
+    .copy-bar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .add-form {
+      grid-template-columns: 1fr;
+    }
+
+    .input-time,
+    .input-age,
+    .input-coach {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .schedule-card {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .drag-handle {
+      display: none;
+    }
+
+    .card-time {
+      font-size: 14px;
+    }
+
+    .card-actions {
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .edit-form {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Loading State */
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--text-secondary);
+  }
+
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
 </style>
 {% endblock %}
+
 {% block content %}
-<section class="container pad-y">
-  <div class="toolbar">
-    <a class="btn" href="{{ url_for('admin_dashboard') }}">← {{ _('Админ') }}</a>
-    <a class="btn" href="{{ url_for('schedule_page') }}">{{ _('Открыть публичное расписание') }}</a>
-  </div>
-  <h1>{{ _('Редактор расписания') }}</h1>
-
-  <nav class="days-tabs" role="tablist" aria-label="{{ _('Дни недели') }}">
-    <button class="days-tab" role="tab" data-day="0" aria-selected="true">{{ _('Понедельник') }}</button>
-    <button class="days-tab" role="tab" data-day="1" aria-selected="false">{{ _('Вторник') }}</button>
-    <button class="days-tab" role="tab" data-day="2" aria-selected="false">{{ _('Среда') }}</button>
-    <button class="days-tab" role="tab" data-day="3" aria-selected="false">{{ _('Четверг') }}</button>
-    <button class="days-tab" role="tab" data-day="4" aria-selected="false">{{ _('Пятница') }}</button>
-    <button class="days-tab" role="tab" data-day="5" aria-selected="false">{{ _('Суббота') }}</button>
-    <button class="days-tab" role="tab" data-day="6" aria-selected="false">{{ _('Воскресенье') }}</button>
-  </nav>
-
-  <div class="copy-bar">
-    <span class="muted">{{ _('Копировать день') }}:</span>
-    <select id="copy-src" class="input" style="max-width:180px">
-      <option value="" disabled selected>{{ _('Из') }}</option>
-      <option value="0">{{ _('Понедельник') }}</option>
-      <option value="1">{{ _('Вторник') }}</option>
-      <option value="2">{{ _('Среда') }}</option>
-      <option value="3">{{ _('Четверг') }}</option>
-      <option value="4">{{ _('Пятница') }}</option>
-      <option value="5">{{ _('Суббота') }}</option>
-      <option value="6">{{ _('Воскресенье') }}</option>
-    </select>
-    <span class="muted">→</span>
-    <select id="copy-dst" class="input" style="max-width:180px">
-      <option value="" disabled selected>{{ _('В') }}</option>
-      <option value="0">{{ _('Понедельник') }}</option>
-      <option value="1">{{ _('Вторник') }}</option>
-      <option value="2">{{ _('Среда') }}</option>
-      <option value="3">{{ _('Четверг') }}</option>
-      <option value="4">{{ _('Пятница') }}</option>
-      <option value="5">{{ _('Суббота') }}</option>
-      <option value="6">{{ _('Воскресенье') }}</option>
-    </select>
-    <label style="display:flex; align-items:center; gap:6px;">
-      <input type="checkbox" id="copy-replace"> {{ _('Заменить существующие') }}
-    </label>
-    <button class="btn btn-accent" id="copy-btn">{{ _('Скопировать') }}</button>
-    <span id="copy-status" class="muted"></span>
-  </div>
-
-  <hr style="margin:20px 0; border-color:var(--border);">
-
-  <div class="sched-card">
-    <div class="sched-head">
-      <h2 id="day-title" class="sched-title"></h2>
-      <span class="muted" id="count-info"></span>
+<div class="schedule-editor">
+  <!-- Sticky Header -->
+  <div class="editor-header">
+    <div class="header-top">
+      <h1 class="editor-title">{{ _('Редактор расписания') }}</h1>
+      <div class="header-actions">
+        <a href="{{ url_for('schedule_page') }}" class="btn btn-secondary btn-sm">{{ _('Публичное расписание') }}</a>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary btn-sm">{{ _('Админ-панель') }}</a>
+      </div>
     </div>
-    <div class="sched-body">
-      <div id="add-card" class="card add-card">
-        <input type="time" class="input time" id="add-time" required>
+
+    <!-- Days Tabs -->
+    <div class="days-tabs" id="days-tabs"></div>
+
+    <!-- Copy Day Bar -->
+    <div class="copy-bar">
+      <span class="copy-bar-label">{{ _('Копировать день') }}:</span>
+      <select id="copy-src" class="input" style="width: 160px;">
+        <option value="" disabled selected>{{ _('Из') }}</option>
+      </select>
+      <span class="copy-arrow">→</span>
+      <select id="copy-dst" class="input" style="width: 160px;">
+        <option value="" disabled selected>{{ _('В') }}</option>
+      </select>
+      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+        <input type="checkbox" id="copy-replace">
+        <span style="font-size: 14px;">{{ _('Заменить существующие') }}</span>
+      </label>
+      <button class="btn btn-primary btn-sm" id="copy-btn">{{ _('Скопировать') }}</button>
+      <span id="copy-status" style="color: var(--text-secondary); font-size: 13px;"></span>
+    </div>
+  </div>
+
+  <!-- Add Panel -->
+  <div class="add-panel" id="add-panel">
+    <div class="add-panel-header" onclick="toggleAddPanel()">
+      <h3 class="add-panel-title">{{ _('Добавить занятие') }}</h3>
+      <span class="add-panel-toggle">▼</span>
+    </div>
+    <div class="add-panel-body">
+      <form class="add-form" id="add-form" onsubmit="return false;">
+        <input type="time" class="input input-time" id="add-time" placeholder="00:00" required>
         <select class="input" id="add-discipline" required>
-          <option value="" disabled selected>{{ _('Выберите') }}</option>
+          <option value="" disabled selected>{{ _('Выберите активность') }}</option>
           <option value="boxing">{{ _('Бокс') }}</option>
           <option value="wrestling">{{ _('Борьба') }}</option>
           <option value="mma">{{ _('ММА') }}</option>
           <option value="other">{{ _('Другое') }}</option>
         </select>
-        <input type="text" class="input" id="add-custom" placeholder="{{ _('Введите название занятия') }}" style="display:none;">
-        <input type="text" class="input" id="add-age" placeholder="{{ _('Возраст, например: 13+') }}">
-        <input type="text" class="input coach" id="add-coach" placeholder="{{ _('Например: Иван') }}">
-        <div class="actions">
-          <button class="btn btn-accent btn--sm" id="add-btn" title="{{ _('Быстрое добавление для выбранного дня') }}">{{ _('Добавить') }}</button>
+        <input type="text" class="input" id="add-custom" placeholder="{{ _('Введите название') }}" style="display: none; grid-column: 2;">
+        <input type="text" class="input input-age" id="add-age" placeholder="{{ _('Возраст, например: 6–12') }}">
+        <input type="text" class="input input-coach" id="add-coach" placeholder="{{ _('Тренер (необязательно)') }}">
+        <div class="add-form-actions">
+          <button type="submit" class="btn btn-primary btn-sm">{{ _('Добавить') }}</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="resetAddForm()">{{ _('Очистить') }}</button>
         </div>
-      </div>
-      <div id="list" class="sched-list"></div>
+        <span class="form-hint">{{ _('Пример: Борьба 6–12, ММА 13+, Общая физиче��кая подготовка') }}</span>
+      </form>
     </div>
   </div>
-</section>
 
-<div id="copy-modal" class="modal">
+  <!-- Schedule List -->
+  <div id="schedule-list" class="schedule-list"></div>
+</div>
+
+<!-- Modals -->
+<div class="modal" id="confirm-modal">
   <div class="modal-content">
-    <p id="copy-confirm-text"></p>
-    <button class="btn btn-accent" onclick="confirmCopy()">{{ _('Да') }}</button>
-    <button class="btn" onclick="closeModal()">{{ _('Нет') }}</button>
+    <div class="modal-header">
+      <h3 class="modal-title" id="modal-title">{{ _('Подтверждение') }}</h3>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">{{ _('Отмена') }}</button>
+      <button class="btn btn-primary" id="modal-confirm">{{ _('Подтвердить') }}</button>
+    </div>
   </div>
 </div>
 
 <script>
-// CSRF token helper
-function getCookie(name){
-  const m = document.cookie.match(new RegExp('(^| )'+name+'=([^;]+)'));
+// CSRF Token
+function getCookie(name) {
+  const m = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
   return m ? decodeURIComponent(m[2]) : '';
 }
-const CSRF_TOKEN = (function(){
+
+const CSRF_TOKEN = (() => {
   const meta = document.querySelector('meta[name="csrf-token"]');
-  if(meta && meta.content) return meta.content;
+  if (meta?.content) return meta.content;
   const input = document.querySelector('input[name="csrf_token"]');
-  if(input && input.value) return input.value;
-  const cookie = getCookie('csrf_token');
-  return cookie || '';
+  if (input?.value) return input.value;
+  return getCookie('csrf_token') || '';
 })();
 
-const DAY_FULL = [
-  '{{ _('Понедельник') }}','{{ _('Вторник') }}','{{ _('Среда') }}','{{ _('Четверг') }}','{{ _('Пятница') }}','{{ _('Суббота') }}','{{ _('Воскресенье') }}'
+// Constants
+const DAY_NAMES = [
+  '{{ _('Понедельник') }}',
+  '{{ _('Вторник') }}',
+  '{{ _('Среда') }}',
+  '{{ _('Четверг') }}',
+  '{{ _('Пятница') }}',
+  '{{ _('Суббота') }}',
+  '{{ _('Воскресенье') }}'
 ];
 
-let ALL = [];
-let ACTIVE_DAY = (function(){ const js = new Date().getDay(); return js === 0 ? 6 : js - 1; })();
+const DAY_NAMES_SHORT = ['{{ _('Пн') }}', '{{ _('Вт') }}', '{{ _('Ср') }}', '{{ _('Чт') }}', '{{ _('Пт') }}', '{{ _('Сб') }}', '{{ _('Вс') }}'];
 
-function h(tag, attrs={}, ...children){
-  const el = document.createElement(tag);
-  for(const [k,v] of Object.entries(attrs||{})){
-    if(k === 'class') el.className = v;
-    else if(k === 'html') el.innerHTML = v;
-    else if(k.startsWith('on')) el.addEventListener(k.slice(2), v);
-    else if(v != null) el.setAttribute(k, v);
-  }
-  for(const c of children){
-    if(c == null) continue;
-    if(typeof c === 'string') el.appendChild(document.createTextNode(c)); else el.appendChild(c);
-  }
-  return el;
-}
+// State
+let scheduleData = [];
+let activeDay = (() => {
+  const js = new Date().getDay();
+  return js === 0 ? 6 : js - 1;
+})();
+const todayDay = activeDay;
 
-async function api(path, opts={}){
-  const headers = Object.assign({ 'Content-Type':'application/json' }, opts.headers||{});
+// API Helper
+async function api(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json', ...opts.headers };
   if (CSRF_TOKEN) headers['X-CSRFToken'] = CSRF_TOKEN;
-  const resp = await fetch(path, Object.assign({}, opts, { headers }));
-  const data = await resp.json().catch(()=>({}));
-  if(!resp.ok){ throw new Error(data.error || ('HTTP '+resp.status)); }
+  
+  const resp = await fetch(path, { ...opts, headers });
+  const data = await resp.json().catch(() => ({}));
+  
+  if (!resp.ok) {
+    throw new Error(data.error || `HTTP ${resp.status}`);
+  }
+  
   return data;
 }
 
-async function load(){
-  ALL = await api('/admin/schedule/data');
-  render();
-}
-
-function setActiveDay(day){
-  ACTIVE_DAY = day;
-  document.querySelectorAll('.days-tab').forEach(btn => {
-    const sel = Number(btn.getAttribute('data-day')) === ACTIVE_DAY;
-    btn.setAttribute('aria-selected', sel ? 'true' : 'false');
-  });
-  render();
-}
-
-function render(){
-  document.getElementById('day-title').textContent = DAY_FULL[ACTIVE_DAY];
-  const list = document.getElementById('list');
-  list.innerHTML = '';
-  const rows = ALL.filter(x => x.day_of_week === ACTIVE_DAY).sort((a,b)=>a.time.localeCompare(b.time));
-  document.getElementById('count-info').textContent = `${rows.length} {{ _('занятий') }}`;
-  rows.forEach(it => list.appendChild(cardView(it)));
-}
-
-function cardView(it){
-  const discLabel = it.discipline === 'boxing' ? '{{ _('Бокс') }}' : (it.discipline === 'wrestling' ? '{{ _('Борьба') }}' : (it.discipline === 'mma' ? '{{ _('ММА') }}' : (it.discipline === 'other' ? '{{ _('Другое') }}' : '—')));
-  const categoryAge = discLabel + (it.age ? ' ' + it.age : '');
+// Toast Notifications
+function showToast(message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <span class="toast-icon">${type === 'success' ? '✓' : '✕'}</span>
+    <span class="toast-message">${message}</span>
+  `;
+  document.body.appendChild(toast);
   
-  const daySelect = h('select', {class:'select-day'});
-  for(let i=0;i<7;i++){
-    const opt = h('option', {value:String(i)}, DAY_FULL[i]);
-    if(i === ACTIVE_DAY) opt.selected = true;
-    daySelect.appendChild(opt);
+  setTimeout(() => {
+    toast.style.animation = 'slideIn 0.2s ease reverse';
+    setTimeout(() => toast.remove(), 200);
+  }, 3000);
+}
+
+// Initialize
+async function init() {
+  renderDaysTabs();
+  populateCopySelects();
+  setupEventListeners();
+  await loadSchedule();
+}
+
+// Render Days Tabs
+function renderDaysTabs() {
+  const container = document.getElementById('days-tabs');
+  container.innerHTML = '';
+  
+  DAY_NAMES.forEach((name, index) => {
+    const tab = document.createElement('button');
+    tab.className = 'day-tab';
+    tab.dataset.day = index;
+    
+    if (index === activeDay) tab.classList.add('active');
+    if (index === todayDay) tab.classList.add('today');
+    
+    const count = scheduleData.filter(item => item.day_of_week === index).length;
+    tab.innerHTML = `${DAY_NAMES_SHORT[index]}${index === activeDay && count > 0 ? `<span class="day-badge">${count}</span>` : ''}`;
+    
+    tab.onclick = () => setActiveDay(index);
+    container.appendChild(tab);
+  });
+}
+
+// Populate Copy Selects
+function populateCopySelects() {
+  const srcSelect = document.getElementById('copy-src');
+  const dstSelect = document.getElementById('copy-dst');
+  
+  DAY_NAMES.forEach((name, index) => {
+    srcSelect.innerHTML += `<option value="${index}">${name}</option>`;
+    dstSelect.innerHTML += `<option value="${index}">${name}</option>`;
+  });
+}
+
+// Set Active Day
+function setActiveDay(day) {
+  activeDay = day;
+  renderDaysTabs();
+  renderScheduleList();
+}
+
+// Load Schedule
+async function loadSchedule() {
+  try {
+    scheduleData = await api('/admin/schedule/data');
+    renderDaysTabs();
+    renderScheduleList();
+  } catch (error) {
+    showToast(error.message, 'error');
+  }
+}
+
+// Render Schedule List
+function renderScheduleList() {
+  const container = document.getElementById('schedule-list');
+  const dayItems = scheduleData
+    .filter(item => item.day_of_week === activeDay)
+    .sort((a, b) => a.time.localeCompare(b.time));
+  
+  if (dayItems.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📅</div>
+        <div class="empty-state-title">{{ _('Пока нет занятий') }}</div>
+        <div class="empty-state-text">{{ _('Добавьте первое занятие для этого дня') }}</div>
+      </div>
+    `;
+    return;
   }
   
-  const card = h('div', {class:'card'},
-    h('div', {}, it.time),
-    h('div', {}, categoryAge),
-    h('div', {class:'actions'},
-      h('button', {class:'btn btn--sm', onclick: ()=>startEdit(card, it)}, '{{ _('Изменить') }}'),
-      h('button', {class:'btn btn--sm btn--danger', onclick: ()=>doDelete(it)}, '{{ _('Удалить') }}'),
-      h('span', {class:'muted'}, ' | '),
-      daySelect,
-      h('button', {class:'btn btn--sm', title:'{{ _('Перенести на выбранный день') }}', onclick: async()=>{
-        const to = Number(daySelect.value);
-        if(to === it.day_of_week) return;
-        await api(`/admin/schedule/item/${it.id}`, { method:'PUT', body: JSON.stringify({ day_of_week: to }) });
-        await load();
-      }}, '→ {{ _('Перенести') }}'),
-      h('button', {class:'btn btn--sm', title:'{{ _('Дублировать на выбранный ден��') }}', onclick: async()=>{
-        const to = Number(daySelect.value);
-        await api('/admin/schedule/item', { method:'POST', body: JSON.stringify({ day_of_week: to, time: it.time, activity: it.activity, discipline: it.discipline, coach: it.coach, age: it.age }) });
-        await load();
-      }}, '⊕ {{ _('Дублировать') }}')
-    )
-  );
+  container.innerHTML = '';
+  dayItems.forEach(item => {
+    container.appendChild(createScheduleCard(item));
+  });
+}
+
+// Create Schedule Card
+function createScheduleCard(item) {
+  const card = document.createElement('div');
+  card.className = 'schedule-card';
+  card.dataset.id = item.id;
+  
+  let activityDisplay;
+  if (item.discipline === 'other') {
+    activityDisplay = item.activity || '{{ _('Другое') }}';
+  } else {
+    const labels = {
+      boxing: '{{ _('Бокс') }}',
+      wrestling: '{{ _('Борьба') }}',
+      mma: '{{ _('ММА') }}'
+    };
+    activityDisplay = labels[item.discipline] || item.activity;
+    if (item.age) activityDisplay += ` ${item.age}`;
+  }
+  
+  card.innerHTML = `
+    <div class="drag-handle" title="{{ _('Перетащить') }}">⋮⋮</div>
+    <div class="card-time">${item.time}</div>
+    <div class="card-info">
+      <div class="card-title">${activityDisplay}</div>
+      ${item.coach ? `<div class="card-meta"><span class="card-meta-item">👤 ${item.coach}</span></div>` : ''}
+    </div>
+    <div class="card-actions">
+      <button class="btn btn-secondary btn-sm" onclick="editItem(${item.id})">{{ _('Изменить') }}</button>
+      <div class="dropdown">
+        <button class="btn btn-secondary btn-icon btn-sm" onclick="toggleDropdown(event)">⋯</button>
+        <div class="dropdown-menu">
+          <div class="dropdown-item" onclick="moveItem(${item.id})">📤 {{ _('Перенести') }}</div>
+          <div class="dropdown-item" onclick="duplicateItem(${item.id})">📋 {{ _('Дублировать') }}</div>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item" style="color: var(--danger);" onclick="deleteItem(${item.id})">🗑 {{ _('Удалить') }}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  
   return card;
 }
 
-function startEdit(card, it){
+// Edit Item
+function editItem(id) {
+  const item = scheduleData.find(i => i.id === id);
+  if (!item) return;
+  
+  const card = document.querySelector(`[data-id="${id}"]`);
   card.classList.add('editing');
-  card.innerHTML = '';
-  const time = h('input', {class:'input time', type:'time', value: it.time, required:true});
-  const disc = h('select', {class:'input', required:true});
-  [['', '{{ _('Выберите') }}'], ['boxing','{{ _('Бокс') }}'], ['wrestling','{{ _('Борьба') }}'], ['mma','{{ _('ММА') }}'], ['other','{{ _('Другое') }}']].forEach(([v, lbl])=>{
-    const o = h('option', {value:v}, lbl); if(v === (it.discipline||'')) o.selected = true; disc.appendChild(o);
-  });
-  const custom = h('input', {class:'input', type:'text', value: '', placeholder:'{{ _('Введите название занятия') }}', style:{display: (it.discipline === 'other' ? 'block' : 'none')}});
-  const age = h('input', {class:'input', type:'text', value: it.age || '', placeholder:'{{ _('Возраст, например: 13+') }}'});
-  const coach = h('input', {class:'input coach', type:'text', value: it.coach || ''});
-  disc.addEventListener('change', () => {
-    const isOther = disc.value === 'other';
-    custom.style.display = isOther ? 'block' : 'none';
-    if (isOther) custom.value = it.activity.split(' ')[0]; // assuming activity is "custom age", take custom part
-  });
-  card.appendChild(time);
-  card.appendChild(disc);
-  card.appendChild(custom);
-  card.appendChild(age);
-  card.appendChild(coach);
-  card.appendChild(h('div', {class:'actions'},
-    h('button', {class:'btn btn-accent btn--sm', onclick: async()=>{
-      const payload = { time: time.value.trim(), discipline: disc.value, coach: coach.value.trim() || null };
-      if (disc.value === 'other') {
-        payload.activity = custom.value.trim();
-      }
-      payload.age = age.value.trim() || null;
-      try{ await api(`/admin/schedule/item/${it.id}`, { method:'PUT', body: JSON.stringify(payload) }); await load(); }catch(e){ alert(e.message); }
-    }}, '{{ _('Сохранить') }}'),
-    h('button', {class:'btn btn--sm', onclick: ()=>load()}, '{{ _('Отмена') }}')
-  ));
-}
-
-async function doDelete(it){
-  if(!confirm('{{ _('Удалить тренировку?') }}')) return;
-  try{ await api(`/admin/schedule/item/${it.id}`, { method:'DELETE' }); await load(); }catch(e){ alert(e.message); }
-}
-
-// Add new
-async function onAdd(){
-  const time = document.getElementById('add-time');
-  const coach = document.getElementById('add-coach');
-  const disc = document.getElementById('add-discipline');
-  const age = document.getElementById('add-age');
-  const custom = document.getElementById('add-custom');
-  if(!time.value || !disc.value) return;
-  const payload = { day_of_week: ACTIVE_DAY, time: time.value, discipline: disc.value, coach: (coach.value||'').trim() || null };
-  if (disc.value === 'other') {
-    payload.activity = (custom.value||'').trim();
+  
+  // Extract custom name for 'other' discipline
+  let customName = '';
+  if (item.discipline === 'other' && item.activity) {
+    customName = item.age && item.activity.endsWith(' ' + item.age) 
+      ? item.activity.slice(0, -(item.age.length + 1))
+      : item.activity;
   }
-  payload.age = (age.value||'').trim() || null;
-  try{ await api('/admin/schedule/item', { method:'POST', body: JSON.stringify(payload) }); time.value=''; disc.value=''; age.value=''; coach.value=''; custom.value=''; await load(); }catch(e){ alert(e.message); }
+  
+  card.innerHTML = `
+    <div></div>
+    <form class="edit-form" onsubmit="return saveEdit(event, ${id})">
+      <input type="time" class="input input-time" value="${item.time}" required>
+      <select class="input" id="edit-disc-${id}" required>
+        <option value="boxing" ${item.discipline === 'boxing' ? 'selected' : ''}>{{ _('Бокс') }}</option>
+        <option value="wrestling" ${item.discipline === 'wrestling' ? 'selected' : ''}>{{ _('Борьба') }}</option>
+        <option value="mma" ${item.discipline === 'mma' ? 'selected' : ''}>{{ _('ММА') }}</option>
+        <option value="other" ${item.discipline === 'other' ? 'selected' : ''}>{{ _('Другое') }}</option>
+      </select>
+      <input type="text" class="input" id="edit-custom-${id}" placeholder="{{ _('Введите название') }}" value="${customName}" style="display: ${item.discipline === 'other' ? 'block' : 'none'}; grid-column: 2;">
+      <input type="text" class="input input-age" value="${item.age || ''}" placeholder="{{ _('Возраст') }}">
+      <input type="text" class="input input-coach" value="${item.coach || ''}" placeholder="{{ _('Тренер') }}">
+      <div class="edit-form-actions">
+        <button type="submit" class="btn btn-primary btn-sm">{{ _('Сохранить') }}</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="loadSchedule()">{{ _('Отмена') }}</button>
+      </div>
+    </form>
+  `;
+  
+  // Toggle custom input
+  const discSelect = document.getElementById(`edit-disc-${id}`);
+  const customInput = document.getElementById(`edit-custom-${id}`);
+  discSelect.onchange = () => {
+    customInput.style.display = discSelect.value === 'other' ? 'block' : 'none';
+  };
 }
 
-// Toggle custom input for add form
-const addDisc = document.getElementById('add-discipline');
-const addCustom = document.getElementById('add-custom');
-addDisc.addEventListener('change', () => {
-  addCustom.style.display = addDisc.value === 'other' ? 'block' : 'none';
-});
+// Save Edit
+async function saveEdit(event, id) {
+  event.preventDefault();
+  const form = event.target;
+  const inputs = form.querySelectorAll('input, select');
+  
+  const payload = {
+    time: inputs[0].value.trim(),
+    discipline: inputs[1].value,
+    age: inputs[3].value.trim() || null,
+    coach: inputs[4].value.trim() || null
+  };
+  
+  if (payload.discipline === 'other') {
+    payload.activity = inputs[2].value.trim();
+  }
+  
+  try {
+    await api(`/admin/schedule/item/${id}`, { method: 'PUT', body: JSON.stringify(payload) });
+    await loadSchedule();
+    showToast('{{ _('Занятие обновлено') }}');
+  } catch (error) {
+    showToast(error.message, 'error');
+  }
+  
+  return false;
+}
 
-document.getElementById('add-btn').addEventListener('click', (e)=>{ e.preventDefault(); onAdd(); });
+// Delete Item
+function deleteItem(id) {
+  const item = scheduleData.find(i => i.id === id);
+  if (!item) return;
+  
+  showModal(
+    '{{ _('Удалить занятие?') }}',
+    `{{ _('Вы уверены, что хотите удалить') }} "${item.activity}" {{ _('в') }} ${item.time}?`,
+    async () => {
+      try {
+        await api(`/admin/schedule/item/${id}`, { method: 'DELETE' });
+        await loadSchedule();
+        showToast('{{ _('Занятие удалено') }}');
+      } catch (error) {
+        showToast(error.message, 'error');
+      }
+    }
+  );
+}
 
-// Copy day
-let pendingCopy = null;
-function showCopyModal(src, dst, replace) {
-  const srcName = DAY_FULL[src];
-  const dstName = DAY_FULL[dst];
-  const action = replace ? '{{ _('заменит существующие занятия') }}' : '{{ _('добавит занятия, пропуская дубликаты') }}';
-  document.getElementById('copy-confirm-text').textContent = `{{ _('Подтвердите копирование расписания из') }} ${srcName} {{ _('в') }} ${dstName}. {{ _('Это') }} ${action}.`;
-  document.getElementById('copy-modal').style.display = 'flex';
-  pendingCopy = {src, dst, replace};
+// Move Item
+function moveItem(id) {
+  // TODO: Implement move modal
+  showToast('{{ _('Функция в разработке') }}', 'error');
+}
+
+// Duplicate Item
+async function duplicateItem(id) {
+  const item = scheduleData.find(i => i.id === id);
+  if (!item) return;
+  
+  try {
+    await api('/admin/schedule/item', {
+      method: 'POST',
+      body: JSON.stringify({
+        day_of_week: activeDay,
+        time: item.time,
+        activity: item.activity,
+        discipline: item.discipline,
+        coach: item.coach,
+        age: item.age
+      })
+    });
+    await loadSchedule();
+    showToast('{{ _('Занятие дублировано') }}');
+  } catch (error) {
+    showToast(error.message, 'error');
+  }
+}
+
+// Add Form
+document.getElementById('add-form').onsubmit = async (e) => {
+  e.preventDefault();
+  
+  const time = document.getElementById('add-time').value.trim();
+  const discipline = document.getElementById('add-discipline').value;
+  const custom = document.getElementById('add-custom').value.trim();
+  const age = document.getElementById('add-age').value.trim() || null;
+  const coach = document.getElementById('add-coach').value.trim() || null;
+  
+  if (!time || !discipline) return;
+  
+  const payload = {
+    day_of_week: activeDay,
+    time,
+    discipline,
+    age,
+    coach
+  };
+  
+  if (discipline === 'other') {
+    payload.activity = custom;
+  }
+  
+  try {
+    await api('/admin/schedule/item', { method: 'POST', body: JSON.stringify(payload) });
+    await loadSchedule();
+    resetAddForm();
+    showToast('{{ _('Занятие добавлено') }}');
+  } catch (error) {
+    showToast(error.message, 'error');
+  }
+};
+
+// Toggle Add Panel
+function toggleAddPanel() {
+  document.getElementById('add-panel').classList.toggle('collapsed');
+}
+
+// Reset Add Form
+function resetAddForm() {
+  document.getElementById('add-form').reset();
+  document.getElementById('add-custom').style.display = 'none';
+}
+
+// Add Discipline Change
+document.getElementById('add-discipline').onchange = (e) => {
+  const custom = document.getElementById('add-custom');
+  custom.style.display = e.target.value === 'other' ? 'block' : 'none';
+};
+
+// Copy Day
+document.getElementById('copy-btn').onclick = async () => {
+  const src = parseInt(document.getElementById('copy-src').value);
+  const dst = parseInt(document.getElementById('copy-dst').value);
+  const replace = document.getElementById('copy-replace').checked;
+  
+  if (isNaN(src) || isNaN(dst) || src === dst) {
+    showToast('{{ _('Выберите разные дни') }}', 'error');
+    return;
+  }
+  
+  const action = replace ? '{{ _('заменит существующие занятия') }}' : '{{ _('добавит занятия') }}';
+  showModal(
+    '{{ _('Копировать день?') }}',
+    `{{ _('Скопировать расписание из') }} ${DAY_NAMES[src]} {{ _('в') }} ${DAY_NAMES[dst]}. {{ _('Это') }} ${action}.`,
+    async () => {
+      try {
+        const result = await api('/admin/schedule/copy_day', {
+          method: 'POST',
+          body: JSON.stringify({ source_day: src, target_day: dst, replace })
+        });
+        await loadSchedule();
+        showToast(`{{ _('День скопирован') }}: ${DAY_NAMES[src]} → ${DAY_NAMES[dst]} (+${result.created})`);
+      } catch (error) {
+        showToast(error.message, 'error');
+      }
+    }
+  );
+};
+
+// Modal
+function showModal(title, body, onConfirm) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').textContent = body;
+  document.getElementById('modal-confirm').onclick = () => {
+    closeModal();
+    onConfirm();
+  };
+  document.getElementById('confirm-modal').classList.add('active');
 }
 
 function closeModal() {
-  document.getElementById('copy-modal').style.display = 'none';
-  pendingCopy = null;
+  document.getElementById('confirm-modal').classList.remove('active');
 }
 
-async function confirmCopy() {
-  if (!pendingCopy) return;
-  const {src, dst, replace} = pendingCopy;
-  const status = document.getElementById('copy-status');
-  try{
-    status.textContent = '{{ _('Выполняется...') }}';
-    const res = await api('/admin/schedule/copy_day', { method:'POST', body: JSON.stringify({ source_day: src, target_day: dst, replace }) });
-    status.textContent = `{{ _('Готово') }} (+${res.created})`;
-    await load();
-  }catch(e){ status.textContent = e.message; }
-  closeModal();
+// Dropdown
+function toggleDropdown(event) {
+  event.stopPropagation();
+  const dropdown = event.target.closest('.dropdown');
+  const wasActive = dropdown.classList.contains('active');
+  
+  document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
+  
+  if (!wasActive) {
+    dropdown.classList.add('active');
+  }
 }
 
-document.getElementById('copy-btn').addEventListener('click', (e)=>{
-  e.preventDefault();
-  const src = Number(document.getElementById('copy-src').value);
-  const dst = Number(document.getElementById('copy-dst').value);
-  const replace = document.getElementById('copy-replace').checked;
-  if(Number.isNaN(src) || Number.isNaN(dst) || src === dst) return;
-  showCopyModal(src, dst, replace);
+document.addEventListener('click', () => {
+  document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
 });
 
-// Tabs
-Array.from(document.querySelectorAll('.days-tab')).forEach(btn=>{
-  btn.addEventListener('click', ()=> setActiveDay(Number(btn.getAttribute('data-day'))));
-});
+// Setup Event Listeners
+function setupEventListeners() {
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'a' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') {
+      e.preventDefault();
+      document.getElementById('add-time').focus();
+    }
+  });
+}
 
-setActiveDay(ACTIVE_DAY);
-load();
+// Initialize on load
+init();
 </script>
 {% endblock %}
