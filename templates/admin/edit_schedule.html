@@ -281,23 +281,12 @@
     align-items: center;
     justify-content: space-between;
     margin-bottom: 16px;
-    cursor: pointer;
-    user-select: none;
   }
 
   .add-panel-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--text-primary);
-  }
-
-  .add-panel-toggle {
-    color: var(--text-secondary);
-    transition: transform 0.2s ease;
-  }
-
-  .add-panel.collapsed .add-panel-toggle {
-    transform: rotate(-90deg);
   }
 
   .add-panel.collapsed .add-panel-body {
@@ -330,6 +319,42 @@
     gap: 12px;
   }
 
+  /* Selection Mode Toolbar */
+  .selection-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  .selection-controls {
+    display: none;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .selection-toolbar.active .selection-controls {
+    display: flex;
+  }
+
+  .btn-link {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .btn-link:hover {
+    color: var(--text-primary);
+  }
+
   .schedule-card {
     display: grid;
     grid-template-columns: 24px 80px 1fr auto;
@@ -340,17 +365,49 @@
     border: 1px solid var(--border);
     border-radius: 10px;
     transition: all 0.15s ease;
-  }
-
-  .schedule-card:hover {
-    background: var(--surface-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    position: relative;
   }
 
   .schedule-card.editing {
     background: var(--surface-hover);
     border-color: var(--accent);
+  }
+
+  /* Selection Mode Styles */
+  .schedule-card.selectable {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .schedule-card.selectable:hover {
+    background: var(--surface-hover);
+  }
+
+  .schedule-card.selected {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(224, 37, 37, 0.2);
+  }
+
+  .schedule-card .card-checkbox {
+    display: none;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+
+  .schedule-card.selectable .card-checkbox {
+    display: block;
+  }
+
+  .schedule-card.selectable .drag-handle {
+    display: none;
+  }
+
+  .schedule-card.selectable .card-actions {
+    opacity: 0.3;
+    pointer-events: none;
   }
 
   .drag-handle {
@@ -551,16 +608,25 @@
   .dropdown-menu {
     display: none;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 2px);
     right: 0;
-    margin-top: 4px;
     min-width: 160px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-    z-index: 10;
+    z-index: 150;
     padding: 4px;
+  }
+
+  /* Prevent gap between button and menu */
+  .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 0;
+    width: 100%;
+    height: 6px;
   }
 
   .dropdown.active .dropdown-menu {
@@ -703,10 +769,6 @@
       <select id="copy-dst" class="input" style="width: 160px;">
         <option value="" disabled selected>{{ _('В') }}</option>
       </select>
-      <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-        <input type="checkbox" id="copy-replace">
-        <span style="font-size: 14px;">{{ _('Заменить существующие') }}</span>
-      </label>
       <button class="btn btn-primary btn-sm" id="copy-btn">{{ _('Скопировать') }}</button>
       <span id="copy-status" style="color: var(--text-secondary); font-size: 13px;"></span>
     </div>
@@ -714,9 +776,8 @@
 
   <!-- Add Panel -->
   <div class="add-panel" id="add-panel">
-    <div class="add-panel-header" onclick="toggleAddPanel()">
+    <div class="add-panel-header">
       <h3 class="add-panel-title">{{ _('Добавить занятие') }}</h3>
-      <span class="add-panel-toggle">▼</span>
     </div>
     <div class="add-panel-body">
       <form class="add-form" id="add-form" onsubmit="return false;">
@@ -741,6 +802,31 @@
         </div>
         <span class="form-hint">{{ _('Пример: Борьба 6–12, ММА 13+, Общая физиче��кая подготовка') }}</span>
       </form>
+    </div>
+  </div>
+
+  <!-- Selection Toolbar -->
+  <div class="selection-toolbar" id="selection-toolbar">
+    <button class="btn btn-secondary btn-sm" id="select-mode-btn" onclick="toggleSelectionMode()" aria-pressed="false">
+      {{ _('Выбрать') }}
+    </button>
+    <div class="selection-controls">
+      <button 
+        class="btn btn-danger btn-sm" 
+        id="delete-selected-btn" 
+        onclick="deleteSelected()" 
+        disabled
+        data-text-template="{{ _('Удалить') }}">
+        {{ _('Удалить') }} (0)
+      </button>
+      <button 
+        class="btn-link" 
+        id="select-all-btn" 
+        onclick="toggleSelectAll()"
+        data-select-all-text="{{ _('Выбрать все') }}"
+        data-deselect-all-text="{{ _('Снять всё') }}">
+        {{ _('Выбрать все') }}
+      </button>
     </div>
   </div>
 
@@ -1217,22 +1303,20 @@ document.getElementById('add-discipline').onchange = (e) => {
 document.getElementById('copy-btn').onclick = async () => {
   const src = parseInt(document.getElementById('copy-src').value);
   const dst = parseInt(document.getElementById('copy-dst').value);
-  const replace = document.getElementById('copy-replace').checked;
   
   if (isNaN(src) || isNaN(dst) || src === dst) {
     showToast('{{ _('Выберите разные дни') }}', 'error');
     return;
   }
   
-  const action = replace ? '{{ _('заменит существующие занятия') }}' : '{{ _('добавит занятия') }}';
   showModal(
     '{{ _('Копировать день?') }}',
-    `{{ _('Скопировать расписание из') }} ${DAY_NAMES[src]} {{ _('в') }} ${DAY_NAMES[dst]}. {{ _('Это') }} ${action}.`,
+    `{{ _('Скопировать расписание из') }} ${DAY_NAMES[src]} {{ _('в') }} ${DAY_NAMES[dst]}. {{ _('Это добавит занятия') }}.`,
     async () => {
       try {
         const result = await api('/admin/schedule/copy_day', {
           method: 'POST',
-          body: JSON.stringify({ source_day: src, target_day: dst, replace })
+          body: JSON.stringify({ source_day: src, target_day: dst, replace: false })
         });
         await loadSchedule();
         showToast(`{{ _('День скопирован') }}: ${DAY_NAMES[src]} → ${DAY_NAMES[dst]} (+${result.created})`);
@@ -1271,8 +1355,11 @@ function toggleDropdown(event) {
   }
 }
 
-document.addEventListener('click', () => {
-  document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
+document.addEventListener('click', (event) => {
+  // Don't close if clicking inside a dropdown
+  if (!event.target.closest('.dropdown')) {
+    document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('active'));
+  }
 });
 
 // Setup Event Listeners
@@ -1286,7 +1373,74 @@ function setupEventListeners() {
   });
 }
 
+// Override createScheduleCard to add checkbox
+const originalCreateScheduleCard = createScheduleCard;
+createScheduleCard = function(item) {
+  const card = originalCreateScheduleCard(item);
+  
+  // Add checkbox
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.className = 'card-checkbox';
+  checkbox.setAttribute('aria-label', `${item.time} ${item.activity}`);
+  checkbox.onclick = (e) => {
+    e.stopPropagation();
+    if (window.toggleSelection) {
+      window.toggleSelection(item.id, e);
+    }
+  };
+  
+  // Insert checkbox at the beginning
+  card.insertBefore(checkbox, card.firstChild);
+  
+  // Make card clickable in selection mode
+  card.onclick = (e) => {
+    if (window.ScheduleMultiselect && window.ScheduleMultiselect.isSelectionMode() && 
+        !e.target.closest('.card-actions') && !e.target.closest('.card-checkbox')) {
+      if (window.toggleSelection) {
+        window.toggleSelection(item.id, e);
+      }
+    }
+  };
+  
+  return card;
+};
+
+// Override setActiveDay to reset selection
+const originalSetActiveDay = setActiveDay;
+setActiveDay = function(day) {
+  originalSetActiveDay(day);
+  if (window.ScheduleMultiselect) {
+    window.ScheduleMultiselect.onDayChange();
+  }
+};
+
+// Override loadSchedule to update multiselect state
+const originalLoadSchedule = loadSchedule;
+loadSchedule = async function() {
+  await originalLoadSchedule();
+  if (window.ScheduleMultiselect) {
+    window.ScheduleMultiselect.updateState(scheduleData, activeDay);
+    window.ScheduleMultiselect.updateSelectionUI();
+  }
+};
+
 // Initialize on load
 init();
+</script>
+
+<!-- Multiselect Module -->
+<script src="{{ url_for('static', filename='js/schedule_multiselect.js') }}?v={{ range(1, 999999) | random }}"></script>
+<script>
+// Initialize multiselect module after main init
+if (window.ScheduleMultiselect) {
+  window.ScheduleMultiselect.init({
+    api: api,
+    showToast: showToast,
+    loadSchedule: loadSchedule,
+    closeModal: closeModal
+  });
+  window.ScheduleMultiselect.updateState(scheduleData, activeDay);
+}
 </script>
 {% endblock %}
