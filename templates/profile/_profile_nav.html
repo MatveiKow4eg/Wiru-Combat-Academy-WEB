@@ -1,7 +1,11 @@
 <aside class="sidebar" aria-label="{{ _('Навигация профиля') }}">
   <div class="sidebar-header">
-    <div class="avatar">
-      <span>{{ (current_user.full_name or current_user.username or current_user.email)[:1]|upper }}</span>
+    <div class="avatar" style="overflow:hidden;">
+      {% if current_user.avatar_path %}
+        <img src="{{ url_for('profile_avatar') }}" alt="avatar" style="display:block; width:100%; height:100%; object-fit:cover; border-radius:50%;">
+      {% else %}
+        <span>{{ (current_user.full_name or current_user.username or current_user.email)[:1]|upper }}</span>
+      {% endif %}
     </div>
     <div class="user-meta">
       <div class="user-name">{{ current_user.full_name or current_user.username or current_user.email }}</div>

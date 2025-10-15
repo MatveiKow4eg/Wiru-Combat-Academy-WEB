@@ -97,8 +97,8 @@ html,body{background:var(--bg); color:var(--text);}
 .muted{color:var(--muted)}
 
 .table{width:100%; display:grid; gap:8px}
-.table-row{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px; padding:10px 12px; border:1px solid #222; border-radius:10px; background:#131313}
-.table-row.head{background:#171717; font-weight:600}
+.table-row{display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:8px; padding:10px 12px; }
+.table-row.head{font-weight:600}
 
 .avatar-upload{display:flex; gap:12px; align-items:center; margin-bottom:12px}
 

@@ -22,6 +22,10 @@
   .card-body{overflow-x:auto}
   .table .table-row{min-width:560px}
 }
+
+/* Remove table backgrounds only on profile/overview */
+.profile-layout .table-row{background:transparent!important}
+.profile-layout .table-row.head{background:transparent!important}
 </style>
 {% endblock %}
 {% block content %}
@@ -186,7 +190,7 @@
               </div>
             </div>
             {% else %}
-              <div class="table-row"><div class="muted">Платежей пока нет.</div></div>
+              <div class="table-row"><div class="muted">Плат��жей пока нет.</div></div>
             {% endfor %}
           </div>
         </div>
@@ -221,7 +225,7 @@
             <div class="table-row head">
               <div>Имя файла</div>
               <div>Размер</div>
-              <div>Дата</div>
+              <div>��ата</div>
             </div>
             {% for d in docs %}
             <div class="table-row">
