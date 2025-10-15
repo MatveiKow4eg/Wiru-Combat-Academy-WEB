@@ -249,11 +249,22 @@
   }
 
   .input-age {
-    width: 140px;
+    width: 80px;
+  }
+
+  .age-range {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .age-separator {
+    color: var(--text-secondary);
+    font-weight: 600;
   }
 
   .input-coach {
-    min-width: 180px;
+    width: 100%;
   }
 
   /* Add Panel */
@@ -295,7 +306,7 @@
 
   .add-form {
     display: grid;
-    grid-template-columns: 100px 1fr 140px 180px auto;
+    grid-template-columns: 100px 1fr 180px 1fr auto;
     gap: 12px;
     align-items: start;
   }
@@ -718,7 +729,11 @@
           <option value="other">{{ _('Другое') }}</option>
         </select>
         <input type="text" class="input" id="add-custom" placeholder="{{ _('Введите название') }}" style="display: none; grid-column: 2;">
-        <input type="text" class="input input-age" id="add-age" placeholder="{{ _('Возраст, например: 6–12') }}">
+        <div class="age-range">
+          <input type="number" class="input input-age" id="add-age-from" placeholder="{{ _('От') }}" min="1" max="99">
+          <span class="age-separator">–</span>
+          <input type="number" class="input input-age" id="add-age-to" placeholder="{{ _('До') }}" min="1" max="99">
+        </div>
         <input type="text" class="input input-coach" id="add-coach" placeholder="{{ _('Тренер (необязательно)') }}">
         <div class="add-form-actions">
           <button type="submit" class="btn btn-primary btn-sm">{{ _('Добавить') }}</button>
@@ -774,6 +789,14 @@ const DAY_NAMES = [
 ];
 
 const DAY_NAMES_SHORT = ['{{ _('Пн') }}', '{{ _('Вт') }}', '{{ _('Ср') }}', '{{ _('Чт') }}', '{{ _('Пт') }}', '{{ _('Сб') }}', '{{ _('Вс') }}'];
+
+// Localized age suffix
+const AGE_SUFFIX = '{{ _('age_suffix') }}';
+const AGE_PREFIX_TO = '{{ _('до') }}';
+
+// Debug: log the values
+console.log('AGE_SUFFIX:', AGE_SUFFIX);
+console.log('AGE_PREFIX_TO:', AGE_PREFIX_TO);
 
 // State
 let scheduleData = [];
@@ -912,7 +935,11 @@ function createScheduleCard(item) {
       mma: '{{ _('ММА') }}'
     };
     activityDisplay = labels[item.discipline] || item.activity;
-    if (item.age) activityDisplay += ` ${item.age}`;
+    if (item.age) {
+      // Remove old suffixes and add localized one
+      const cleanedAge = item.age.replace(/[aлy][.,o]*/gi, '').trim();
+      activityDisplay += ` ${cleanedAge}${AGE_SUFFIX}`;
+    }
   }
   
   card.innerHTML = `
@@ -955,6 +982,9 @@ function editItem(id) {
       : item.activity;
   }
   
+  // Parse age range
+  const ageRange = parseAgeRange(item.age);
+  
   card.innerHTML = `
     <div></div>
     <form class="edit-form" onsubmit="return saveEdit(event, ${id})">
@@ -966,7 +996,11 @@ function editItem(id) {
         <option value="other" ${item.discipline === 'other' ? 'selected' : ''}>{{ _('Другое') }}</option>
       </select>
       <input type="text" class="input" id="edit-custom-${id}" placeholder="{{ _('Введите название') }}" value="${customName}" style="display: ${item.discipline === 'other' ? 'block' : 'none'}; grid-column: 2;">
-      <input type="text" class="input input-age" value="${item.age || ''}" placeholder="{{ _('Возраст') }}">
+      <div class="age-range">
+        <input type="number" class="input input-age" id="edit-age-from-${id}" placeholder="{{ _('От') }}" value="${ageRange.from}" min="1" max="99">
+        <span class="age-separator">–</span>
+        <input type="number" class="input input-age" id="edit-age-to-${id}" placeholder="{{ _('До') }}" value="${ageRange.to}" min="1" max="99">
+      </div>
       <input type="text" class="input input-coach" value="${item.coach || ''}" placeholder="{{ _('Тренер') }}">
       <div class="edit-form-actions">
         <button type="submit" class="btn btn-primary btn-sm">{{ _('Сохранить') }}</button>
@@ -987,17 +1021,23 @@ function editItem(id) {
 async function saveEdit(event, id) {
   event.preventDefault();
   const form = event.target;
+  
+  const ageFrom = document.getElementById(`edit-age-from-${id}`).value.trim();
+  const ageTo = document.getElementById(`edit-age-to-${id}`).value.trim();
+  const age = formatAgeRange(ageFrom, ageTo);
+  
   const inputs = form.querySelectorAll('input, select');
   
   const payload = {
     time: inputs[0].value.trim(),
     discipline: inputs[1].value,
-    age: inputs[3].value.trim() || null,
-    coach: inputs[4].value.trim() || null
+    age: age,
+    coach: inputs[inputs.length - 2].value.trim() || null
   };
   
   if (payload.discipline === 'other') {
-    payload.activity = inputs[2].value.trim();
+    const customInput = document.getElementById(`edit-custom-${id}`);
+    payload.activity = customInput ? customInput.value.trim() : '';
   }
   
   try {
@@ -1061,6 +1101,64 @@ async function duplicateItem(id) {
   }
 }
 
+// Helper function to format age range (WITHOUT suffix for storage)
+function formatAgeRangeForStorage(from, to) {
+  if (from && to) {
+    return `${from}–${to}`;
+  } else if (from) {
+    return `${from}+`;
+  } else if (to) {
+    return `${AGE_PREFIX_TO} ${to}`;
+  }
+  return null;
+}
+
+// Helper function to format age range WITH suffix for display
+function formatAgeRange(from, to) {
+  if (from && to) {
+    return `${from}–${to}${AGE_SUFFIX}`;
+  } else if (from) {
+    return `${from}+${AGE_SUFFIX}`;
+  } else if (to) {
+    return `${AGE_PREFIX_TO} ${to}${AGE_SUFFIX}`;
+  }
+  return null;
+}
+
+// Helper function to parse age range
+function parseAgeRange(ageStr) {
+  if (!ageStr) return { from: '', to: '' };
+  
+  // Remove "a.", "л.", "y." suffixes and trim
+  const cleaned = ageStr.replace(/[aлy][.,]/g, '').trim();
+  
+  // Check for range (e.g., "6–12" or "6-12")
+  const rangeMatch = cleaned.match(/^(\d+)\s*[–-]\s*(\d+)$/);
+  if (rangeMatch) {
+    return { from: rangeMatch[1], to: rangeMatch[2] };
+  }
+  
+  // Check for "from+" (e.g., "13+")
+  const plusMatch = cleaned.match(/^(\d+)\+$/);
+  if (plusMatch) {
+    return { from: plusMatch[1], to: '' };
+  }
+  
+  // Check for "до X" / "kuni X" / "to X" (e.g., "до 12")
+  const toMatch = cleaned.match(/^(?:до|kuni|to)\s+(\d+)$/i);
+  if (toMatch) {
+    return { from: '', to: toMatch[1] };
+  }
+  
+  // Single number
+  const singleMatch = cleaned.match(/^(\d+)$/);
+  if (singleMatch) {
+    return { from: singleMatch[1], to: singleMatch[1] };
+  }
+  
+  return { from: '', to: '' };
+}
+
 // Add Form
 document.getElementById('add-form').onsubmit = async (e) => {
   e.preventDefault();
@@ -1068,10 +1166,13 @@ document.getElementById('add-form').onsubmit = async (e) => {
   const time = document.getElementById('add-time').value.trim();
   const discipline = document.getElementById('add-discipline').value;
   const custom = document.getElementById('add-custom').value.trim();
-  const age = document.getElementById('add-age').value.trim() || null;
+  const ageFrom = document.getElementById('add-age-from').value.trim();
+  const ageTo = document.getElementById('add-age-to').value.trim();
   const coach = document.getElementById('add-coach').value.trim() || null;
   
   if (!time || !discipline) return;
+  
+  const age = formatAgeRange(ageFrom, ageTo);
   
   const payload = {
     day_of_week: activeDay,

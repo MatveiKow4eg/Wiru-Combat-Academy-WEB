@@ -461,3 +461,16 @@ msgstr "Best price"
 
 msgid "plans.feature.max_benefit"
 msgstr "Maximum benefit"
+
+# Age range fields
+msgid "От"
+msgstr "From"
+
+msgid "До"
+msgstr "To"
+
+msgid "age_suffix"
+msgstr " y.o"
+
+msgid "до"
+msgstr "to"

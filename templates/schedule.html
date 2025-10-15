@@ -127,7 +127,13 @@
                   {% for it in items %}
                     <div class="slot">
                       <span class="time-badge">{{ it.time }}</span>
-                      <span class="activity">{{ it.activity }}</span>
+                      <span class="activity">
+                        {% if it.discipline == 'other' %}
+                          {{ it.activity }}
+                        {% else %}
+                          {% if it.discipline == 'boxing' %}{{ _('Бокс') }}{% elif it.discipline == 'wrestling' %}{{ _('Борьба') }}{% elif it.discipline == 'mma' %}{{ _('ММА') }}{% else %}{{ it.activity }}{% endif %}{% if it.age %} <span class="age-display" data-age="{{ it.age }}">{{ it.age }}</span>{% endif %}
+                        {% endif %}
+                      </span>
                       <span></span>
                       <span class="coach-muted">{{ it.coach or '' }}</span>
                     </div>
@@ -312,5 +318,20 @@ function onPlanCtaClick(ev, cta, link){
     window.location = link;
   }
 }
+
+// Process age display with localized suffix
+(function(){
+  const AGE_SUFFIX = '{{ _("age_suffix") }}';
+  document.querySelectorAll('.age-display').forEach(el => {
+    const age = el.getAttribute('data-age') || '';
+    if (!age) return;
+    
+    // Remove any existing suffixes (a., л., y.o, y.)
+    const cleaned = age.replace(/[aлy][.,o]*/gi, '').trim();
+    
+    // Add localized suffix
+    el.textContent = cleaned + AGE_SUFFIX;
+  });
+})();
 </script>
 {% endblock %}

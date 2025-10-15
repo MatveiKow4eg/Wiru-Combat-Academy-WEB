@@ -381,3 +381,16 @@ msgstr "Parim hind"
 
 msgid "plans.feature.max_benefit"
 msgstr "Maksimaalne kasu"
+
+# Age range fields
+msgid "От"
+msgstr "Alates"
+
+msgid "До"
+msgstr "Kuni"
+
+msgid "age_suffix"
+msgstr "a."
+
+msgid "до"
+msgstr "kuni"
