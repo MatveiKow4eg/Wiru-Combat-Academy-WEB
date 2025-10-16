@@ -394,3 +394,109 @@ msgstr "a."
 
 msgid "до"
 msgstr "kuni"
+
+# Profile section
+msgid "ID"
+msgstr "ID"
+
+msgid "Аватар"
+msgstr "Avatar"
+
+msgid "Навигация профиля"
+msgstr "Profiili navigeerimine"
+
+msgid "Система"
+msgstr "Süsteem"
+
+msgid "Язык интерфейса"
+msgstr "Kasutajaliidese keel"
+
+msgid "Дата регистрации"
+msgstr "Registreerimise kuupäev"
+
+msgid "Смотреть все документы"
+msgstr "Vaata kõiki dokumente"
+
+msgid "Редактирование профиля"
+msgstr "Profiili muutmine"
+
+msgid "Загрузить фото"
+msgstr "Laadi foto üles"
+
+msgid "Максимальный размер: 2 МБ"
+msgstr "Maksimaalne suurus: 2 MB"
+
+msgid "Фамилия"
+msgstr "Perekonnanimi"
+
+msgid "Сохранить изменения"
+msgstr "Salvesta muudatused"
+
+msgid "Безопасность"
+msgstr "Turvalisus"
+
+msgid "Смена пароля"
+msgstr "Parooli muutmine"
+
+msgid "Текущий пароль"
+msgstr "Praegune parool"
+
+msgid "Новый пароль"
+msgstr "Uus parool"
+
+msgid "Подтверждение"
+msgstr "Kinnitus"
+
+msgid "Сменить пароль"
+msgstr "Muuda parool"
+
+msgid "Документы"
+msgstr "Dokumendid"
+
+msgid "Загрузка документа"
+msgstr "Dokumendi üleslaadimine"
+
+msgid "Имя файла"
+msgstr "Failinimi"
+
+msgid "Размер"
+msgstr "Suurus"
+
+msgid "Дата"
+msgstr "Kuupäev"
+
+msgid "Действия"
+msgstr "Tegevused"
+
+msgid "Смотреть"
+msgstr "Vaata"
+
+msgid "Скачать"
+msgstr "Laadi alla"
+
+msgid "Нет загруженных документов"
+msgstr "Üleslaaditud dokumente pole"
+
+msgid "Нет загруженных документов."
+msgstr "Üleslaaditud dokumente pole."
+
+msgid "Просмотр документа"
+msgstr "Dokumendi eelvaade"
+
+msgid "Закрыть"
+msgstr "Sulge"
+
+msgid "Мои документы"
+msgstr "Minu dokumendid"
+
+msgid "Файл (pdf, jpg, png)"
+msgstr "Fail (pdf, jpg, png)"
+
+msgid "Заметка"
+msgstr "Märkus"
+
+msgid "Загрузить"
+msgstr "Laadi üles"
+
+msgid "KB"
+msgstr "kB"

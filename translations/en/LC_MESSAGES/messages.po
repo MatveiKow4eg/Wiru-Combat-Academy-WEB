@@ -474,3 +474,109 @@ msgstr " y.o"
 
 msgid "до"
 msgstr "to"
+
+# Profile section
+msgid "ID"
+msgstr "ID"
+
+msgid "Аватар"
+msgstr "Avatar"
+
+msgid "Навигация профиля"
+msgstr "Profile navigation"
+
+msgid "Система"
+msgstr "System"
+
+msgid "Язык интерфейса"
+msgstr "Interface language"
+
+msgid "Дата регистрации"
+msgstr "Registration date"
+
+msgid "Смотреть все документы"
+msgstr "View all documents"
+
+msgid "Редактирование профиля"
+msgstr "Profile editing"
+
+msgid "Загрузить фото"
+msgstr "Upload photo"
+
+msgid "Максимальный размер: 2 МБ"
+msgstr "Maximum size: 2 MB"
+
+msgid "Фамилия"
+msgstr "Last name"
+
+msgid "Сохранить изменения"
+msgstr "Save changes"
+
+msgid "Безопасность"
+msgstr "Security"
+
+msgid "Смена пароля"
+msgstr "Change password"
+
+msgid "Текущий пароль"
+msgstr "Current password"
+
+msgid "Новый пароль"
+msgstr "New password"
+
+msgid "Подтверждение"
+msgstr "Confirmation"
+
+msgid "Сменить пароль"
+msgstr "Change password"
+
+msgid "Документы"
+msgstr "Documents"
+
+msgid "Загрузка документа"
+msgstr "Document upload"
+
+msgid "Имя файла"
+msgstr "Filename"
+
+msgid "Размер"
+msgstr "Size"
+
+msgid "Дата"
+msgstr "Date"
+
+msgid "Действия"
+msgstr "Actions"
+
+msgid "Смотреть"
+msgstr "View"
+
+msgid "Скачать"
+msgstr "Download"
+
+msgid "Нет загруженных документов"
+msgstr "No uploaded documents"
+
+msgid "Нет загруженных документов."
+msgstr "No uploaded documents."
+
+msgid "Просмотр документа"
+msgstr "Document preview"
+
+msgid "Закрыть"
+msgstr "Close"
+
+msgid "Мои документы"
+msgstr "My documents"
+
+msgid "Файл (pdf, jpg, png)"
+msgstr "File (pdf, jpg, png)"
+
+msgid "Заметка"
+msgstr "Note"
+
+msgid "Загрузить"
+msgstr "Upload"
+
+msgid "KB"
+msgstr "KB"

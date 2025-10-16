@@ -19,7 +19,7 @@
     <div class="card">
       <div class="card-head"><h2>{{ _('Загрузка документа') }}</h2></div>
       <div class="card-body">
-        <form method="post" action="/documents/upload" enctype="multipart/form-data" class="form" aria-label="Загрузка документа">
+        <form method="post" action="/documents/upload" enctype="multipart/form-data" class="form" aria-label="{{ _('Загрузка документа') }}">
           {{ form.csrf_token }}
           <div class="form-grid">
             <div class="form-field">
@@ -50,7 +50,7 @@
           {% for d in docs %}
           <div class="table-row">
             <div>{{ d.filename }}</div>
-            <div>{{ (d.size_bytes or 0) // 1024 }} KB</div>
+            <div>{{ (d.size_bytes or 0) // 1024 }} {{ _('KB') }}</div>
             <div>{{ d.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</div>
             <div>
               <a class="btn btn--sm btn-view" href="{{ url_for('document_view', doc_id=d.id) }}" data-url="{{ url_for('document_view', doc_id=d.id) }}">{{ _('Смотреть') }}</a>
