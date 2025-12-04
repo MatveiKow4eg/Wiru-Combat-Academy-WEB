@@ -23,9 +23,8 @@ from flask_wtf.csrf import CSRFProtect
 from werkzeug.security import check_password_hash, generate_password_hash
 from urllib.parse import urlparse
 from datetime import datetime, timezone
-from email.mime.text import MIMEText
-from email.header import Header
-import smtplib
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 from config import Config
 from models import db, News, Schedule, Trainer, Signup, User, Document
@@ -317,36 +316,42 @@ def create_app():
 
         body = f"""Новое сообщение с сайта Wiru Combat Academy
 
-Имя: {name}
+    Имя: {name}
+    Email: {email}
 
-Email: {email}
-
-Сообщение:
-
+    Сообщение:
 {message}
 """
 
-        gmail_user = current_app.config.get("GMAIL_USER")
-        gmail_pass = current_app.config.get("GMAIL_APP_PASSWORD")
+        api_key = current_app.config.get("SENDGRID_API_KEY")
+        mail_from = current_app.config.get("MAIL_FROM")
+        mail_to = current_app.config.get("MAIL_TO")
 
-        if not gmail_user or not gmail_pass:
+        if not (api_key and mail_from and mail_to):
             flash(_("Ошибка: почта не настроена на сервере."), "error")
             return redirect(url_for("home"))
 
         try:
-            msg = MIMEText(body, "plain", "utf-8")
-            msg["Subject"] = Header("Сообщение с сайта Wiru Combat Academy", "utf-8")
-            msg["From"] = gmail_user
-            msg["To"] = gmail_user  # отправляем самому себе
+            msg = Mail(
+                from_email=mail_from,
+                to_emails=mail_to,
+                subject="Сообщение с сайта Wiru Combat Academy",
+                plain_text_content=body,
+            )
 
-            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-                server.login(gmail_user, gmail_pass)
-                server.send_message(msg)
+            sg = SendGridAPIClient(api_key)
+            response = sg.send(msg)
 
-            flash(_("Спасибо! Ваше сообщение отправлено."), "success")
+            if 200 <= response.status_code < 300:
+                flash(_("Спасибо! Ваше сообщение отправлено."), "success")
+            else:
+                print("SendGrid error:", response.status_code, response.body)
+                flash(_("Произошла ошибка при отправке сообщения."), "error")
+
         except Exception as e:
             print("Mail error:", e)
             flash(_("Произошла ошибка при отправке сообщения."), "error")
+
         return redirect(url_for("home"))
 
     @app.route("/signup", methods=["GET", "POST"])
