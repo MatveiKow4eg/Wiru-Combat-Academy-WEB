@@ -119,7 +119,13 @@ def run_simple_migrations(app):
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+ # --- FIX 1: стабильный SECRET_KEY из переменной окружения ---
+    import os
 
+    app.config["SECRET_KEY"] = os.environ.get(
+        "SECRET_KEY",
+        app.config.get("SECRET_KEY") or "wiru-dev-secret-change-me"
+    )
     # Compile translations on startup
     compile_translations(app)
 
@@ -268,46 +274,38 @@ def create_app():
     @app.route("/login", methods=["GET", "POST"])
     def login():
         if current_user.is_authenticated:
-            # already logged in: go to profile
             return redirect(url_for("profile"))
+
         form = LoginForm()
+
         if form.validate_on_submit():
+            print("LOGIN: form.validate_on_submit() = True", flush=True)
+            print("LOGIN: ident =", repr(form.email.data), flush=True)
+
             ident = (form.email.data or '').strip()
             user = User.query.filter_by(email=ident.lower()).first()
             if not user:
                 user = User.query.filter_by(username=ident).first()
+
+            print("LOGIN: user found =", bool(user), "id=", getattr(user, "id", None), flush=True)
+
             if user and user.is_active and user.check_password(form.password.data):
+                print("LOGIN: password OK, logging in", flush=True)
                 login_user(user, remember=form.remember.data)
                 flash(_("Добро пожаловать!"))
                 nxt = request.args.get("next")
+                print("LOGIN: next =", repr(nxt), flush=True)
                 if nxt and is_safe_next(nxt) and not nxt.startswith('/admin'):
                     return redirect(nxt)
                 return redirect(url_for("profile"))
-            flash(_("Неверный email/имя пользователя или пароль"))
-        return render_template("auth/login.html", form=form)
 
-    @app.route("/register", methods=["GET", "POST"])
-    def register():
-        if current_user.is_authenticated:
-            return redirect(url_for("profile"))
-        form = RegisterForm()
-        if form.validate_on_submit():
-            email = form.email.data.lower().strip()
-            if User.query.filter_by(email=email).first():
-                flash(_("Пользователь с таким email уже существует"))
-                return render_template("auth/register.html", form=form)
-            username = (form.username.data or '').strip() or None
-            user = User(email=email, username=username, role='user', is_active=True)
-            user.set_password(form.password.data)
-            db.session.add(user)
-            db.session.commit()
-            login_user(user)
-            flash(_("Регистрация успешна"))
-            nxt = request.args.get("next")
-            if nxt and is_safe_next(nxt):
-                return redirect(nxt)
-            return redirect(url_for("profile"))
-        return render_template("auth/register.html", form=form)
+            print("LOGIN: invalid credentials or inactive", flush=True)
+            flash(_("Неверный email/имя пользователя или пароль"))
+        else:
+            if request.method == "POST":
+                print("LOGIN: validate_on_submit() = False, errors:", form.errors, flush=True)
+
+        return render_template("auth/login.html", form=form)
 
     @app.route("/logout")
     @login_required
