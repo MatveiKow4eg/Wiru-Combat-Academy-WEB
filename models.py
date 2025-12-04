@@ -60,45 +60,25 @@ class User(UserMixin, db.Model):
     # Avatar image path (stored file path within UPLOAD_DIR)
     avatar_path = db.Column(db.String(512))
 
-    # Relationships
-    subscriptions = db.relationship('Subscription', backref='user', lazy='dynamic', cascade="all, delete-orphan")
-    payments = db.relationship('Payment', backref='user', lazy='dynamic', cascade="all, delete-orphan")
+    # Relationships (billing removed)
     documents = db.relationship('Document', backref='user', lazy='dynamic', cascade="all, delete-orphan")
 
     # Password helpers
     def set_password(self, plain: str) -> None:
-        self.password_hash = generate_password_hash(plain)
+        # Use a method that doesn't rely on hashlib.scrypt for broader compatibility
+        self.password_hash = generate_password_hash(plain, method="pbkdf2:sha256")
 
     def check_password(self, plain: str) -> bool:
-        return check_password_hash(self.password_hash or '', plain)
+        try:
+            return check_password_hash(self.password_hash or '', plain)
+        except AttributeError:
+            # Handle environments without hashlib.scrypt support; stored hash may use scrypt
+            return False
 
     def __repr__(self) -> str:
         return f"<User id={self.id} email={self.email!r} role={self.role!r}>"
 
 
-class Subscription(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
-    stripe_customer_id = db.Column(db.String(120), index=True)
-    stripe_subscription_id = db.Column(db.String(120), index=True)
-    stripe_price_id = db.Column(db.String(120), index=True)
-    status = db.Column(db.String(50), index=True)  # active | past_due | canceled | incomplete | trialing
-    current_period_end = db.Column(db.DateTime)
-
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-
-
-class Payment(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
-    stripe_invoice_id = db.Column(db.String(120), index=True)
-    amount = db.Column(db.Integer)  # amount in cents
-    currency = db.Column(db.String(10))
-    status = db.Column(db.String(50), index=True)
-    paid_at = db.Column(db.DateTime)
-    raw = db.Column(db.JSON)  # store raw event/invoice data
-
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
 
 class Document(db.Model):

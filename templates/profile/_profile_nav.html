@@ -11,9 +11,7 @@
       <div class="user-name">{{ current_user.full_name or current_user.username or current_user.email }}</div>
       {# Подписка отключена: скрыт статус и чип #}
       {#
-      {% set _last_sub = last_sub if last_sub is defined else (current_user.subscriptions.order_by(models.Subscription.created_at.desc()).first() if current_user.is_authenticated else None) %}
-      {% if _last_sub and _last_sub.status %}
-        <div class="chip status-{{ _last_sub.status|replace(' ','_') }}">{{ _last_sub.status }}</div>
+              <div class="chip status-{{ _last_sub.status|replace(' ','_') }}">{{ _last_sub.status }}</div>
       {% else %}
         <div class="chip status-none">{{ _('нет подписки') }}</div>
       {% endif %}
@@ -32,7 +30,6 @@
     <div class="divider"></div>
     <div class="nav-label">{{ _('Админ') }}</div>
     <a class="nav-item" href="/admin/users">{{ _('Участники') }}</a>
-    {# <a class="nav-item" href="/admin/billing/subscriptions">{{ _('Подписки') }}</a> #}
     <a class="nav-item" href="/admin/schedule">{{ _('Расписание') }}</a>
     {% endif %}
   </nav>

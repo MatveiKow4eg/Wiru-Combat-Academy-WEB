@@ -88,7 +88,7 @@
         </a>
       </div>
       <a href="{{ url_for('home') }}">{{ _('Главная') }}</a>
-      <a href="{{ url_for('news_list') }}">{{ _('Новости') }}</a>
+      <a href="{{ url_for('news_list') }}" style="display:none" aria-hidden="true" tabindex="-1">{{ _('Новости') }}</a>
       <a href="{{ url_for('schedule_page') }}">{{ _('Тренировки') }}</a>
       <a href="{{ url_for('trainers_page') }}">{{ _('Тренеры') }}</a>
       <a href="{{ url_for('contact') }}">{{ _('Контакты') }}</a>
@@ -102,7 +102,7 @@
       </div>
       <div class="auth-ctrls">
         {% if not current_user.is_authenticated %}
-          <a class="btn" href="{{ url_for('login') }}">{{ _('Войти') }}</a>
+          <a class="btn" href="{{ url_for('login') }}" style="display:none" aria-hidden="true" tabindex="-1">{{ _('Войти') }}</a>
         {% else %}
           <a href="{{ url_for('profile') }}" class="user-avatar" title="{{ _('Профиль') }}" aria-label="{{ _('Профиль') }}">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

@@ -56,8 +56,7 @@
       <div class="divider"></div>
       <div class="nav-label">Админ</div>
       <a class="nav-item" href="/admin/users">Участники</a>
-      <a class="nav-item" href="/admin/billing/subscriptions">Подписки</a>
-      <a class="nav-item" href="/admin/schedule">Расписание</a>
+            <a class="nav-item" href="/admin/schedule">Расписание</a>
       {% endif %}
     </nav>
   </aside>
@@ -159,10 +158,12 @@
             <p class="muted">Подписка не активна.</p>
           {% endif %}
           <div class="actions">
+            {% if config.STRIPE_ENABLED %}
             <button class="btn btn-accent" onclick="createCheckout('{{ config.STRIPE_PRICE_MONTHLY }}')">Продлить (месяц)</button>
             <button class="btn" onclick="createCheckout('{{ config.STRIPE_PRICE_YEARLY }}')">Перейти на годовой</button>
             {% if customer_id %}
             <button class="btn" onclick="openPortal()">Управлять подпиской</button>
+            {% endif %}
             {% endif %}
           </div>
         </div>

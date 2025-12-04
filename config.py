@@ -23,9 +23,4 @@ class Config:
     MAX_UPLOAD_MB = int(os.environ.get("MAX_UPLOAD_MB", "15"))
     ALLOWED_UPLOAD_EXTENSIONS = {"pdf", "jpg", "jpeg", "png"}
 
-    # Stripe Billing
-    STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
-    STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
-    STRIPE_PRICE_MONTHLY = os.environ.get("STRIPE_PRICE_MONTHLY", os.environ.get("PRICE_MONTHLY", ""))
-    STRIPE_PRICE_YEARLY = os.environ.get("STRIPE_PRICE_YEARLY", os.environ.get("PRICE_YEARLY", ""))
-    STRIPE_ENABLED = bool(STRIPE_SECRET_KEY)
+    

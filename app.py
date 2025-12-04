@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from urllib.parse import urlparse
 from datetime import datetime, timezone
 from config import Config
-from models import db, News, Schedule, Trainer, Signup, User, Subscription, Payment, Document
+from models import db, News, Schedule, Trainer, Signup, User, Document
 import models as models
 from forms import LoginForm, RegisterForm, NewsForm, ScheduleForm, SignupForm, DocumentUploadForm, UserSearchForm, ProfileEditForm
 
@@ -595,214 +595,19 @@ def create_app():
     @admin_required
     def admin_user_detail(user_id):
         u = User.query.get_or_404(user_id)
-        subs = u.subscriptions.order_by(Subscription.created_at.desc()).all()
-        pays = u.payments.order_by(Payment.created_at.desc()).all()
+        subs = []
+        pays = []
         docs = u.documents.order_by(Document.uploaded_at.desc()).all()
         return render_template("admin/user_detail.html", user=u, subs=subs, payments=pays, docs=docs)
 
     # Admin: billing lists
-    @app.route("/admin/billing/subscriptions")
-    @admin_required
-    def admin_billing_subscriptions():
-        subs = Subscription.query.order_by(Subscription.created_at.desc()).limit(500).all()
-        return render_template("admin/subs.html", subs=subs)
-
-    @app.route("/admin/billing/payments")
-    @admin_required
-    def admin_billing_payments():
-        pays = Payment.query.order_by(Payment.created_at.desc()).limit(500).all()
-        return render_template("admin/payments.html", payments=pays)
-
+    
+    
     # Billing routes
-    @app.route("/billing")
-    @login_required
-    def billing_home():
-        try:
-            active_sub = current_user.subscriptions.order_by(Subscription.created_at.desc()).first()
-        except Exception:
-            active_sub = None
-        try:
-            payments = current_user.payments.order_by(Payment.created_at.desc()).limit(50).all()
-        except Exception:
-            payments = []
-        customer_id = active_sub.stripe_customer_id if active_sub and active_sub.stripe_customer_id else None
-        return render_template("profile/billing.html", active_sub=active_sub, payments=payments, customer_id=customer_id)
-
-    @app.route("/billing/checkout/session", methods=["POST"]) 
-    @login_required
-    def billing_checkout_session():
-        data = request.get_json(silent=True) or {}
-        price_id = (data.get("price_id") or '').strip()
-        if not price_id:
-            return jsonify({"error": "price_id required"}), 400
-        secret = app.config.get("STRIPE_SECRET_KEY")
-        if not secret:
-            return jsonify({"error": "Stripe not configured"}), 400
-        try:
-            import stripe
-            stripe.api_key = secret
-            success_url = f"{app.config.get('APP_BASE_URL').rstrip('/')}/billing?success=1"
-            cancel_url = f"{app.config.get('APP_BASE_URL').rstrip('/')}/billing?canceled=1"
-            # try reuse customer if exists
-            existing = None
-            try:
-                existing = current_user.subscriptions.order_by(Subscription.created_at.desc()).first()
-            except Exception:
-                existing = None
-            kwargs = {}
-            if existing and existing.stripe_customer_id:
-                kwargs["customer"] = existing.stripe_customer_id
-            checkout = stripe.checkout.Session.create(
-                mode="subscription",
-                success_url=success_url,
-                cancel_url=cancel_url,
-                line_items=[{"price": price_id, "quantity": 1}],
-                allow_promotion_codes=True,
-                automatic_tax={"enabled": True},
-                metadata={"user_id": str(current_user.id), "price_id": price_id},
-                **kwargs
-            )
-            return jsonify({"url": checkout.url})
-        except Exception as e:
-            return jsonify({"error": str(e)}), 400
-
-    @app.route("/billing/portal", methods=["POST"]) 
-    @login_required
-    def billing_portal():
-        secret = app.config.get("STRIPE_SECRET_KEY")
-        if not secret:
-            return jsonify({"error": "Stripe not configured"}), 400
-        try:
-            active_sub = current_user.subscriptions.order_by(Subscription.created_at.desc()).first()
-        except Exception:
-            active_sub = None
-        if not active_sub or not active_sub.stripe_customer_id:
-            return jsonify({"error": "No Stripe customer"}), 400
-        try:
-            import stripe
-            stripe.api_key = secret
-            portal = stripe.billing_portal.Session.create(
-                customer=active_sub.stripe_customer_id,
-                return_url=f"{app.config.get('APP_BASE_URL').rstrip('/')}/billing"
-            )
-            return jsonify({"url": portal.url})
-        except Exception as e:
-            return jsonify({"error": str(e)}), 400
-
-    @app.route("/billing/webhook", methods=["POST"]) 
-    def billing_webhook():
-        import json
-        endpoint_secret = app.config.get("STRIPE_WEBHOOK_SECRET")
-        payload = request.data
-        sig_header = request.headers.get("Stripe-Signature")
-        try:
-            import stripe
-            event = None
-            if endpoint_secret:
-                event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
-            else:
-                event = json.loads(payload)
-        except Exception as e:
-            return ("", 400)
-
-        def find_user_by_customer(customer_id: str):
-            if not customer_id:
-                return None
-            sub = Subscription.query.filter_by(stripe_customer_id=customer_id).order_by(Subscription.created_at.desc()).first()
-            return sub.user if sub else None
-
-        etype = event.get("type") if isinstance(event, dict) else event.type
-        data_obj = event.get("data", {}).get("object") if isinstance(event, dict) else event.data.object
-
-        try:
-            if etype == "checkout.session.completed":
-                customer_id = data_obj.get("customer")
-                subscription_id = data_obj.get("subscription")
-                metadata = data_obj.get("metadata") or {}
-                user_id = metadata.get("user_id")
-                price_id = metadata.get("price_id")
-                user = None
-                if user_id:
-                    user = User.query.get(int(user_id))
-                if not user:
-                    user = find_user_by_customer(customer_id)
-                if user:
-                    # retrieve subscription details from Stripe to get status & period end
-                    status = "active"
-                    current_period_end = None
-                    try:
-                        import stripe
-                        stripe.api_key = app.config.get("STRIPE_SECRET_KEY")
-                        if subscription_id:
-                            s = stripe.Subscription.retrieve(subscription_id)
-                            status = s.get("status") or status
-                            cpe = s.get("current_period_end")
-                            if cpe:
-                                current_period_end = datetime.fromtimestamp(int(cpe), tz=timezone.utc)
-                            if not price_id:
-                                items = (s.get("items") or {}).get("data") or []
-                                if items:
-                                    price_id = items[0].get("price", {}).get("id")
-                    except Exception:
-                        pass
-                    sub = Subscription.query.filter_by(stripe_subscription_id=subscription_id).first()
-                    if not sub:
-                        sub = Subscription(user_id=user.id)
-                    sub.stripe_customer_id = customer_id
-                    sub.stripe_subscription_id = subscription_id
-                    sub.stripe_price_id = price_id
-                    sub.status = status
-                    sub.current_period_end = current_period_end
-                    db.session.add(sub)
-                    db.session.commit()
-
-            elif etype == "invoice.paid":
-                invoice = data_obj
-                customer_id = invoice.get("customer")
-                user = find_user_by_customer(customer_id)
-                if user:
-                    p = Payment(
-                        user_id=user.id,
-                        stripe_invoice_id=invoice.get("id"),
-                        amount=invoice.get("amount_paid"),
-                        currency=(invoice.get("currency") or "").upper(),
-                        status="paid",
-                        paid_at=datetime.fromtimestamp(int(invoice.get("status_transitions", {}).get("paid_at") or invoice.get("created") or 0), tz=timezone.utc),
-                        raw=invoice,
-                    )
-                    db.session.add(p)
-                    # ensure subscription status stays active
-                    sub = user.subscriptions.order_by(Subscription.created_at.desc()).first()
-                    if sub:
-                        sub.status = "active"
-                    db.session.commit()
-
-            elif etype == "invoice.payment_failed":
-                invoice = data_obj
-                customer_id = invoice.get("customer")
-                user = find_user_by_customer(customer_id)
-                if user:
-                    sub = user.subscriptions.order_by(Subscription.created_at.desc()).first()
-                    if sub:
-                        sub.status = "past_due"
-                        db.session.commit()
-
-            elif etype in ("customer.subscription.updated", "customer.subscription.deleted"):
-                s = data_obj
-                subscription_id = s.get("id")
-                sub = Subscription.query.filter_by(stripe_subscription_id=subscription_id).first()
-                if sub:
-                    sub.status = s.get("status") or sub.status
-                    cpe = s.get("current_period_end")
-                    if cpe:
-                        sub.current_period_end = datetime.fromtimestamp(int(cpe), tz=timezone.utc)
-                    db.session.commit()
-        except Exception:
-            # swallow exceptions to let Stripe retry
-            pass
-
-        return ("", 200)
-
+    
+    
+    
+    
     # Simple profile page for authenticated users
     @app.route("/profile", methods=["GET", "POST"])
     @login_required
@@ -861,41 +666,20 @@ def create_app():
             # remember-me preference is handled at login; here we could store preference if needed
             return redirect(url_for('profile'))
 
-        # Compute latest subscription for UI (Overview)
-        last_sub = None
-        try:
-            last_sub = current_user.subscriptions.order_by(Subscription.created_at.desc()).first()
-        except Exception:
-            last_sub = None
-
-        # Data for Billing tab
-        try:
-            active_sub = current_user.subscriptions.order_by(Subscription.created_at.desc()).first()
-        except Exception:
-            active_sub = None
-        try:
-            payments = current_user.payments.order_by(Payment.created_at.desc()).limit(50).all()
-        except Exception:
-            payments = []
-        customer_id = active_sub.stripe_customer_id if active_sub and active_sub.stripe_customer_id else None
-
-        # Data for Documents tab
+        # Data for Documents tab only
         form = DocumentUploadForm()
         try:
             docs = current_user.documents.order_by(Document.uploaded_at.desc()).all()
         except Exception:
             docs = []
 
-        return render_template("profile/overview.html", last_sub=last_sub, active_sub=active_sub, payments=payments, customer_id=customer_id, form=form, docs=docs)
+        return render_template("profile/overview.html", last_sub=None, active_sub=None, payments=[], customer_id=None, form=form, docs=docs)
 
     # Profile routes (split Overview vs Edit)
     @app.route("/profile/overview")
     @login_required
     def profile_overview():
-        try:
-            last_sub = current_user.subscriptions.order_by(Subscription.created_at.desc()).first()
-        except Exception:
-            last_sub = None
+        last_sub = None
         try:
             docs = current_user.documents.order_by(Document.uploaded_at.desc()).limit(5).all()
         except Exception:

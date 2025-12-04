@@ -9,7 +9,7 @@
     <h1><span class="highlight">{{ _('БУДЬ В ФОРМЕ') }}</span><br>{{ _('СТАНЬ СИЛЬНЕЕ') }}</h1>
     <p>{{ _('Раскрой свой потенциал в нашей Академии единоборств.<br>Подними свой уровень и стань сильнее с нами.')|safe }}</p>
     <div class="btn-row">
-      <a class="btn" href="{{ url_for('signup') }}">{{ _('Записаться') }}</a>
+      <a class="btn" href="{{ url_for('signup') }}" style="display:none" aria-hidden="true" tabindex="-1">{{ _('Записаться') }}</a>
     </div>
   </div>
 </section>
@@ -17,9 +17,10 @@
   <div class="story-wrap">
 
     <!-- Заголовок -->
-    <div class="story-heading">
-      <span class="story-word main">{{ _('О НАС') }}</span>
-    </div>
+    <h1 class="story-heading underline-container">
+      <span class="story-word">{{ _('О') }}</span>
+      <span class="story-word">{{ _('НАС') }}</span>
+    </h1>
 
 <!-- Контент -->
 <div class="story-content">

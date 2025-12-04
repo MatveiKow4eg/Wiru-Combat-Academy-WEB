@@ -279,23 +279,48 @@ h1, .wc-title, .story-heading .story-word.main {
 }
 .our-story::after {
   content: "О НАС";
-  position: absolute; left: 50%; top: -20px; transform: translateX(-50%);
-  font-family: "Anton", sans-serif; font-size: clamp(120px, 22vw, 240px);
-  color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.06);
-  letter-spacing: 4px; z-index: 0; pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: 20px; /* 🔽 опускаем текст ниже */
+  transform: translateX(-50%);
+  font-family: "Anton", sans-serif;
+  font-size: clamp(60px, 14vw, 160px); /* 🔽 уменьшенный размер */
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.06);
+  letter-spacing: 4px;
+  z-index: 0;
+  pointer-events: none;
 }
+
+@media (max-width: 600px) {
+  .our-story::after {
+    top: 70px;                     /* можно регулировать ↑↓ */
+    font-size: clamp(24px, 18vw, 60px);  /* 🔥 значительно меньше */
+    letter-spacing: 1px;
+  }
+}
+
 .story-wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
 .story-heading { text-align: center; margin-bottom: 26px; }
-.story-heading .story-word.main{
+.story-heading .story-word{
   display:inline-block; font-family:"Anton",sans-serif;
   font-size: clamp(46px, 8vw, 120px); line-height:.9; letter-spacing:2px;
   color: transparent; -webkit-text-stroke: 2px var(--accent); text-transform: uppercase; position: relative;
 }
-.story-heading .story-word.main::after{
-  content:""; position:absolute; left:50%; bottom:-12px; transform:translateX(-50%);
-  width:120px; height:6px; background:var(--accent); border-radius:6px;
+/* Ensure words in the title are visually separated */
+.story-heading .story-word + .story-word{ margin-left: .25em; }
+/* New underline container to span the entire heading */
+.underline-container { position: relative; display: inline-block; }
+.underline-container::after{
+  content:""; position:absolute; left:0; bottom:-12px; width:100%; height:6px; background:#E02525; border-radius:3px;
   box-shadow:0 8px 20px rgba(224,37,37,.35);
+}
+/* Center the entire heading "О НАС" */
+.story-wrap .story-heading.underline-container{
+  display: table;
+  margin: 0 auto 26px;
+  text-align: center;
 }
 
 /* layout */
@@ -427,7 +452,7 @@ h1, .wc-title, .story-heading .story-word.main {
   .sweat-info h3 span { font-size: 36px; }
 
   .our-story{ padding: 70px 0 60px; }
-  .story-heading .story-word.main{ font-size: clamp(40px, 10vw, 72px); -webkit-text-stroke: 1.5px var(--accent); }
+  .story-heading .story-word{ font-size: clamp(40px, 10vw, 72px); -webkit-text-stroke: 1.5px var(--accent); }
   .story-content .story-text img{ order: 2; margin: 0 auto; width: 100%; max-width: clamp(260px, 80vw, 380px); }
   .story-content .story-text p.big{ order: 1; }
   .story-content .story-text p.small{ order: 3; }
