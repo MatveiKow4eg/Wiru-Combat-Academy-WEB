@@ -173,7 +173,7 @@ msgid "55€/мес – 550€/год – 7€/раз"
 msgstr "55€/kuu – 550€/aasta – 7€/kord"
 
 msgid "ТРЕНИРОВКИ, КОТОРЫЕ"
-msgstr "TREENINGUD, MIS"
+msgstr "TREENINGUD MIS"
 
 msgid "МЕНЯЮТ ТЕБЯ"
 msgstr "MUUDAVAD SIND"
