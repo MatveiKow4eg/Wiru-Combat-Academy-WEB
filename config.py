@@ -22,5 +22,6 @@ class Config:
     UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "./uploads")
     MAX_UPLOAD_MB = int(os.environ.get("MAX_UPLOAD_MB", "15"))
     ALLOWED_UPLOAD_EXTENSIONS = {"pdf", "jpg", "jpeg", "png"}
-
-    
+    # Gmail forms
+    GMAIL_USER = os.environ.get("GMAIL_USER")          # твой адрес Gmail
+    GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD")  # пароль приложения

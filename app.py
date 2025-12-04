@@ -9,6 +9,7 @@ from flask import (
     abort,
     jsonify,
     send_file,
+    current_app,
 )
 from flask_babel import Babel, gettext as _
 from flask_login import (
@@ -22,6 +23,9 @@ from flask_wtf.csrf import CSRFProtect
 from werkzeug.security import check_password_hash, generate_password_hash
 from urllib.parse import urlparse
 from datetime import datetime, timezone
+from email.mime.text import MIMEText
+from email.header import Header
+import smtplib
 
 from config import Config
 from models import db, News, Schedule, Trainer, Signup, User, Document
@@ -300,6 +304,50 @@ def create_app():
     @app.route("/contact")
     def contact():
         return render_template("contact.html")
+
+    @app.route("/send-message", methods=["POST"])
+    def send_message():
+        name = request.form.get("name")
+        email = request.form.get("email")
+        message = request.form.get("message")
+
+        if not (name and email and message):
+            flash(_("Пожалуйста, заполните все поля."), "error")
+            return redirect(url_for("home"))
+
+        body = f"""Новое сообщение с сайта Wiru Combat Academy
+
+Имя: {name}
+
+Email: {email}
+
+Сообщение:
+
+{message}
+"""
+
+        gmail_user = current_app.config.get("GMAIL_USER")
+        gmail_pass = current_app.config.get("GMAIL_APP_PASSWORD")
+
+        if not gmail_user or not gmail_pass:
+            flash(_("Ошибка: почта не настроена на сервере."), "error")
+            return redirect(url_for("home"))
+
+        try:
+            msg = MIMEText(body, "plain", "utf-8")
+            msg["Subject"] = Header("Сообщение с сайта Wiru Combat Academy", "utf-8")
+            msg["From"] = gmail_user
+            msg["To"] = gmail_user  # отправляем самому себе
+
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+                server.login(gmail_user, gmail_pass)
+                server.send_message(msg)
+
+            flash(_("Спасибо! Ваше сообщение отправлено."), "success")
+        except Exception as e:
+            print("Mail error:", e)
+            flash(_("Произошла ошибка при отправке сообщения."), "error")
+        return redirect(url_for("home"))
 
     @app.route("/signup", methods=["GET", "POST"])
     def signup():

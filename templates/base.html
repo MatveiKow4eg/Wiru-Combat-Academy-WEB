@@ -151,14 +151,17 @@
     <div class="footer-top">
       <div class="footer-form">
         <h3>{{ _('Напишите нам') }}</h3>
-        <form method="POST" action="/send-message">
-          <div class="form-row two-cols">
-            <input type="text" name="name" placeholder="{{ _('Ваше имя') }}" required>
-            <input type="email" name="email" placeholder="{{ _('Ваш Email') }}" required>
-          </div>
-          <textarea name="message" placeholder="{{ _('Ваше сообщение') }}" rows="5" required></textarea>
-          <button type="submit">{{ _('Отправить') }}</button>
-        </form>
+<form method="POST" action="{{ url_for('send_message') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  
+  <div class="form-row two-cols">
+    <input type="text" name="name" placeholder="{{ _('Ваше имя') }}" required>
+    <input type="email" name="email" placeholder="{{ _('Ваш Email') }}" required>
+  </div>
+  <textarea name="message" placeholder="{{ _('Ваше сообщение') }}" rows="5" required></textarea>
+  <button type="submit">{{ _('Отправить') }}</button>
+</form>
+
       </div>
 
       <!-- Логотип справа -->
