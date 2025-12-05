@@ -267,10 +267,6 @@ def create_app():
     # ----------------- PUBLIC PAGES -----------------
 
     @app.route("/")
-    @app.route('/robots.txt')
-    def robots():
-        return send_from_directory('static', 'robots.txt', mimetype='text/plain')
-
     def home():
         news = News.query.order_by(News.created_at.desc()).limit(6).all()
         schedule = Schedule.query.order_by(
@@ -280,6 +276,10 @@ def create_app():
         return render_template(
             "home.html", news=news, schedule=schedule, trainers=trainers
         )
+
+    @app.route('/robots.txt')
+    def robots():
+        return send_from_directory('static', 'robots.txt', mimetype='text/plain')
 
     @app.route("/news")
     def news_list():
