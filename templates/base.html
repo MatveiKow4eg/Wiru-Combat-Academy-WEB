@@ -85,6 +85,34 @@
       .header .nav{ justify-self: center; }
     }
   </style>
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='images/favicon/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='images/favicon/site.webmanifest') }}">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- Dynamic SEO -->
+    <title>{{ title or "Wiru Combat Academy" }}</title>
+    <meta name="description" content="{{ description or 'Тренировки по боксу и ММА в Нарве для детей и взрослых' }}">
+    <meta name="keywords" content="бокс Нарва, мма Нарва, спорт Нарва, тренировки, wiru combat academy">
+    <meta name="author" content="Wiru Combat Academy">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{ og_title or 'Wiru Combat Academy — Академия Единоборств в Нарве' }}">
+    <meta property="og:description" content="{{ og_desc or 'Тренировки по боксу и ММА для всех возрастов' }}">
+    <meta property="og:image" content="{{ url_for('static', filename='images/og-image.jpg', _external=True) }}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ og_title or 'Wiru Combat Academy' }}">
+    <meta name="twitter:description" content="{{ og_desc or 'Спортивная академия единоборств в Нарве' }}">
+    <meta name="twitter:image" content="{{ url_for('static', filename='images/og-image.jpg', _external=True) }}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
 </head>
 <body>
 <header class="header">
