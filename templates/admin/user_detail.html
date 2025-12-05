@@ -36,6 +36,22 @@
             <div class="value">{{ user.role }}</div>
           </div>
         </div>
+        {% if current_user.is_superadmin and not user.is_superadmin %}
+        <div style="margin-top:16px; display:flex; gap:12px;">
+          {% if user.role != 'admin' %}
+          <form method="post" action="{{ url_for('admin_make_admin', user_id=user.id) }}">
+            {{ csrf_token() }}
+            <button type="submit" class="btn btn-primary">Сделать админом</button>
+          </form>
+          {% endif %}
+          {% if user.role == 'admin' %}
+          <form method="post" action="{{ url_for('admin_remove_admin', user_id=user.id) }}">
+            {{ csrf_token() }}
+            <button type="submit" class="btn btn-secondary">Снять админа</button>
+          </form>
+          {% endif %}
+        </div>
+        {% endif %}
       </div>
     </div>
 

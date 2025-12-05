@@ -196,7 +196,7 @@ def create_app():
 
     csrf = CSRFProtect(app)
 
-    # Role-based decorator
+    # Role-based decorators
     def role_required(*roles):
         def decorator(view):
             @wraps(view)
@@ -206,6 +206,7 @@ def create_app():
                         request.full_path if request.query_string else request.path
                     )
                     return redirect(url_for("login", next=next_rel))
+                # keep generic role check for other uses
                 if roles and (getattr(current_user, "role", None) not in roles):
                     flash(_("Доступ запрещён"))
                     return abort(403)
@@ -215,9 +216,30 @@ def create_app():
 
         return decorator
 
-    # Backward alias for existing admin protection
     def admin_required(view):
-        return role_required("admin")(view)
+        # allow both admin and superadmin using model properties
+        @wraps(view)
+        def wrapped(*args, **kwargs):
+            if not current_user.is_authenticated:
+                next_rel = request.full_path if request.query_string else request.path
+                return redirect(url_for("login", next=next_rel))
+            if not getattr(current_user, "is_admin", False):
+                flash(_("Доступ запрещён"))
+                return abort(403)
+            return view(*args, **kwargs)
+        return wrapped
+
+    def superadmin_required(view):
+        @wraps(view)
+        def wrapped(*args, **kwargs):
+            if not current_user.is_authenticated:
+                next_rel = request.full_path if request.query_string else request.path
+                return redirect(url_for("login", next=next_rel))
+            if not bool(getattr(current_user, "is_superadmin", False)):
+                flash(_("Доступ только для супер-админа"))
+                return abort(403)
+            return view(*args, **kwargs)
+        return wrapped
 
     @login_manager.unauthorized_handler
     def unauthorized():
@@ -487,7 +509,7 @@ def create_app():
 
     @app.route("/admin/login", methods=["GET", "POST"])
     def admin_login():
-        if current_user.is_authenticated and current_user.role == "admin":
+        if current_user.is_authenticated and getattr(current_user, "is_admin", False):
             return redirect(url_for("profile"))
         form = LoginForm()
         if form.validate_on_submit():
@@ -497,7 +519,7 @@ def create_app():
                 user = User.query.filter_by(username=ident).first()
             if (
                 user
-                and user.role == "admin"
+                and getattr(user, "is_admin", False)
                 and user.is_active
                 and user.check_password(form.password.data)
             ):
@@ -834,6 +856,39 @@ def create_app():
         return render_template(
             "admin/user_detail.html", user=u, subs=subs, payments=pays, docs=docs
         )
+
+    @app.route("/admin/users/<int:user_id>/make-admin", methods=["POST"])
+    @superadmin_required
+    def admin_make_admin(user_id):
+        u = User.query.get_or_404(user_id)
+        if getattr(u, "is_superadmin", False):
+            flash(_("Нельзя менять роль супер-админа."), "error")
+            return redirect(url_for("admin_user_detail", user_id=user_id))
+        u.role = "admin"
+        # keep legacy flag in sync
+        try:
+            u.is_admin = True
+        except Exception:
+            pass
+        db.session.commit()
+        flash(_("Пользователь назначен администратором."), "success")
+        return redirect(url_for("admin_user_detail", user_id=user_id))
+
+    @app.route("/admin/users/<int:user_id>/remove-admin", methods=["POST"])
+    @superadmin_required
+    def admin_remove_admin(user_id):
+        u = User.query.get_or_404(user_id)
+        if getattr(u, "is_superadmin", False):
+            flash(_("Нельзя менять роль супер-админа."), "error")
+            return redirect(url_for("admin_user_detail", user_id=user_id))
+        u.role = "user"
+        try:
+            u.is_admin = False
+        except Exception:
+            pass
+        db.session.commit()
+        flash(_("Роль администратора снята."), "success")
+        return redirect(url_for("admin_user_detail", user_id=user_id))
 
     # ----------------- PROFILE -----------------
 
