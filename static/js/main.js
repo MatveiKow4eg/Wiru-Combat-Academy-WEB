@@ -3,22 +3,14 @@ function toggleMenu(){
   const overlay = document.getElementById('navOverlay');
   const body = document.body;
   const willOpen = !nav.classList.contains('open');
-  nav.classList.toggle('open');
+  // Toggle classes and harden overlay state to avoid stuck intercepts
+  nav.classList.toggle('open', willOpen);
   body.classList.toggle('menu-open', willOpen);
   if(overlay){
-    if(willOpen){
-      overlay.style.position = 'fixed';
-      overlay.style.left = '0'; overlay.style.top = '0'; overlay.style.right = '0'; overlay.style.bottom = '0';
-      overlay.style.background = 'rgba(0,0,0,0.5)';
-      overlay.style.backdropFilter = 'saturate(120%) blur(1px)';
-      overlay.style.opacity = '1';
-      overlay.style.pointerEvents = 'auto';
-      overlay.style.transition = 'opacity .3s ease';
-      overlay.style.zIndex = '150';
-    } else {
-      overlay.style.opacity = '0';
-      overlay.style.pointerEvents = 'none';
-    }
+    // Ensure overlay never blocks clicks when menu is closed
+    overlay.removeAttribute('style');
+    overlay.style.opacity = willOpen ? '1' : '0';
+    overlay.style.pointerEvents = willOpen ? 'auto' : 'none';
   }
 }
 
@@ -26,7 +18,16 @@ function toggleMenu(){
 (function(){
   const nav = document.getElementById('nav');
   if(!nav) return;
+  const overlay = document.getElementById('navOverlay');
   const isMobile = () => window.matchMedia('(max-width: 640px)').matches;
+  // Initialize safe state (menu closed, overlay disabled)
+  document.body.classList.remove('menu-open');
+  nav.classList.remove('open');
+  if(overlay){
+    overlay.removeAttribute('style');
+    overlay.style.opacity = '0';
+    overlay.style.pointerEvents = 'none';
+  }
 
   // Close on ESC
   document.addEventListener('keydown', (e) => {
@@ -57,6 +58,29 @@ function toggleMenu(){
     if(!dragging || !isMobile() || !nav.classList.contains('open')) return;
     dragging = false;
     if(deltaX < -50) toggleMenu();
+  });
+
+  // Click outside to close (mobile only)
+  document.addEventListener('click', (e) => {
+    if (!isMobile() || !nav.classList.contains('open')) return;
+    const burger = document.querySelector('.burger');
+    const insideNav = nav.contains(e.target);
+    const onBurger = burger && (burger === e.target || burger.contains(e.target));
+    if (!insideNav && !onBurger) {
+      toggleMenu();
+    }
+  });
+
+  // Ensure menu/overlay closed on desktop
+  window.addEventListener('resize', () => {
+    if (!isMobile()) {
+      document.body.classList.remove('menu-open');
+      nav.classList.remove('open');
+      if(overlay){
+        overlay.style.opacity = '0';
+        overlay.style.pointerEvents = 'none';
+      }
+    }
   });
 })();
 

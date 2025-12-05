@@ -48,8 +48,24 @@
     /* Mobile-only override: slightly narrower side drawer */
     @media (max-width: 640px) {
       #nav.nav { width: 72vw; max-width: 280px; }
-      /* show right-side buttons also on mobile */
-      .header-actions .btn { display: inline-block !important; }
+      /* hide auth/login button on mobile */
+      .header-actions .btn { display: none !important; }
+    }
+    /* Overlay default: hidden; enable only when menu is open */
+    .nav-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      -webkit-backdrop-filter: saturate(120%) blur(1px);
+      backdrop-filter: saturate(120%) blur(1px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s ease;
+      z-index: 150;
+    }
+    body.menu-open .nav-overlay {
+      opacity: 1;
+      pointer-events: auto;
     }
     /* improve spacing in right header area */
     .header-actions { gap: 16px; }
@@ -68,7 +84,6 @@
       .header-actions{ justify-self: end; }
       .header .nav{ justify-self: center; }
     }
-  </style>
   </style>
 </head>
 <body>
@@ -117,7 +132,6 @@
     </div>
   </div>
 </header>
-<div id="navOverlay" class="nav-overlay" onclick="toggleMenu()"></div>
 
 <main class="main">
   {% with messages = get_flashed_messages(with_categories=True) %}
