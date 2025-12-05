@@ -3,7 +3,17 @@ import os
 class Config:
     # Core Flask/DB
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL", "sqlite:///sports_club.db")
+
+    # Берём DATABASE_URL (если есть)
+    _db_url = os.environ.get("DATABASE_URL")
+
+    # Чиним старый формат postgres:// -> postgresql:// (SQLAlchemy этого требует)
+    if _db_url and _db_url.startswith("postgres://"):
+        _db_url = _db_url.replace("postgres://", "postgresql://", 1)
+
+    # Если DATABASE_URL нет – падаем обратно на локальный SQLite
+    SQLALCHEMY_DATABASE_URI = _db_url or "sqlite:///sports_club.db"
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # i18n
@@ -22,6 +32,7 @@ class Config:
     UPLOAD_DIR = os.environ.get("UPLOAD_DIR", "./uploads")
     MAX_UPLOAD_MB = int(os.environ.get("MAX_UPLOAD_MB", "15"))
     ALLOWED_UPLOAD_EXTENSIONS = {"pdf", "jpg", "jpeg", "png"}
+
     # Gmail forms
     SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
     MAIL_FROM = os.environ.get("MAIL_FROM")
