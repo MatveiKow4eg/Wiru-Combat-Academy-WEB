@@ -29,3 +29,6 @@ gunicorn==23.0.0
 
 sendgrid
 sendgrid==6.9.7  # <– добавлено (обязательно!)  
+
+# Image processing for favicon and og-image generation
+Pillow  

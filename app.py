@@ -284,7 +284,14 @@ def create_app():
     @app.route("/news")
     def news_list():
         news = News.query.order_by(News.created_at.desc()).all()
-        return render_template("news.html", news=news)
+        return render_template(
+            "news.html",
+            news=news,
+            title="Новости — Wiru Combat Academy, Кохтла-Ярве",
+            description="Новости и события Wiru Combat Academy в Кохтла-Ярве: турниры, мероприятия, результаты.",
+            og_title="Новости Wiru Combat Academy, Кохтла-Ярве",
+            og_desc="Будьте в курсе спортивных событий и мероприятий академии единоборств."
+        )
 
     @app.route("/news/<int:news_id>")
     def news_detail(news_id):
@@ -303,11 +310,24 @@ def create_app():
     @app.route("/trainers")
     def trainers_page():
         trainers = Trainer.query.all()
-        return render_template("trainers.html", trainers=trainers)
+        return render_template(
+            "trainers.html",
+            trainers=trainers,
+            title="Тренеры — Wiru Combat Academy, Кохтла-Ярве",
+            description="Профессиональные тренеры по боксу и ММА в Кохтла-Ярве. Опытные наставники, инд��видуальный подход.",
+            og_title="Тренерский состав Wiru Combat Academy, Кохтла-Ярве",
+            og_desc="Познакомьтесь с нашими тренерами и их опытом в единоборствах."
+        )
 
     @app.route("/contact")
     def contact():
-        return render_template("contact.html")
+        return render_template(
+            "contact.html",
+            title="Контакты — Wiru Combat Academy, Кохтла-Ярве",
+            description="Контакты Wiru Combat Academy в Кохтла-Ярве: адрес зала, телефон, электронная почта и форма обратной связи.",
+            og_title="Контакты Wiru Combat Academy, Кохтла-Ярве",
+            og_desc="Свяжитесь с нами, чтобы записаться на тренировку или задать вопрос."
+        )
 
     @app.route("/send-message", methods=["POST"])
     def send_message():
