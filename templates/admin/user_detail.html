@@ -130,6 +130,28 @@
         </div>
       </div>
     </div>
+
+    {% if role_logs %}
+    <div class="card">
+      <div class="card-head"><h2>История изменений ролей</h2></div>
+      <div class="card-body">
+        <div class="table">
+          <div class="table-row head">
+            <div>Дата</div>
+            <div>Кто</div>
+            <div>Изменение</div>
+          </div>
+          {% for log in role_logs %}
+          <div class="table-row">
+            <div>{{ log.created_at.strftime('%d.%m.%Y %H:%M') }}</div>
+            <div>{{ (log.actor.email if log.actor else '—') }}</div>
+            <div>{{ log.old_role or '—' }} → {{ log.new_role or '—' }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

@@ -992,7 +992,7 @@ def create_app():
 
             current_user.full_name = (form.full_name.data or "").strip() or None
 
-            if getattr(current_user, "role", "user") == "admin":
+            if getattr(current_user, "is_admin", False):
                 current_user.level = (form.level.data or "").strip() or None
                 current_user.group_name = (
                     form.group_name.data or ""
@@ -1080,9 +1080,7 @@ def create_app():
     @login_required
     def document_download(doc_id):
         doc = Document.query.get_or_404(doc_id)
-        if doc.user_id != current_user.id and getattr(
-            current_user, "role", "user"
-        ) != "admin":
+        if doc.user_id != current_user.id and not getattr(current_user, "is_admin", False):
             abort(403)
         base = os.path.realpath(app.config.get("UPLOAD_DIR", "./uploads"))
         path = os.path.realpath(doc.stored_path or "")
@@ -1101,9 +1099,7 @@ def create_app():
     @login_required
     def document_view(doc_id):
         doc = Document.query.get_or_404(doc_id)
-        if doc.user_id != current_user.id and getattr(
-            current_user, "role", "user"
-        ) != "admin":
+        if doc.user_id != current_user.id and not getattr(current_user, "is_admin", False):
             abort(403)
         base = os.path.realpath(app.config.get("UPLOAD_DIR", "./uploads"))
         path = os.path.realpath(doc.stored_path or "")
@@ -1604,19 +1600,32 @@ def seed_if_empty():
         superadmin_email = os.environ.get("SUPERADMIN_EMAIL")
         pwd = os.environ.get("ADMIN_PASSWORD")
         if superadmin_email and pwd:
-            su = User(
-                email=superadmin_email.strip().lower(),
-                username="superadmin",
-                role="superadmin",
-                is_superadmin=True,
-                is_active=True,
-            )
-            su.set_password(pwd)
-            db.session.add(su)
-            db.session.commit()
-            print("Created superadmin user. Credentials:")
-            print(f"  email: {superadmin_email}")
-            print("  password: [from ADMIN_PASSWORD env]")
+            email = superadmin_email.strip().lower()
+            existing = User.query.filter(User.email == email).first()
+            if existing:
+                # Повышаем существующего пользователя до супер-админа
+                existing.role = "superadmin"
+                existing.is_superadmin = True
+                existing.is_active = True
+                existing.set_password(pwd)
+                db.session.commit()
+                print("Upgraded existing user to superadmin. Credentials:")
+                print(f"  email: {superadmin_email}")
+                print("  password: [from ADMIN_PASSWORD env]")
+            else:
+                su = User(
+                    email=email,
+                    username="superadmin",
+                    role="superadmin",
+                    is_superadmin=True,
+                    is_active=True,
+                )
+                su.set_password(pwd)
+                db.session.add(su)
+                db.session.commit()
+                print("Created superadmin user. Credentials:")
+                print(f"  email: {superadmin_email}")
+                print("  password: [from ADMIN_PASSWORD env]")
         else:
             print("Superadmin not created: set SUPERADMIN_EMAIL and ADMIN_PASSWORD environment variables.")
             db.session.commit()
