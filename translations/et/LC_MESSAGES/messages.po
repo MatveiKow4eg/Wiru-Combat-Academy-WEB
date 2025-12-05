@@ -8,6 +8,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+# Nav ja põhisakid
 msgid "Главная"
 msgstr "Avaleht"
 
@@ -19,6 +20,9 @@ msgstr "Tunniplaan"
 
 msgid "Тренеры"
 msgstr "Treenerid"
+
+msgid "Тренировки"
+msgstr "Treeningud"
 
 msgid "Контакты"
 msgstr "Kontaktid"
@@ -45,7 +49,7 @@ msgid "Техника, контроль и характер."
 msgstr "Tehnika, kontroll ja iseloom."
 
 msgid "Смешанные единоборства для смелых."
-msgstr "Vabamaadlus julgetele."
+msgstr "Võitluskunstid julgetele."
 
 msgid "Все новости"
 msgstr "Kõik uudised"
@@ -59,8 +63,14 @@ msgstr "Ava tunniplaan"
 msgid "Тренеры скоро появятся."
 msgstr "Treenerid ilmuvad peagi."
 
+msgid "РАСПИСАНИЕ"
+msgstr "TUNNIPLAAN"
+
 msgid "Расписание тренировок"
 msgstr "Treeningute ajakava"
+
+msgid "Сегодня"
+msgstr "Täna"
 
 msgid "День"
 msgstr "Päev"
@@ -73,6 +83,9 @@ msgstr "Tegevus"
 
 msgid "Тренер"
 msgstr "Treener"
+
+msgid "Нет занятий"
+msgstr "Tunde pole"
 
 msgid "Пн"
 msgstr "E"
@@ -95,10 +108,32 @@ msgstr "L"
 msgid "Вс"
 msgstr "P"
 
+msgid "Понедельник"
+msgstr "Esmaspäev"
+
+msgid "Вторник"
+msgstr "Teisipäev"
+
+msgid "Среда"
+msgstr "Kolmapäev"
+
+msgid "Четверг"
+msgstr "Neljapäev"
+
+msgid "Пятница"
+msgstr "Reede"
+
+msgid "Суббота"
+msgstr "Laupäev"
+
+msgid "Воскресенье"
+msgstr "Pühapäev"
+
 msgid "Спасибо! Мы свяжемся с вами скоро."
 msgstr "Aitäh! Võtame Teiega peagi ühendust."
 
-msgid "Добро пожал��вать в админ-панель!"
+# Admin / fläshid
+msgid "Добро пожаловать в админ-панель!"
 msgstr "Tere tulemast admin-paneeli!"
 
 msgid "Неверный логин или пароль."
@@ -116,7 +151,353 @@ msgstr "Uudis on lisatud."
 msgid "Тренировка добавлена в расписание."
 msgstr "Treening lisatud ajakavasse."
 
-# base.html footer
+msgid "Ошибка создания сессии оплаты"
+msgstr "Makse seansi loomisel tekkis viga"
+
+msgid "Ошибка сети"
+msgstr "Võrguviga"
+
+# Admin-lehed
+msgid "Админ-панель"
+msgstr "Admin-paneel"
+
+msgid "Админка — Новости"
+msgstr "Admin — Uudised"
+
+msgid "Вход в админ-панель"
+msgstr "Sisselogimine admin-paneeli"
+
+msgid "Всего:"
+msgstr "Kokku:"
+
+msgid "Добавить новость"
+msgstr "Lisa uudis"
+
+msgid "Заявки"
+msgstr "Avaldused"
+
+msgid "Новых заявок:"
+msgstr "Uusi avaldusi:"
+
+msgid "Редактировать расписание"
+msgstr "Muuda tunniplaani"
+
+msgid "Редактор расписания"
+msgstr "Tunniplaani redaktor"
+
+msgid "Публичное расписание"
+msgstr "Avalik tunniplaan"
+
+msgid "Копировать день"
+msgstr "Kopeeri päev"
+
+msgid "Из"
+msgstr "Allikast"
+
+msgid "В"
+msgstr "Siht"
+
+msgid "Скопировать"
+msgstr "Kopeeri"
+
+msgid "Добавить занятие"
+msgstr "Lisa tund"
+
+msgid "Выберите активность"
+msgstr "Vali tegevus"
+
+msgid "Другое"
+msgstr "Muu"
+
+msgid "Введите название"
+msgstr "Sisesta nimetus"
+
+msgid "Тренер (необязательно)"
+msgstr "Treener (ei ole kohustuslik)"
+
+msgid "Добавить"
+msgstr "Lisa"
+
+msgid "Очистить"
+msgstr "Puhasta"
+
+msgid "Пример: Борьба 6–12, ММА 13+, Общая физическая подготовка"
+msgstr "Näide: Maadlus 6–12, MMA 13+, Üldfüüsiline ettevalmistus"
+
+msgid "Выбрать"
+msgstr "Vali"
+
+msgid "Удалить"
+msgstr "Kustuta"
+
+msgid "Выбрать все"
+msgstr "Vali kõik"
+
+msgid "Снять всё"
+msgstr "Tühista valik"
+
+msgid "Подтверждение"
+msgstr "Kinnitus"
+
+msgid "Отмена"
+msgstr "Loobu"
+
+msgid "Подтвердить"
+msgstr "Kinnita"
+
+msgid "Пока нет занятий"
+msgstr "Tunde veel pole"
+
+msgid "Добавьте первое занятие для этого дня"
+msgstr "Lisa selle päeva esimene tund"
+
+msgid "Админ"
+msgstr "Admin"
+
+msgid "Участники"
+msgstr "Liikmed"
+
+msgid "Создано"
+msgstr "Loodud"
+
+msgid "Новостей пока нет."
+msgstr "Uudiseid veel pole."
+
+msgid "Редактировать"
+msgstr "Muuda"
+
+msgid "Удалить новость?"
+msgstr "Kas kustutada uudis?"
+
+msgid "На главную"
+msgstr "Tagasi avalehele"
+
+msgid "Недостаточно прав для доступа к этой странице."
+msgstr "Teil ei ole õigusi selle lehe vaatamiseks."
+
+msgid "Войти как админ"
+msgstr "Logi sisse administraatorina"
+
+# Auth / konto
+msgid "Вход"
+msgstr "Logi sisse"
+
+msgid "Регистрация"
+msgstr "Registreeru"
+
+msgid "Email или имя пользователя"
+msgstr "E-post või kasutajanimi"
+
+msgid "Пароль"
+msgstr "Parool"
+
+msgid "Запомнить меня"
+msgstr "Pea mind meeles"
+
+msgid "Нет аккаунта?"
+msgstr "Konto puudub?"
+
+msgid "Зарегистрируйтесь"
+msgstr "Registreeru"
+
+msgid "Имя пользователя"
+msgstr "Kasutajanimi"
+
+msgid "Подтверждение пароля"
+msgstr "Parooli kinnitus"
+
+msgid "Уже есть аккаунт?"
+msgstr "Konto on juba olemas?"
+
+msgid "Войти"
+msgstr "Logi sisse"
+
+msgid "Sign in"
+msgstr "Logi sisse"
+
+msgid "Sign up"
+msgstr "Registreeru"
+
+msgid "Без имени"
+msgstr "Nimeta"
+
+msgid "Перейти в Админ-панель"
+msgstr "Ava admin-paneel"
+
+msgid "Мой аккаунт"
+msgstr "Minu konto"
+
+msgid "Имя/Ник"
+msgstr "Nimi / hüüdnimi"
+
+msgid "Ваше имя или ник"
+msgstr "Sinu nimi või hüüdnimi"
+
+msgid "Сохранить"
+msgstr "Salvesta"
+
+msgid "Предпочтения"
+msgstr "Eelistused"
+
+msgid "Сохранить предпочтения"
+msgstr "Salvesta eelistused"
+
+msgid "Сессии / Устройства"
+msgstr "Sessioonid / seadmed"
+
+msgid "Пока что здесь заглушка. Можно добавить список активных сессий и кнопку:"
+msgstr "Praegu on siin kohatäide. Siia saab lisada aktiivsete sessioonide nimekirja ja nupu:"
+
+msgid "Вы уверены, что хотите выйти на всех устройствах?"
+msgstr "Kas olete kindel, et soovite kõikidest seadmetest välja logida?"
+
+msgid "Выйти со всех устройств"
+msgstr "Logi välja kõigist seadmetest"
+
+msgid "Выход"
+msgstr "Logi välja"
+
+# Profiil (uus layout)
+msgid "Профиль"
+msgstr "Profiil"
+
+msgid "Подписка истекает через"
+msgstr "Tellimus aegub"
+
+msgid "дн."
+msgstr "p."
+
+msgid "Подписка"
+msgstr "Tellimus"
+
+msgid "Активна"
+msgstr "Aktiivne"
+
+msgid "Просрочена"
+msgstr "Aegunud"
+
+msgid "Отменена"
+msgstr "Tühistatud"
+
+msgid "—"
+msgstr "—"
+
+msgid "нет подписки"
+msgstr "tellimus puudub"
+
+msgid "Разделы"
+msgstr "Sektsioonid"
+
+msgid "Абонемент"
+msgstr "Abonement"
+
+msgid "Система"
+msgstr "Süsteem"
+
+msgid "Язык интерфейса"
+msgstr "Kasutajaliidese keel"
+
+msgid "Дата регистрации"
+msgstr "Registreerimise kuupäev"
+
+msgid "Редактирование профиля"
+msgstr "Profiili muutmine"
+
+msgid "Аватар"
+msgstr "Avatar"
+
+msgid "Загрузить фото"
+msgstr "Laadi foto üles"
+
+msgid "Максимальный размер: 2 МБ"
+msgstr "Maksimaalne suurus: 2 MB"
+
+msgid "Имя"
+msgstr "Eesnimi"
+
+msgid "Фамилия"
+msgstr "Perekonnanimi"
+
+msgid "Сохранить изменения"
+msgstr "Salvesta muudatused"
+
+msgid "Безопасность"
+msgstr "Turvalisus"
+
+msgid "Смена пароля"
+msgstr "Parooli muutmine"
+
+msgid "Текущий пароль"
+msgstr "Praegune parool"
+
+msgid "Новый пароль"
+msgstr "Uus parool"
+
+msgid "Подтверждение"
+msgstr "Kinnitus"
+
+msgid "Изменить пароль"
+msgstr "Muuda parool"
+
+msgid "Подтверждение нового пароля"
+msgstr "Uue parooli kinnitus"
+
+msgid "Навигация профиля"
+msgstr "Profiili navigeerimine"
+
+# Dokumendid
+msgid "Документы"
+msgstr "Dokumendid"
+
+msgid "Загрузка документа"
+msgstr "Dokumendi üleslaadimine"
+
+msgid "Имя файла"
+msgstr "Failinimi"
+
+msgid "Размер"
+msgstr "Suurus"
+
+msgid "Дата"
+msgstr "Kuupäev"
+
+msgid "Действия"
+msgstr "Tegevused"
+
+msgid "Смотреть"
+msgstr "Vaata"
+
+msgid "Скачать"
+msgstr "Laadi alla"
+
+msgid "Нет загруженных документов"
+msgstr "Üleslaaditud dokumente pole"
+
+msgid "Нет загруженных документов."
+msgstr "Üleslaaditud dokumente pole."
+
+msgid "Просмотр документа"
+msgstr "Dokumendi eelvaade"
+
+msgid "Закрыть"
+msgstr "Sulge"
+
+msgid "Мои документы"
+msgstr "Minu dokumendid"
+
+msgid "Файл (pdf, jpg, png)"
+msgstr "Fail (pdf, jpg, png)"
+
+msgid "Заметка"
+msgstr "Märkus"
+
+msgid "Загрузить"
+msgstr "Laadi üles"
+
+msgid "KB"
+msgstr "kB"
+
+# Footer ja kontakt
 msgid "Напишите нам"
 msgstr "Kirjuta meile"
 
@@ -138,11 +519,11 @@ msgstr "Pank"
 msgid "Все права защищены"
 msgstr "Kõik õigused kaitstud"
 
-# home.html hero and sections
+# Avalehe sektsioonid
 msgid "БУДЬ В ФОРМЕ"
 msgstr "OLE HEAS VORMIS"
 
-msgid "СТАНЬ СИЛЬНЕЕ"
+msgid "СТАНЬ СИЛ��НЕЕ"
 msgstr "MUUTU TUGEVAMAKS"
 
 msgid "О НАС"
@@ -160,6 +541,12 @@ msgstr "Poks"
 msgid "Кикбоксинг"
 msgstr "Kickpoks"
 
+msgid "MMA"
+msgstr "MMA"
+
+msgid "Греко-римская борьба"
+msgstr "Kreeka-rooma maadlus"
+
 msgid "Борьба"
 msgstr "Maadlus"
 
@@ -173,7 +560,7 @@ msgid "55€/мес – 550€/год – 7€/раз"
 msgstr "55€/kuu – 550€/aasta – 7€/kord"
 
 msgid "ТРЕНИРОВКИ, КОТОРЫЕ"
-msgstr "TREENINGUD MIS"
+msgstr "TREENINGUD, MIS"
 
 msgid "МЕНЯЮТ ТЕБЯ"
 msgstr "MUUDAVAD SIND"
@@ -187,14 +574,14 @@ msgstr "Arenda reaktsiooni, kiirust ja koordinatsiooni."
 msgid "МИНУТ ИНТЕНСИВА"
 msgstr "MINUTIT INTENSIIVSUST"
 
-msgid "ЭФФЕКТИВНОЕ ЗАНЯТИЕ ДЛЯ СИЛЫ, ТЕХНИКИ И УВЕРЕННОСТИ."
+msgid "ЭФФЕКТИВНОЕ ЗАНЯТИЕ ДЛЯ СИЛ��, ТЕХНИКИ И УВЕРЕННОСТИ."
 msgstr "Tõhus treening jõu, tehnika ja enesekindluse jaoks."
 
 msgid "СОВРЕМЕННАЯ АКАДЕМИЯ"
 msgstr "KAASAEGNE AKADEEMIA"
 
 msgid "ЕДИНОБОРСТВ"
-msgstr "VÕITLUSKUNST"
+msgstr "VÕITLUSKUNSTI"
 
 msgid "СИЛА"
 msgstr "JÕUD"
@@ -247,18 +634,60 @@ msgstr "EAKAD"
 msgid "от 46 лет и старше"
 msgstr "46 ja vanemad"
 
-# normalized long strings from home.html
+# Kontakt ja registreerumine
+msgid "Email:"
+msgstr "E-post:"
+
+msgid "Email"
+msgstr "E-post"
+
+msgid "Телефон:"
+msgstr "Telefon:"
+
+msgid "Адрес: ул. Примерная, 1, Таллинн"
+msgstr "Aadress: Näidis tn 1, Tallinn"
+
+msgid "Здесь будет карта"
+msgstr "Siia tuleb kaart"
+
+msgid "Запись на тренировку"
+msgstr "Registreerumine treeningule"
+
+msgid "Телефон"
+msgstr "Telefon"
+
+msgid "Направление"
+msgstr "Suunad"
+
+# Treenerid
+msgid "Скоро здесь появятся тренеры."
+msgstr "Varsti lisanduvad siia treenerid."
+
+# Vanusevahemik
+msgid "От"
+msgstr "Alates"
+
+msgid "До"
+msgstr "Kuni"
+
+msgid "age_suffix"
+msgstr "a."
+
+msgid "до"
+msgstr "kuni"
+
+# Pikad lõigud
 msgid "Раскрой свой потенциал в нашей Академии единоборств.<br>Подними свой уровень и стань сильнее с нами."
 msgstr "Ava oma potentsiaal meie võitluskunsti akadeemias.<br>Tõsta oma taset ja muutu meiega tugevamaks."
 
-msgid "В Ида-Ви��умаа появился новый спортивный центр — WIRU COMBAT ACADEMY, основанный Сирвеном Авакяном, Сиймом Нейссааром и Сиймом Пярком. Всего за три месяца их идея превратилась в реальность: двери клуба открылись для бокса, борьбы, ММА и функциональных тренировок. Сегодня это один из самы�� больших залов в Эстонии и крупнейший зал единоборств в Ида-Вирумаа."
-msgstr "Ida-Virumaal avati uus spordikeskus — WIRU COMBAT ACADEMY, mille asutasid Sirven Avakyan, Siim Neissaar ja Siim Pärk. Vaid kolme kuuga muutus nende idee reaalsuseks: klubi uksed avati poksi, maadluse, MMA ja funktsionaalsete treeningute jaoks. Täna on see üks suurimaid saale Eestis ja suurim võitluskunstide saal Ida-Virumaal."
+msgid "В Ида-Вирумаа появился новый спортивный центр — WIRU COMBAT ACADEMY, осн��ванный Сирвеном Авакяном, Сиймом Нейссааром и Сиймом Пярком. Всего за три месяца их идея превратилась в реальность: двери клуба открылись для бокса, борьбы, ММА и функциональных тренировок. Сегодня это один из самых больших залов в Эстонии и крупнейший зал единоборств в Ида-Вирумаа."
+msgstr "Ida-Virumaale avati uus spordikeskus — WIRU COMBAT ACADEMY, mille asutasid Sirven Avakyan, Siim Neissaar ja Siim Pärk. Vaid kolme kuuga muutus nende idee reaalsuseks: klubi uksed avati poksi, maadluse, MMA ja funktsionaalsete treeningute jaoks. Täna on see üks suurimaid saale Eestis ja suurim võitluskunstide saal Ida-Virumaal."
 
 msgid "Академия объединяет сильную команду тренеров во главе с чемпионом Эстонии Кириллом Сериковым и стала современной площадкой, где каждый может развиваться, укреплять здоровье и воспитывать уверенность, дисциплину и командный дух."
 msgstr "Akadeemia koondab tugeva treenerite meeskonna eesotsas Eesti meistri Kirill Serikoviga ja on saanud kaasaegseks kohaks, kus igaüks saab areneda, tugevdada tervist ning kasvatada enesekindlust, distsipliini ja meeskonnavaimu."
 
 # =====================
-# Plans / Subscriptions (ET)
+# Abonemendid (võtmed)
 # =====================
 msgid "plans.title"
 msgstr "Abonemendid"
@@ -269,7 +698,7 @@ msgstr "Vali formaat ja distsipliin, mis sobib sinu eesmärkidega."
 msgid "plans.note"
 msgstr "*Kontrolli ajakavast tundide plaani ja gruppide saadavust."
 
-# Tabs
+# Tabid
 msgid "plans.tabs.boxing"
 msgstr "Poks"
 
@@ -282,7 +711,7 @@ msgstr "MMA"
 msgid "plans.tabs.all"
 msgstr "Kõik saalid"
 
-# Titles and descriptions
+# Perioodide pealkirjad
 msgid "plans.titles.month_1"
 msgstr "1 kuu"
 
@@ -301,7 +730,7 @@ msgstr "Säästad perioodimaksega. Eelisjärjekord."
 msgid "plans.descr.12m"
 msgstr "Maksimaalne väärtus ja distsipliin. Boonustreeningud."
 
-# Period / notes
+# Periood / märkused
 msgid "plans.period.month"
 msgstr "kuu kohta"
 
@@ -311,7 +740,7 @@ msgstr "perioodi eest"
 msgid "plans.includes_vat"
 msgstr "KM hinna sees"
 
-# Badges / CTA
+# Märgid / CTA
 msgid "plans.badge.best"
 msgstr "Parim valik"
 
@@ -324,18 +753,18 @@ msgstr "Vaata abonemente"
 msgid "plans.cta.contact"
 msgstr "Võta ühendust"
 
-# Features
+# Omadused
 msgid "plans.feature.boxing.all"
-msgstr "Kõik poksi treeningud"
+msgstr "Kõik poksitrennid"
 
 msgid "plans.feature.boxing.kids_teen"
 msgstr "Lapsed 6–12 ja noored 13+"
 
 msgid "plans.feature.wrestling.all"
-msgstr "Kõik maadluse treeningud"
+msgstr "Kõik maadluse trennid"
 
 msgid "plans.feature.mma.all"
-msgstr "Kõik MMA treeningud"
+msgstr "Kõik MMA trennid"
 
 msgid "plans.feature.all_gyms"
 msgstr "Kõik saalid"
@@ -381,122 +810,3 @@ msgstr "Parim hind"
 
 msgid "plans.feature.max_benefit"
 msgstr "Maksimaalne kasu"
-
-# Age range fields
-msgid "От"
-msgstr "Alates"
-
-msgid "До"
-msgstr "Kuni"
-
-msgid "age_suffix"
-msgstr "a."
-
-msgid "до"
-msgstr "kuni"
-
-# Profile section
-msgid "ID"
-msgstr "ID"
-
-msgid "Аватар"
-msgstr "Avatar"
-
-msgid "Навигация профиля"
-msgstr "Profiili navigeerimine"
-
-msgid "Система"
-msgstr "Süsteem"
-
-msgid "Язык интерфейса"
-msgstr "Kasutajaliidese keel"
-
-msgid "Дата регистрации"
-msgstr "Registreerimise kuupäev"
-
-msgid "Смотреть все документы"
-msgstr "Vaata kõiki dokumente"
-
-msgid "Редактирование профиля"
-msgstr "Profiili muutmine"
-
-msgid "Загрузить фото"
-msgstr "Laadi foto üles"
-
-msgid "Максимальный размер: 2 МБ"
-msgstr "Maksimaalne suurus: 2 MB"
-
-msgid "Фамилия"
-msgstr "Perekonnanimi"
-
-msgid "Сохранить изменения"
-msgstr "Salvesta muudatused"
-
-msgid "Безопасность"
-msgstr "Turvalisus"
-
-msgid "Смена пароля"
-msgstr "Parooli muutmine"
-
-msgid "Текущий пароль"
-msgstr "Praegune parool"
-
-msgid "Новый пароль"
-msgstr "Uus parool"
-
-msgid "Подтверждение"
-msgstr "Kinnitus"
-
-msgid "Сменить пароль"
-msgstr "Muuda parool"
-
-msgid "Документы"
-msgstr "Dokumendid"
-
-msgid "Загрузка документа"
-msgstr "Dokumendi üleslaadimine"
-
-msgid "Имя файла"
-msgstr "Failinimi"
-
-msgid "Размер"
-msgstr "Suurus"
-
-msgid "Дата"
-msgstr "Kuupäev"
-
-msgid "Действия"
-msgstr "Tegevused"
-
-msgid "Смотреть"
-msgstr "Vaata"
-
-msgid "Скачать"
-msgstr "Laadi alla"
-
-msgid "Нет загруженных документов"
-msgstr "Üleslaaditud dokumente pole"
-
-msgid "Нет загруженных документов."
-msgstr "Üleslaaditud dokumente pole."
-
-msgid "Просмотр документа"
-msgstr "Dokumendi eelvaade"
-
-msgid "Закрыть"
-msgstr "Sulge"
-
-msgid "Мои документы"
-msgstr "Minu dokumendid"
-
-msgid "Файл (pdf, jpg, png)"
-msgstr "Fail (pdf, jpg, png)"
-
-msgid "Заметка"
-msgstr "Märkus"
-
-msgid "Загрузить"
-msgstr "Laadi üles"
-
-msgid "KB"
-msgstr "kB"

@@ -9,6 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+# Navigation and basic pages
 msgid "Главная"
 msgstr "Home"
 
@@ -20,6 +21,9 @@ msgstr "Schedule"
 
 msgid "Тренеры"
 msgstr "Trainers"
+
+msgid "Тренировки"
+msgstr "Training"
 
 msgid "Контакты"
 msgstr "Contacts"
@@ -60,8 +64,14 @@ msgstr "Open schedule"
 msgid "Тренеры скоро появятся."
 msgstr "Coaches are coming soon."
 
+msgid "РАСПИСАНИЕ"
+msgstr "SCHEDULE"
+
 msgid "Расписание тренировок"
 msgstr "Training schedule"
+
+msgid "Сегодня"
+msgstr "Today"
 
 msgid "День"
 msgstr "Day"
@@ -74,6 +84,9 @@ msgstr "Activity"
 
 msgid "Тренер"
 msgstr "Coach"
+
+msgid "Нет занятий"
+msgstr "No classes"
 
 msgid "Пн"
 msgstr "Mon"
@@ -96,9 +109,31 @@ msgstr "Sat"
 msgid "Вс"
 msgstr "Sun"
 
+msgid "Понедельник"
+msgstr "Monday"
+
+msgid "Вторник"
+msgstr "Tuesday"
+
+msgid "Среда"
+msgstr "Wednesday"
+
+msgid "Четверг"
+msgstr "Thursday"
+
+msgid "Пятница"
+msgstr "Friday"
+
+msgid "Суббота"
+msgstr "Saturday"
+
+msgid "Воскресенье"
+msgstr "Sunday"
+
 msgid "Спасибо! Мы свяжемся с вами скоро."
 msgstr "Thank you! We will contact you soon."
 
+# Admin / flash messages
 msgid "Добро пожаловать в админ-панель!"
 msgstr "Welcome to the admin panel!"
 
@@ -117,8 +152,18 @@ msgstr "News item added."
 msgid "Тренировка добавлена в расписание."
 msgstr "Training added to schedule."
 
+msgid "Ошибка создания сессии оплаты"
+msgstr "Error creating payment session"
+
+msgid "Ошибка сети"
+msgstr "Network error"
+
+# Admin pages
 msgid "Админ-панель"
 msgstr "Admin panel"
+
+msgid "Админка — Новости"
+msgstr "Admin — News"
 
 msgid "Вход в админ-панель"
 msgstr "Admin login"
@@ -138,23 +183,320 @@ msgstr "New requests:"
 msgid "Редактировать расписание"
 msgstr "Edit schedule"
 
-msgid "Выйти"
+msgid "Редактор расписания"
+msgstr "Schedule editor"
+
+msgid "Публичное расписание"
+msgstr "Public schedule"
+
+msgid "Копировать день"
+msgstr "Copy day"
+
+msgid "Из"
+msgstr "From"
+
+msgid "В"
+msgstr "To"
+
+msgid "Скопировать"
+msgstr "Copy"
+
+msgid "Добавить занятие"
+msgstr "Add class"
+
+msgid "Выберите активность"
+msgstr "Choose activity"
+
+msgid "Другое"
+msgstr "Other"
+
+msgid "Введите название"
+msgstr "Enter name"
+
+msgid "Тренер (необязательно)"
+msgstr "Coach (optional)"
+
+msgid "Добавить"
+msgstr "Add"
+
+msgid "Очистить"
+msgstr "Clear"
+
+msgid "Пример: Борьба 6–12, ММА 13+, Общая физическая подготовка"
+msgstr "Example: Wrestling 6–12, MMA 13+, General physical training"
+
+msgid "Выбрать"
+msgstr "Select"
+
+msgid "Удалить"
+msgstr "Delete"
+
+msgid "Выбрать все"
+msgstr "Select all"
+
+msgid "Снять всё"
+msgstr "Deselect all"
+
+msgid "Подтверждение"
+msgstr "Confirmation"
+
+msgid "Отмена"
+msgstr "Cancel"
+
+msgid "Подтвердить"
+msgstr "Confirm"
+
+msgid "Пока нет занятий"
+msgstr "No classes yet"
+
+msgid "Добавьте первое занятие для этого дня"
+msgstr "Add the first class for this day"
+
+msgid "Админ"
+msgstr "Admin"
+
+msgid "Участники"
+msgstr "Members"
+
+msgid "Создано"
+msgstr "Created"
+
+msgid "Новостей пока нет."
+msgstr "No news yet."
+
+msgid "Редактировать"
+msgstr "Edit"
+
+msgid "Удалить новость?"
+msgstr "Delete news?"
+
+msgid "На главную"
+msgstr "Home page"
+
+msgid "Недостаточно прав для доступа к этой странице."
+msgstr "You do not have permission to access this page."
+
+msgid "Войти как админ"
+msgstr "Log in as admin"
+
+# Auth / account
+msgid "Вход"
+msgstr "Sign in"
+
+msgid "Регистрация"
+msgstr "Sign up"
+
+msgid "Email или имя пользователя"
+msgstr "Email or username"
+
+msgid "Пароль"
+msgstr "Password"
+
+msgid "Запомнить меня"
+msgstr "Remember me"
+
+msgid "Нет аккаунта?"
+msgstr "No account?"
+
+msgid "Зарегистрируйтесь"
+msgstr "Sign up"
+
+msgid "Имя пользователя"
+msgstr "Username"
+
+msgid "Подтверждение пароля"
+msgstr "Password confirmation"
+
+msgid "Уже есть аккаунт?"
+msgstr "Already have an account?"
+
+msgid "Войти"
+msgstr "Sign in"
+
+msgid "Sign in"
+msgstr "Sign in"
+
+msgid "Sign up"
+msgstr "Sign up"
+
+msgid "Без имени"
+msgstr "No name"
+
+msgid "Перейти в Админ-панель"
+msgstr "Go to Admin panel"
+
+msgid "Мой аккаунт"
+msgstr "My account"
+
+msgid "Имя/Ник"
+msgstr "Name/Nickname"
+
+msgid "Ваше имя или ник"
+msgstr "Your name or nickname"
+
+msgid "Сохранить"
+msgstr "Save"
+
+msgid "Предпочтения"
+msgstr "Preferences"
+
+msgid "Сохранить предпочтения"
+msgstr "Save preferences"
+
+msgid "Сессии / Устройства"
+msgstr "Sessions / Devices"
+
+msgid "Пока что здесь заглушка. Можно добавить список активных сессий и кнопку:"
+msgstr "Placeholder for now. Here you can later add the list of active sessions and a button:"
+
+msgid "Вы уверены, что хотите выйти на всех устройствах?"
+msgstr "Are you sure you want to log out on all devices?"
+
+msgid "Выйти со всех устройств"
+msgstr "Log out from all devices"
+
+msgid "Выход"
 msgstr "Log out"
 
-msgid "Заголовок"
-msgstr "Title"
+# Profile new layout
+msgid "Профиль"
+msgstr "Profile"
 
-msgid "Текст"
-msgstr "Text"
+msgid "Подписка истекает через"
+msgstr "Subscription expires in"
 
-msgid "Ссылка на изображение (необязательно)"
-msgstr "Image URL (optional)"
+msgid "дн."
+msgstr "days"
 
-msgid "День недели"
-msgstr "Day of week"
+msgid "Подписка"
+msgstr "Subscription"
 
-msgid "Текущее расписание"
-msgstr "Current schedule"
+msgid "Активна"
+msgstr "Active"
+
+msgid "Просрочена"
+msgstr "Overdue"
+
+msgid "Отменена"
+msgstr "Canceled"
+
+msgid "—"
+msgstr "—"
+
+msgid "нет подписки"
+msgstr "no subscription"
+
+msgid "Разделы"
+msgstr "Sections"
+
+msgid "Абонемент"
+msgstr "Subscription"
+
+msgid "Система"
+msgstr "System"
+
+msgid "Язык интерфейса"
+msgstr "Interface language"
+
+msgid "Дата регистрации"
+msgstr "Registration date"
+
+msgid "Редактирование профиля"
+msgstr "Profile editing"
+
+msgid "Аватар"
+msgstr "Avatar"
+
+msgid "Загрузить фото"
+msgstr "Upload photo"
+
+msgid "Максимальный размер: 2 МБ"
+msgstr "Maximum size: 2 MB"
+
+msgid "Имя"
+msgstr "First name"
+
+msgid "Фамилия"
+msgstr "Last name"
+
+msgid "Сохранить изменения"
+msgstr "Save changes"
+
+msgid "Безопасность"
+msgstr "Security"
+
+msgid "Смена пароля"
+msgstr "Change password"
+
+msgid "Текущий пароль"
+msgstr "Current password"
+
+msgid "Новый пароль"
+msgstr "New password"
+
+msgid "Подтверждение"
+msgstr "Confirmation"
+
+msgid "Изменить пароль"
+msgstr "Change password"
+
+msgid "Подтверждение нового пароля"
+msgstr "New password confirmation"
+
+# Documents section
+msgid "Документы"
+msgstr "Documents"
+
+msgid "Загрузка документа"
+msgstr "Document upload"
+
+msgid "Имя файла"
+msgstr "Filename"
+
+msgid "Размер"
+msgstr "Size"
+
+msgid "Дата"
+msgstr "Date"
+
+msgid "Действия"
+msgstr "Actions"
+
+msgid "Смотреть"
+msgstr "View"
+
+msgid "Скачать"
+msgstr "Download"
+
+msgid "Нет загруженных документов"
+msgstr "No uploaded documents"
+
+msgid "Нет загруженных документов."
+msgstr "No uploaded documents."
+
+msgid "Просмотр документа"
+msgstr "Document preview"
+
+msgid "Закрыть"
+msgstr "Close"
+
+msgid "Мои документы"
+msgstr "My documents"
+
+msgid "Файл (pdf, jpg, png)"
+msgstr "File (pdf, jpg, png)"
+
+msgid "Заметка"
+msgstr "Note"
+
+msgid "Загрузить"
+msgstr "Upload"
+
+msgid "KB"
+msgstr "KB"
+
+msgid "Навигация профиля"
+msgstr "Profile navigation"
 
 # base.html footer form and contacts
 msgid "Напишите нам"
@@ -185,6 +527,12 @@ msgstr "GET IN SHAPE"
 msgid "СТАНЬ СИЛЬНЕЕ"
 msgstr "BECOME STRONGER"
 
+msgid "О"
+msgstr "ABOUT"
+
+msgid "НАС"
+msgstr "US"
+
 msgid "О НАС"
 msgstr "ABOUT US"
 
@@ -199,6 +547,12 @@ msgstr "Boxing"
 
 msgid "Кикбоксинг"
 msgstr "Kickboxing"
+
+msgid "MMA"
+msgstr "MMA"
+
+msgid "Греко-римская борьба"
+msgstr "Greco-Roman wrestling"
 
 msgid "Борьба"
 msgstr "Wrestling"
@@ -221,7 +575,7 @@ msgstr "CHANGE YOU"
 msgid "ФОКУС"
 msgstr "FOCUS"
 
-msgid "РАЗВИВАЙ РЕАКЦИЮ, СКОРОС��Ь И КООРДИНАЦИЮ."
+msgid "РАЗВИВАЙ РЕАКЦИЮ, СКОРОСТЬ И КООРДИНАЦИЮ."
 msgstr "Develop reaction, speed and coordination."
 
 msgid "МИНУТ ИНТЕНСИВА"
@@ -294,18 +648,12 @@ msgstr "Email:"
 msgid "Email"
 msgstr "Email"
 
-msgid "Имя пользователя"
-msgstr "Username"
-
-msgid "Пароль"
-msgstr "Password"
+msgid "Телефон:"
+msgstr "Phone:"
 
 # contact page extra
 msgid "Адрес: ул. Примерная, 1, Таллинн"
 msgstr "Address: 1 Example St, Tallinn"
-
-msgid "Телефон:"
-msgstr "Phone:"
 
 msgid "Здесь будет карта"
 msgstr "Map will appear here"
@@ -313,9 +661,6 @@ msgstr "Map will appear here"
 # signup labels
 msgid "Запись на тренировку"
 msgstr "Training signup"
-
-msgid "Имя"
-msgstr "Name"
 
 msgid "Телефон"
 msgstr "Phone"
@@ -326,6 +671,19 @@ msgstr "Discipline"
 # trainers page message
 msgid "Скоро здесь появятся тренеры."
 msgstr "Coaches are coming soon."
+
+# age range fields
+msgid "От"
+msgstr "From"
+
+msgid "До"
+msgstr "To"
+
+msgid "age_suffix"
+msgstr " y.o"
+
+msgid "до"
+msgstr "to"
 
 # long paragraphs (trans blocks)
 msgid "Раскрой свой потенциал в нашей Академии единоборств.<br>Подними свой уровень и стань сильнее с нами."
@@ -338,7 +696,7 @@ msgid "Академия объединяет сильную команду тр�
 msgstr "The Academy brings together a strong team of coaches led by Estonian champion Kirill Serikov and has become a modern venue where everyone can develop, improve health, and foster confidence, discipline and team spirit."
 
 # =====================
-# Plans / Subscriptions (EN)
+# Plans / Subscriptions (keys)
 # =====================
 msgid "plans.title"
 msgstr "Subscriptions"
@@ -461,122 +819,3 @@ msgstr "Best price"
 
 msgid "plans.feature.max_benefit"
 msgstr "Maximum benefit"
-
-# Age range fields
-msgid "От"
-msgstr "From"
-
-msgid "До"
-msgstr "To"
-
-msgid "age_suffix"
-msgstr " y.o"
-
-msgid "до"
-msgstr "to"
-
-# Profile section
-msgid "ID"
-msgstr "ID"
-
-msgid "Аватар"
-msgstr "Avatar"
-
-msgid "Навигация профиля"
-msgstr "Profile navigation"
-
-msgid "Система"
-msgstr "System"
-
-msgid "Язык интерфейса"
-msgstr "Interface language"
-
-msgid "Дата регистрации"
-msgstr "Registration date"
-
-msgid "Смотреть все документы"
-msgstr "View all documents"
-
-msgid "Редактирование профиля"
-msgstr "Profile editing"
-
-msgid "Загрузить фото"
-msgstr "Upload photo"
-
-msgid "Максимальный размер: 2 МБ"
-msgstr "Maximum size: 2 MB"
-
-msgid "Фамилия"
-msgstr "Last name"
-
-msgid "Сохранить изменения"
-msgstr "Save changes"
-
-msgid "Безопасность"
-msgstr "Security"
-
-msgid "Смена пароля"
-msgstr "Change password"
-
-msgid "Текущий пароль"
-msgstr "Current password"
-
-msgid "Новый пароль"
-msgstr "New password"
-
-msgid "Подтверждение"
-msgstr "Confirmation"
-
-msgid "Сменить пароль"
-msgstr "Change password"
-
-msgid "Документы"
-msgstr "Documents"
-
-msgid "Загрузка документа"
-msgstr "Document upload"
-
-msgid "Имя файла"
-msgstr "Filename"
-
-msgid "Размер"
-msgstr "Size"
-
-msgid "Дата"
-msgstr "Date"
-
-msgid "Действия"
-msgstr "Actions"
-
-msgid "Смотреть"
-msgstr "View"
-
-msgid "Скачать"
-msgstr "Download"
-
-msgid "Нет загруженных документов"
-msgstr "No uploaded documents"
-
-msgid "Нет загруженных документов."
-msgstr "No uploaded documents."
-
-msgid "Просмотр документа"
-msgstr "Document preview"
-
-msgid "Закрыть"
-msgstr "Close"
-
-msgid "Мои документы"
-msgstr "My documents"
-
-msgid "Файл (pdf, jpg, png)"
-msgstr "File (pdf, jpg, png)"
-
-msgid "Заметка"
-msgstr "Note"
-
-msgid "Загрузить"
-msgstr "Upload"
-
-msgid "KB"
-msgstr "KB"
