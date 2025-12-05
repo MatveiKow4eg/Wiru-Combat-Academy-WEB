@@ -28,7 +28,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 
 from config import Config
-from models import db, News, Schedule, Trainer, Signup, User, Document
+from models import db, News, Schedule, Trainer, Signup, User, Document, RoleChangeLog
 import models as models
 from forms import (
     LoginForm,
@@ -853,8 +853,14 @@ def create_app():
         subs = []
         pays = []
         docs = u.documents.order_by(Document.uploaded_at.desc()).all()
+        role_logs = (
+            RoleChangeLog.query.filter_by(target_id=u.id)
+            .order_by(RoleChangeLog.created_at.desc())
+            .limit(10)
+            .all()
+        )
         return render_template(
-            "admin/user_detail.html", user=u, subs=subs, payments=pays, docs=docs
+            "admin/user_detail.html", user=u, subs=subs, payments=pays, docs=docs, role_logs=role_logs
         )
 
     @app.route("/admin/users/<int:user_id>/make-admin", methods=["POST"])
@@ -864,10 +870,23 @@ def create_app():
         if getattr(u, "is_superadmin", False):
             flash(_("Нельзя менять роль супер-админа."), "error")
             return redirect(url_for("admin_user_detail", user_id=user_id))
+        old_role = u.role
         u.role = "admin"
         # keep legacy flag in sync
         try:
             u.is_admin = True
+        except Exception:
+            pass
+        # audit log
+        try:
+            db.session.add(
+                RoleChangeLog(
+                    actor_id=current_user.id,
+                    target_id=u.id,
+                    old_role=old_role,
+                    new_role=u.role,
+                )
+            )
         except Exception:
             pass
         db.session.commit()
@@ -878,12 +897,29 @@ def create_app():
     @superadmin_required
     def admin_remove_admin(user_id):
         u = User.query.get_or_404(user_id)
+        # явный запрет самопонижения супер-админа с собственным сообщением
+        if current_user.is_superadmin and current_user.id == u.id:
+            flash(_("Супер-админ не может снять роль с себя."), "error")
+            return redirect(url_for("admin_user_detail", user_id=user_id))
         if getattr(u, "is_superadmin", False):
             flash(_("Нельзя менять роль супер-админа."), "error")
             return redirect(url_for("admin_user_detail", user_id=user_id))
+        old_role = u.role
         u.role = "user"
         try:
             u.is_admin = False
+        except Exception:
+            pass
+        # audit log
+        try:
+            db.session.add(
+                RoleChangeLog(
+                    actor_id=current_user.id,
+                    target_id=u.id,
+                    old_role=old_role,
+                    new_role=u.role,
+                )
+            )
         except Exception:
             pass
         db.session.commit()

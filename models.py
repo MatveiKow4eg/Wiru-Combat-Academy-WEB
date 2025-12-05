@@ -113,3 +113,16 @@ class Signup(db.Model):
     phone = db.Column(db.String(50))
     activity = db.Column(db.String(120), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class RoleChangeLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    actor_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
+    target_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True, nullable=False)
+    old_role = db.Column(db.String(10))
+    new_role = db.Column(db.String(10))
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    # Опциональные отношения для удобства
+    actor = db.relationship('User', foreign_keys=[actor_id], lazy='joined')
+    target = db.relationship('User', foreign_keys=[target_id], lazy='joined')
