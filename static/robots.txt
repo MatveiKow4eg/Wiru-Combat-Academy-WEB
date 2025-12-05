@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://wiru-combat-academy.ee/sitemap.xml
+Sitemap: https://wirucombatacademy.ee/sitemap.xml
