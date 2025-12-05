@@ -94,12 +94,12 @@
     
     <!-- Dynamic SEO -->
     <title>{{ title or "Wiru Combat Academy" }}</title>
-    <meta name="description" content="{{ description or 'Тренировки по боксу и ММА в Нарве для детей и взрослых' }}">
-    <meta name="keywords" content="бокс Нарва, мма Нарва, спорт Нарва, тренировки, wiru combat academy">
+    <meta name="description" content="{{ description or 'Тренировки по боксу и ММА в Кохтла-Ярве для детей и взрослых' }}">
+    <meta name="keywords" content="бокс Кохтла-Ярве, мма Кохтла-Ярве, спорт Кохтла-Ярве, тренировки, wiru combat academy">
     <meta name="author" content="Wiru Combat Academy">
     
     <!-- Open Graph -->
-    <meta property="og:title" content="{{ og_title or 'Wiru Combat Academy — Академия Единоборств в Нарве' }}">
+    <meta property="og:title" content="{{ og_title or 'Wiru Combat Academy — Академия Единоборств в Кохтла-Ярве' }}">
     <meta property="og:description" content="{{ og_desc or 'Тренировки по боксу и ММА для всех возрастов' }}">
     <meta property="og:image" content="{{ url_for('static', filename='images/og-image.jpg', _external=True) }}">
     <meta property="og:url" content="{{ request.url }}">
@@ -108,7 +108,7 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ og_title or 'Wiru Combat Academy' }}">
-    <meta name="twitter:description" content="{{ og_desc or 'Спортивная академия единоборств в Нарве' }}">
+    <meta name="twitter:description" content="{{ og_desc or 'Спортивная академия единоборств в Кохтла-Ярве' }}">
     <meta name="twitter:image" content="{{ url_for('static', filename='images/og-image.jpg', _external=True) }}">
     
     <!-- Canonical URL -->
