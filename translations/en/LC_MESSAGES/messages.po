@@ -819,3 +819,6 @@ msgstr "Best price"
 
 msgid "plans.feature.max_benefit"
 msgstr "Maximum benefit"
+
+msgid "В Wiru Combat Academy проходят тренировки по боксу, борьбе и ММА с упором на технику, дисциплину и личностный рост. Наша цель — помочь каждому, от детей до взрослых, раскрыть свой потенциал в безопасной и вдохновляющей атмосфере."
+msgstr "At Wiru Combat Academy, we offer boxing, wrestling and MMA training with a strong focus on technique, discipline and personal growth. Our goal is to help everyone—from children to adults—unlock their potential in a safe and inspiring environment."

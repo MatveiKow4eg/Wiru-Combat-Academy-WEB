@@ -523,7 +523,7 @@ msgstr "Kõik õigused kaitstud"
 msgid "БУДЬ В ФОРМЕ"
 msgstr "OLE HEAS VORMIS"
 
-msgid "СТАНЬ СИЛ��НЕЕ"
+msgid "СТАНЬ СИЛЬНЕЕ"
 msgstr "MUUTU TUGEVAMAKS"
 
 msgid "О НАС"
@@ -574,7 +574,7 @@ msgstr "Arenda reaktsiooni, kiirust ja koordinatsiooni."
 msgid "МИНУТ ИНТЕНСИВА"
 msgstr "MINUTIT INTENSIIVSUST"
 
-msgid "ЭФФЕКТИВНОЕ ЗАНЯТИЕ ДЛЯ СИЛ��, ТЕХНИКИ И УВЕРЕННОСТИ."
+msgid "ЭФФЕКТИВНОЕ ЗАНЯТИЕ ДЛЯ СИЛЫ, ТЕХНИКИ И УВЕРЕННОСТИ."
 msgstr "Tõhus treening jõu, tehnika ja enesekindluse jaoks."
 
 msgid "СОВРЕМЕННАЯ АКАДЕМИЯ"
@@ -680,7 +680,7 @@ msgstr "kuni"
 msgid "Раскрой свой потенциал в нашей Академии единоборств.<br>Подними свой уровень и стань сильнее с нами."
 msgstr "Ava oma potentsiaal meie võitluskunsti akadeemias.<br>Tõsta oma taset ja muutu meiega tugevamaks."
 
-msgid "В Ида-Вирумаа появился новый спортивный центр — WIRU COMBAT ACADEMY, осн��ванный Сирвеном Авакяном, Сиймом Нейссааром и Сиймом Пярком. Всего за три месяца их идея превратилась в реальность: двери клуба открылись для бокса, борьбы, ММА и функциональных тренировок. Сегодня это один из самых больших залов в Эстонии и крупнейший зал единоборств в Ида-Вирумаа."
+msgid "В Ида-Вирумаа появился новый спортивный центр — WIRU COMBAT ACADEMY, основанный Сирвеном Авакяном, Сиймом Нейссааром и Сиймом Пярком. Всего за три месяца их идея превратилась в реальность: двери клуба открылись для бокса, борьбы, ММА и функциональных тренировок. Сегодня это один из самых больших залов в Эстонии и крупнейший зал единоборств в Ида-Вирумаа."
 msgstr "Ida-Virumaale avati uus spordikeskus — WIRU COMBAT ACADEMY, mille asutasid Sirven Avakyan, Siim Neissaar ja Siim Pärk. Vaid kolme kuuga muutus nende idee reaalsuseks: klubi uksed avati poksi, maadluse, MMA ja funktsionaalsete treeningute jaoks. Täna on see üks suurimaid saale Eestis ja suurim võitluskunstide saal Ida-Virumaal."
 
 msgid "Академия объединяет сильную команду тренеров во главе с чемпионом Эстонии Кириллом Сериковым и стала современной площадкой, где каждый может развиваться, укреплять здоровье и воспитывать уверенность, дисциплину и командный дух."
