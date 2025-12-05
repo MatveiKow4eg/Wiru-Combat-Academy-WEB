@@ -32,3 +32,6 @@ sendgrid==6.9.7  # <– добавлено (обязательно!)
 
 # Image processing for favicon and og-image generation
 Pillow  
+
+psycopg2-binary==2.9.9
+
