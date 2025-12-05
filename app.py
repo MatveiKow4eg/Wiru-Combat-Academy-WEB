@@ -103,6 +103,8 @@ def run_simple_migrations(app):
                     add_cols_sql.append("ALTER TABLE user ADD COLUMN is_admin BOOLEAN")
                 if "avatar_path" not in cols:
                     add_cols_sql.append("ALTER TABLE user ADD COLUMN avatar_path VARCHAR(512)")
+                if "is_superadmin" not in cols:
+                    add_cols_sql.append("ALTER TABLE user ADD COLUMN is_superadmin BOOLEAN")
                 for stmt in add_cols_sql:
                     conn.exec_driver_sql(stmt)
 
@@ -111,6 +113,7 @@ def run_simple_migrations(app):
                 conn.exec_driver_sql("UPDATE user SET is_active = COALESCE(is_active, 1)")
                 conn.exec_driver_sql("UPDATE user SET created_at = COALESCE(created_at, datetime('now'))")
                 conn.exec_driver_sql("UPDATE user SET is_admin = COALESCE(is_admin, 0)")
+                conn.exec_driver_sql("UPDATE user SET is_superadmin = COALESCE(is_superadmin, 0)")
 
                 # ensure admin email
                 row = conn.exec_driver_sql(
@@ -1504,25 +1507,28 @@ def seed_if_empty():
         for name, bio, photo in trainers:
             db.session.add(Trainer(name=name, bio=bio, photo=photo))
 
-    admin = User.query.filter(
-        (User.role == "admin") | (User.is_admin == True)
-    ).first()
-    if admin is None:
-        email = "admin@site.local"
-        pwd = os.environ.get("ADMIN_PASSWORD") or secrets.token_urlsafe(12)
-        admin_user = User(
-            email=email,
-            username="admin",
-            role="admin",
-            is_admin=True,
-            is_active=True,
-        )
-        admin_user.set_password(pwd)
-        db.session.add(admin_user)
-        db.session.commit()
-        print("Created admin user. Credentials:")
-        print(f"  email: {email}")
-        print(f"  password: {pwd}")
+    # Superadmin seeding
+    superadmin = User.query.filter(User.is_superadmin == True).first()
+    if superadmin is None:
+        superadmin_email = os.environ.get("SUPERADMIN_EMAIL")
+        pwd = os.environ.get("ADMIN_PASSWORD")
+        if superadmin_email and pwd:
+            su = User(
+                email=superadmin_email.strip().lower(),
+                username="superadmin",
+                role="superadmin",
+                is_superadmin=True,
+                is_active=True,
+            )
+            su.set_password(pwd)
+            db.session.add(su)
+            db.session.commit()
+            print("Created superadmin user. Credentials:")
+            print(f"  email: {superadmin_email}")
+            print("  password: [from ADMIN_PASSWORD env]")
+        else:
+            print("Superadmin not created: set SUPERADMIN_EMAIL and ADMIN_PASSWORD environment variables.")
+            db.session.commit()
     else:
         db.session.commit()
 

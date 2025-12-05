@@ -2,6 +2,7 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.ext.hybrid import hybrid_property
 
 
 db = SQLAlchemy()
@@ -46,16 +47,17 @@ class User(UserMixin, db.Model):
     level = db.Column(db.String(120))
     group_name = db.Column(db.String(120))
 
-    # Roles: 'user' | 'admin' (default 'user')
+    # Roles: 'user' | 'admin' | 'superadmin' (default 'user')
     role = db.Column(db.String(10), index=True, nullable=False, default='user')
+    is_superadmin = db.Column(db.Boolean, default=False)
 
     # Account flags and metadata
     is_active = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     # Legacy compatibility (kept so existing code using current_user.is_admin keeps working)
-    # NOTE: In new code prefer checking self.role == 'admin'. Keep this column in sync where needed.
-    is_admin = db.Column(db.Boolean, default=False)
+    # NOTE: In new code prefer using the is_admin hybrid property below.
+    is_admin_col = db.Column('is_admin', db.Boolean, default=False)
 
     # Avatar image path (stored file path within UPLOAD_DIR)
     avatar_path = db.Column(db.String(512))
@@ -74,6 +76,18 @@ class User(UserMixin, db.Model):
         except AttributeError:
             # Handle environments without hashlib.scrypt support; stored hash may use scrypt
             return False
+
+    @hybrid_property
+    def is_admin(self):
+        return (self.role == 'admin') or bool(self.is_superadmin) or bool(self.is_admin_col)
+
+    @is_admin.setter
+    def is_admin(self, value: bool):
+        self.is_admin_col = bool(value)
+
+    @is_admin.expression
+    def is_admin(cls):
+        return (cls.role == 'admin') | (cls.is_superadmin == True) | (cls.is_admin_col == True)
 
     def __repr__(self) -> str:
         return f"<User id={self.id} email={self.email!r} role={self.role!r}>"
