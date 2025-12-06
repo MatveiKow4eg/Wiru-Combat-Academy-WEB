@@ -40,14 +40,14 @@
         <div style="margin-top:16px; display:flex; gap:12px;">
           {% if user.role != 'admin' %}
           <form method="post" action="{{ url_for('admin_make_admin', user_id=user.id) }}">
-            {{ csrf_token() }}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="btn btn-primary">Сделать админом</button>
           </form>
           {% endif %}
           {% if user.role == 'admin' %}
           <form method="post" action="{{ url_for('admin_remove_admin', user_id=user.id) }}">
-            {{ csrf_token() }}
-            <button type="submit" class="btn btn-secondary">Снять админа</button>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-secondary">��нять админа</button>
           </form>
           {% endif %}
         </div>
