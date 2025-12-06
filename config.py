@@ -39,3 +39,4 @@ class Config:
     MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY")
     MAILGUN_DOMAIN = os.environ.get("MAILGUN_DOMAIN")
     MAILGUN_BASE_URL = os.environ.get("MAILGUN_BASE_URL", "https://api.mailgun.net/v3")
+    WTF_CSRF_TIME_LIMIT = None
