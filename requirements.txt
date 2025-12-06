@@ -27,8 +27,7 @@ tzdata==2025.2
 # Production WSGI server
 gunicorn==23.0.0
 
-sendgrid
-sendgrid==6.9.7  # <– добавлено (обязательно!)  
+requests>=2.31.0
 
 # Image processing for favicon and og-image generation
 Pillow  

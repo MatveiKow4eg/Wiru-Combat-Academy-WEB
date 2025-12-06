@@ -24,8 +24,7 @@ from flask_wtf.csrf import CSRFProtect
 from werkzeug.security import check_password_hash, generate_password_hash
 from urllib.parse import urlparse
 from datetime import datetime, timezone
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+from mailgun_service import send_email
 
 from config import Config
 from models import db, News, Schedule, Trainer, Signup, User, Document, RoleChangeLog
@@ -373,31 +372,24 @@ def create_app():
 {message}
 """
 
-        api_key = current_app.config.get("SENDGRID_API_KEY")
         mail_from = current_app.config.get("MAIL_FROM")
         mail_to = current_app.config.get("MAIL_TO")
 
-        if not (api_key and mail_from and mail_to):
+        if not (mail_from and mail_to):
             flash(_("Ошибка: почта не настроена на сервере."), "error")
             return redirect(url_for("home"))
 
         try:
-            msg = Mail(
-                from_email=mail_from,
-                to_emails=mail_to,
+            ok, status, resp_text = send_email(
+                to=mail_to,
                 subject="Сообщение с сайта Wiru Combat Academy",
-                plain_text_content=body,
+                text=body,
             )
-
-            sg = SendGridAPIClient(api_key)
-            response = sg.send(msg)
-
-            if 200 <= response.status_code < 300:
+            if ok:
                 flash(_("Спасибо! Ваше сообщение отправлено."), "success")
             else:
-                print("SendGrid error:", response.status_code, response.body)
+                print("Mailgun error:", status, resp_text)
                 flash(_("Произошла ошибка при отправке сообщения."), "error")
-
         except Exception as e:
             print("Mail error:", e)
             flash(_("Произошла ошибка при отправке сообщения."), "error")
@@ -1222,6 +1214,20 @@ def create_app():
             )
         except Exception:
             abort(404)
+
+    @app.route("/test-mail")
+    def test_mail():
+        mail_to = current_app.config.get("MAIL_TO")
+        if not mail_to:
+            return jsonify({"error": "MAIL_TO is not configured"}), 500
+        ok, status, resp_text = send_email(
+            to=mail_to,
+            subject="Test email from Wiru Combat Academy",
+            text="This is a test email via Mailgun API",
+        )
+        if not ok:
+            return jsonify({"ok": False, "status": status, "response": resp_text}), 500
+        return jsonify({"ok": True, "status": status})
 
     # ----------------- ERRORS & CLI -----------------
 

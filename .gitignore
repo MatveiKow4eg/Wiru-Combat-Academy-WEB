@@ -7,4 +7,3 @@ instance/
 .env
 *.mo
 messages.pot
-sendgrid.env

@@ -41,6 +41,29 @@ pybabel compile -d translations
 
 Примерные `messages.po` уже добавлены. Вы можете отредактировать их и выполнить `pybabel compile`.
 
+## Письма (Mailgun)
+
+Проект использует Mailgun для отправки писем.
+
+Переменные окружения:
+- MAILGUN_API_KEY
+- MAILGUN_DOMAIN (например, sandbox0c5bd5b6f554e3d8e8ae28b80b55224.mailgun.org)
+- MAIL_FROM (от кого отправлять)
+- MAIL_TO (куда отправлять сообщения с формы и для /test-mail)
+
+Локально можно задать в .env:
+```
+MAILGUN_API_KEY=... 
+MAILGUN_DOMAIN=sandbox0c5bd5b6f554e3d8e8ae28b80b55224.mailgun.org
+MAIL_FROM="Club <noreply@example.com>"
+MAIL_TO=you@example.com
+```
+
+Тестовый маршрут:
+- GET /test-mail — отправляет тестовое письмо на MAIL_TO и возвращает JSON. Если Mailgun отвечает не 200 — возвращается 500.
+
+Форма контактов отправляет POST /send-message, который использует mailgun_service.send_email.
+
 ## Деплой
 
 Пример Gunicorn:

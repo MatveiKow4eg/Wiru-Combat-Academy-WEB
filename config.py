@@ -33,7 +33,9 @@ class Config:
     MAX_UPLOAD_MB = int(os.environ.get("MAX_UPLOAD_MB", "15"))
     ALLOWED_UPLOAD_EXTENSIONS = {"pdf", "jpg", "jpeg", "png"}
 
-    # Gmail forms
-    SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+    # Mail settings
     MAIL_FROM = os.environ.get("MAIL_FROM")
     MAIL_TO = os.environ.get("MAIL_TO")
+    MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY")
+    MAILGUN_DOMAIN = os.environ.get("MAILGUN_DOMAIN")
+    MAILGUN_BASE_URL = os.environ.get("MAILGUN_BASE_URL", "https://api.mailgun.net/v3")
