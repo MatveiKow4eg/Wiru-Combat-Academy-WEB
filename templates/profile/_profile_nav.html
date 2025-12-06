@@ -26,7 +26,7 @@
     <a class="nav-item {{ 'active' if _active == 'edit' else '' }}" href="{{ url_for('profile_edit') }}">{{ _('Профиль') }}</a>
     {# <a class="nav-item {{ 'active' if _active == 'billing' else '' }}" href="{{ url_for('billing_home') }}">{{ _('Абонемент') }}</a> #}
     <a class="nav-item {{ 'active' if _active == 'documents' else '' }}" href="{{ url_for('documents') }}">{{ _('Документы') }}</a>
-    {% if current_user.role == 'admin' %}
+    {% if current_user.is_admin %}
     <div class="divider"></div>
     <div class="nav-label">{{ _('Админ') }}</div>
     <a class="nav-item" href="/admin/users">{{ _('Участники') }}</a>
