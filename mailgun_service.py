@@ -10,35 +10,34 @@ def send_email(to: str, subject: str, text: str):
     """
     Send an email via Mailgun API.
 
-    Returns a tuple: (ok: bool, status_code: int, message: str)
+    Returns: requests.Response
     """
     if not MAILGUN_API_KEY or not MAILGUN_DOMAIN:
-        msg = "Mailgun is not configured: set MAILGUN_API_KEY and MAILGUN_DOMAIN"
-        print(msg)
-        return False, 500, msg
+        # Synthesize a Response-like object to propagate error details
+        r = requests.Response()
+        r.status_code = 500
+        r._content = b"Mailgun is not configured: set MAILGUN_API_KEY and MAILGUN_DOMAIN"
+        r.url = f"{MAILGUN_BASE_URL}/{MAILGUN_DOMAIN or ''}/messages"
+        return r
 
     url = f"{MAILGUN_BASE_URL}/{MAILGUN_DOMAIN}/messages"
 
-    from_addr = f"Mailgun <postmaster@{MAILGUN_DOMAIN}>"
     try:
         response = requests.post(
             url,
             auth=("api", MAILGUN_API_KEY),
             data={
-                "from": from_addr,
+                "from": f"Mailgun Sandbox <postmaster@{MAILGUN_DOMAIN}>",
                 "to": to,
                 "subject": subject,
                 "text": text,
             },
             timeout=15,
         )
-        ok = response.status_code == 200
-        if ok:
-            print("Mailgun: message sent successfully", response.status_code)
-            return True, response.status_code, response.text
-        else:
-            print("Mailgun error:", response.status_code, response.text)
-            return False, response.status_code, response.text
+        return response
     except Exception as e:
-        print("Mailgun exception:", e)
-        return False, 500, str(e)
+        r = requests.Response()
+        r.status_code = 500
+        r._content = str(e).encode("utf-8", errors="ignore")
+        r.url = url
+        return r

@@ -380,15 +380,16 @@ def create_app():
             return redirect(url_for("home"))
 
         try:
-            ok, status, resp_text = send_email(
+            r = send_email(
                 to=mail_to,
                 subject="Сообщение с сайта Wiru Combat Academy",
                 text=body,
             )
-            if ok:
+            print(r.status_code, r.text)
+            if r.status_code == 200:
                 flash(_("Спасибо! Ваше сообщение отправлено."), "success")
             else:
-                print("Mailgun error:", status, resp_text)
+                print("Mailgun error:", r.status_code, r.text)
                 flash(_("Произошла ошибка при отправке сообщения."), "error")
         except Exception as e:
             print("Mail error:", e)
@@ -1217,17 +1218,13 @@ def create_app():
 
     @app.route("/test-mail")
     def test_mail():
+        from mailgun_service import send_email
         mail_to = current_app.config.get("MAIL_TO")
         if not mail_to:
-            return jsonify({"error": "MAIL_TO is not configured"}), 500
-        ok, status, resp_text = send_email(
-            to=mail_to,
-            subject="Test email from Wiru Combat Academy",
-            text="This is a test email via Mailgun API",
-        )
-        if not ok:
-            return jsonify({"ok": False, "status": status, "response": resp_text}), 500
-        return jsonify({"ok": True, "status": status})
+            return "500 MAIL_TO is not configured", 500
+        r = send_email(mail_to, "Test email", "Mailgun works!")
+        print(r.status_code, r.text)
+        return f"{r.status_code} {r.text}", (200 if r.status_code == 200 else 500)
 
     # ----------------- ERRORS & CLI -----------------
 
