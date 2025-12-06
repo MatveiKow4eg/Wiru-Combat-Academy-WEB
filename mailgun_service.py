@@ -2,22 +2,16 @@ import os
 import requests
 
 MAILGUN_API_KEY = os.getenv("MAILGUN_API_KEY")
-MAILGUN_DOMAIN = os.getenv("MAILGUN_DOMAIN")  # sandbox domain
-MAILGUN_BASE_URL = os.getenv("MAILGUN_BASE_URL", "https://api.mailgun.net/v3")
+MAILGUN_DOMAIN = os.getenv("MAILGUN_DOMAIN")  # wirucombatacademy.ee
+MAILGUN_BASE_URL = os.getenv("MAILGUN_BASE_URL", "https://api.eu.mailgun.net/v3")
 
+DEFAULT_FROM = "Wiru Combat Academy <contact@wirucombatacademy.ee>"
 
-def send_email(to: str, subject: str, text: str):
-    """
-    Send an email via Mailgun API.
-
-    Returns: requests.Response
-    """
+def send_email(to: str, subject: str, text: str) -> requests.Response:
     if not MAILGUN_API_KEY or not MAILGUN_DOMAIN:
-        # Synthesize a Response-like object to propagate error details
         r = requests.Response()
         r.status_code = 500
-        r._content = b"Mailgun is not configured: set MAILGUN_API_KEY and MAILGUN_DOMAIN"
-        r.url = f"{MAILGUN_BASE_URL}/{MAILGUN_DOMAIN or ''}/messages"
+        r._content = b"Mailgun is not configured properly"
         return r
 
     url = f"{MAILGUN_BASE_URL}/{MAILGUN_DOMAIN}/messages"
@@ -27,17 +21,18 @@ def send_email(to: str, subject: str, text: str):
             url,
             auth=("api", MAILGUN_API_KEY),
             data={
-                "from": f"Mailgun Sandbox <postmaster@{MAILGUN_DOMAIN}>",
+                "from": DEFAULT_FROM,
                 "to": to,
                 "subject": subject,
                 "text": text,
             },
             timeout=15,
         )
+        print("MAILGUN STATUS:", response.status_code)
+        print("MAILGUN RESPONSE:", response.text)
         return response
     except Exception as e:
         r = requests.Response()
         r.status_code = 500
-        r._content = str(e).encode("utf-8", errors="ignore")
-        r.url = url
+        r._content = str(e).encode()
         return r
