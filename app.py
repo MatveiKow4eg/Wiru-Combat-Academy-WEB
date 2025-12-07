@@ -644,33 +644,7 @@ def create_app():
     @app.route("/admin/coaches")
     @admin_required
     def admin_coaches_list():
-        # Source of truth for coaches: take explicit full_name if present, otherwise username/email localpart
-        users = (
-            User.query.filter(User.is_active == True)
-            .order_by(User.full_name.asc().nullslast(), User.username.asc().nullslast(), User.email.asc())
-            .all()
-        )
-        names = []
-        for u in users:
-            # heuristics: consider admins as coaches by default; extend if you tag coaches differently later
-            if getattr(u, "is_admin", False) or (u.level and u.level.strip()):
-                name = (u.full_name or u.username or (u.email.split("@")[0] if u.email else None))
-                if name:
-                    names.append(name)
-        # Fallback: if none matched, still return distinct non-empty names from all users
-        if not names:
-            for u in users:
-                name = (u.full_name or u.username or (u.email.split("@")[0] if u.email else None))
-                if name:
-                    names.append(name)
-        # Deduplicate while preserving order
-        seen = set()
-        unique = []
-        for n in names:
-            if n not in seen:
-                seen.add(n)
-                unique.append(n)
-        return jsonify(unique)
+        return jsonify(["Кирилл Сериков", "Сийм Пярк"])
 
     @app.route("/admin/schedule/item", methods=["POST"])
     @admin_required
