@@ -792,10 +792,13 @@ def create_app():
     @app.route("/admin/schedule/item/<int:item_id>", methods=["DELETE"])
     @admin_required
     def admin_schedule_delete(item_id):
-        item = Schedule.query.get_or_404(item_id)
+        # Make delete idempotent: do not return 404 if item already removed
+        item = Schedule.query.get(item_id)
+        if not item:
+            return jsonify({"ok": True, "deleted": 0})
         db.session.delete(item)
         db.session.commit()
-        return jsonify({"ok": True})
+        return jsonify({"ok": True, "deleted": 1})
 
     @app.route("/admin/schedule/copy_day", methods=["POST"])
     @admin_required
