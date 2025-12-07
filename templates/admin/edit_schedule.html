@@ -759,20 +759,7 @@
     <!-- Days Tabs -->
     <div class="days-tabs" id="days-tabs"></div>
 
-    <!-- Copy Day Bar -->
-    <div class="copy-bar">
-      <span class="copy-bar-label">{{ _('Копировать день') }}:</span>
-      <select id="copy-src" class="input" style="width: 160px;">
-        <option value="" disabled selected>{{ _('Из') }}</option>
-      </select>
-      <span class="copy-arrow">→</span>
-      <select id="copy-dst" class="input" style="width: 160px;">
-        <option value="" disabled selected>{{ _('В') }}</option>
-      </select>
-      <button class="btn btn-primary btn-sm" id="copy-btn">{{ _('Скопировать') }}</button>
-      <span id="copy-status" style="color: var(--text-secondary); font-size: 13px;"></span>
-    </div>
-  </div>
+      </div>
 
   <!-- Add Panel -->
   <div class="add-panel" id="add-panel">
@@ -872,6 +859,26 @@ const DAY_NAMES = [
 
 const DAY_NAMES_SHORT = ['{{ _('Пн') }}', '{{ _('Вт') }}', '{{ _('Ср') }}', '{{ _('Чт') }}', '{{ _('Пт') }}', '{{ _('Сб') }}', '{{ _('Вс') }}'];
 
+// Fixed groups mapping used by add/edit forms
+const GROUPS = {
+  mma_10_14: { discipline: 'mma', age: '10–14', label: 'MMA 10–14 {{ _('лет') }}' },
+  mma_15_plus: { discipline: 'mma', age: '15+', label: 'MMA 15+ {{ _('лет') }}' },
+  boxing_5_7: { discipline: 'boxing', age: '5–7', label: '{{ _('Бокс') }} 5–7 {{ _('лет') }}' },
+  boxing_8_11: { discipline: 'boxing', age: '8–11', label: '{{ _('Бокс') }} 8–11 {{ _('лет') }}' },
+  boxing_12_plus: { discipline: 'boxing', age: '12+', label: '{{ _('Бокс') }} 12+ {{ _('лет') }}' },
+};
+
+function getGroupKey(discipline, age) {
+  if (!discipline) return '';
+  const cleanedAge = (age || '').replace(/[aлy][.,o]*/gi, '').trim();
+  for (const [key, conf] of Object.entries(GROUPS)) {
+    if (conf.discipline === discipline && conf.age === cleanedAge) {
+      return key;
+    }
+  }
+  return '';
+}
+
 // Localized age suffix
 const AGE_SUFFIX = '{{ _('age_suffix') }}';
 const AGE_PREFIX_TO = '{{ _('до') }}';
@@ -963,7 +970,6 @@ function showToast(message, type = 'success') {
 async function init() {
   await loadCoaches();
   renderDaysTabs();
-  populateCopySelects();
   setupEventListeners();
   await loadSchedule();
 }
@@ -990,15 +996,6 @@ function renderDaysTabs() {
 }
 
 // Populate Copy Selects
-function populateCopySelects() {
-  const srcSelect = document.getElementById('copy-src');
-  const dstSelect = document.getElementById('copy-dst');
-  
-  DAY_NAMES.forEach((name, index) => {
-    srcSelect.innerHTML += `<option value="${index}">${name}</option>`;
-    dstSelect.innerHTML += `<option value="${index}">${name}</option>`;
-  });
-}
 
 // Set Active Day
 function setActiveDay(day) {
@@ -1112,18 +1109,10 @@ function editItem(id) {
     <div></div>
     <form class="edit-form" onsubmit="return saveEdit(event, ${id})">
       <input type="time" class="input input-time" value="${item.time}" required>
-      <select class="input" id="edit-disc-${id}" required>
-        <option value="boxing" ${item.discipline === 'boxing' ? 'selected' : ''}>{{ _('Бокс') }}</option>
-        <option value="wrestling" ${item.discipline === 'wrestling' ? 'selected' : ''}>{{ _('Борьба') }}</option>
-        <option value="mma" ${item.discipline === 'mma' ? 'selected' : ''}>{{ _('ММА') }}</option>
-        <option value="other" ${item.discipline === 'other' ? 'selected' : ''}>{{ _('Другое') }}</option>
+      <select class="input" id="edit-group-${id}" required>
+        <option value="" disabled>{{ _('Выберите группу') }}</option>
+        ${Object.entries(GROUPS).map(([key, conf]) => `<option value="${key}">${conf.label}</option>`).join('')}
       </select>
-      <input type="text" class="input" id="edit-custom-${id}" placeholder="{{ _('Введите название') }}" value="${customName}" style="display: ${item.discipline === 'other' ? 'block' : 'none'}; grid-column: 2;">
-      <div class="age-range">
-        <input type="number" class="input input-age" id="edit-age-from-${id}" placeholder="{{ _('От') }}" value="${ageRange.from}" min="1" max="99">
-        <span class="age-separator">–</span>
-        <input type="number" class="input input-age" id="edit-age-to-${id}" placeholder="{{ _('До') }}" value="${ageRange.to}" min="1" max="99">
-      </div>
       <select class="input input-coach" id="edit-coach-${id}">
         <option value="">{{ _('Без тренера') }}</option>
       </select>
@@ -1134,12 +1123,9 @@ function editItem(id) {
     </form>
   `;
   
-  // Toggle custom input
-  const discSelect = document.getElementById(`edit-disc-${id}`);
-  const customInput = document.getElementById(`edit-custom-${id}`);
-  discSelect.onchange = () => {
-    customInput.style.display = discSelect.value === 'other' ? 'block' : 'none';
-  };
+  // Set selected group and populate coach
+  const groupSelect = document.getElementById(`edit-group-${id}`);
+  groupSelect.value = getGroupKey(item.discipline, item.age) || '';
   populateCoachOptions(document.getElementById(`edit-coach-${id}`), item.coach || '');
 }
 
@@ -1148,23 +1134,17 @@ async function saveEdit(event, id) {
   event.preventDefault();
   const form = event.target;
   
-  const ageFrom = document.getElementById(`edit-age-from-${id}`).value.trim();
-  const ageTo = document.getElementById(`edit-age-to-${id}`).value.trim();
-  const age = formatAgeRange(ageFrom, ageTo);
-  
   const inputs = form.querySelectorAll('input, select');
-  
+  const groupKey = document.getElementById(`edit-group-${id}`).value;
+  const conf = GROUPS[groupKey];
+  if (!conf) return false;
+
   const payload = {
     time: inputs[0].value.trim(),
-    discipline: inputs[1].value,
-    age: age,
+    discipline: conf.discipline,
+    age: conf.age,
     coach: (document.getElementById(`edit-coach-${id}`)?.value || '').trim() || null
   };
-  
-  if (payload.discipline === 'other') {
-    const customInput = document.getElementById(`edit-custom-${id}`);
-    payload.activity = customInput ? customInput.value.trim() : '';
-  }
   
   try {
     await api(`/admin/schedule/item/${id}`, { method: 'PUT', body: JSON.stringify(payload) });
@@ -1333,33 +1313,6 @@ function resetAddForm() {
 }
 
 
-// Copy Day
-document.getElementById('copy-btn').onclick = async () => {
-  const src = parseInt(document.getElementById('copy-src').value);
-  const dst = parseInt(document.getElementById('copy-dst').value);
-  
-  if (isNaN(src) || isNaN(dst) || src === dst) {
-    showToast('{{ _('Выберите разные дни') }}', 'error');
-    return;
-  }
-  
-  showModal(
-    '{{ _('Копировать день?') }}',
-    `{{ _('Скопировать расписание из') }} ${DAY_NAMES[src]} {{ _('в') }} ${DAY_NAMES[dst]}. {{ _('Это добавит занятия') }}.`,
-    async () => {
-      try {
-        const result = await api('/admin/schedule/copy_day', {
-          method: 'POST',
-          body: JSON.stringify({ source_day: src, target_day: dst, replace: false })
-        });
-        await loadSchedule();
-        showToast(`{{ _('День скопирован') }}: ${DAY_NAMES[src]} → ${DAY_NAMES[dst]} (+${result.created})`);
-      } catch (error) {
-        showToast(error.message, 'error');
-      }
-    }
-  );
-};
 
 // Modal
 function showModal(title, body, onConfirm) {
