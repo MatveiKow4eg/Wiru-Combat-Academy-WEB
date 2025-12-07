@@ -790,7 +790,9 @@
           <option value="boxing_8_11">{{ _('Бокс') }} 8–11 {{ _('лет') }}</option>
           <option value="boxing_12_plus">{{ _('Бокс') }} 12+ {{ _('лет') }}</option>
         </select>
-                        <input type="text" class="input input-coach" id="add-coach" placeholder="{{ _('Тренер (необязательно)') }}">
+                        <select class="input input-coach" id="add-coach">
+          <option value="">{{ _('Без тренера') }}</option>
+        </select>
         <div class="add-form-actions">
           <button type="submit" class="btn btn-primary btn-sm">{{ _('Добавить') }}</button>
           <button type="button" class="btn btn-secondary btn-sm" onclick="resetAddForm()">{{ _('Очистить') }}</button>
@@ -886,6 +888,46 @@ let activeDay = (() => {
 })();
 const todayDay = activeDay;
 
+// Coaches data
+let COACHES = [];
+async function loadCoaches() {
+  try {
+    const list = await api('/admin/coaches');
+    COACHES = Array.isArray(list) ? list.filter(Boolean) : [];
+  } catch (e) {
+    COACHES = [];
+  }
+  populateAddCoachSelect();
+}
+
+function populateCoachOptions(selectEl, selected) {
+  if (!selectEl) return;
+  const current = selected || '';
+  // Reset options
+  selectEl.innerHTML = '';
+  const empty = document.createElement('option');
+  empty.value = '';
+  empty.textContent = '{{ _('Без тренера') }}';
+  selectEl.appendChild(empty);
+
+  const names = [...COACHES];
+  if (current && !names.includes(current)) {
+    names.unshift(current);
+  }
+  names.forEach((n) => {
+    const opt = document.createElement('option');
+    opt.value = n;
+    opt.textContent = n;
+    if (n === current) opt.selected = true;
+    selectEl.appendChild(opt);
+  });
+}
+
+function populateAddCoachSelect() {
+  const el = document.getElementById('add-coach');
+  populateCoachOptions(el, '');
+}
+
 // API Helper
 async function api(path, opts = {}) {
   const headers = { 'Content-Type': 'application/json', ...opts.headers };
@@ -919,6 +961,7 @@ function showToast(message, type = 'success') {
 
 // Initialize
 async function init() {
+  await loadCoaches();
   renderDaysTabs();
   populateCopySelects();
   setupEventListeners();
@@ -1081,7 +1124,9 @@ function editItem(id) {
         <span class="age-separator">–</span>
         <input type="number" class="input input-age" id="edit-age-to-${id}" placeholder="{{ _('До') }}" value="${ageRange.to}" min="1" max="99">
       </div>
-      <input type="text" class="input input-coach" value="${item.coach || ''}" placeholder="{{ _('Тренер') }}">
+      <select class="input input-coach" id="edit-coach-${id}">
+        <option value="">{{ _('Без тренера') }}</option>
+      </select>
       <div class="edit-form-actions">
         <button type="submit" class="btn btn-primary btn-sm">{{ _('Сохранить') }}</button>
         <button type="button" class="btn btn-secondary btn-sm" onclick="loadSchedule()">{{ _('Отмена') }}</button>
@@ -1095,6 +1140,7 @@ function editItem(id) {
   discSelect.onchange = () => {
     customInput.style.display = discSelect.value === 'other' ? 'block' : 'none';
   };
+  populateCoachOptions(document.getElementById(`edit-coach-${id}`), item.coach || '');
 }
 
 // Save Edit
@@ -1112,7 +1158,7 @@ async function saveEdit(event, id) {
     time: inputs[0].value.trim(),
     discipline: inputs[1].value,
     age: age,
-    coach: inputs[inputs.length - 2].value.trim() || null
+    coach: (document.getElementById(`edit-coach-${id}`)?.value || '').trim() || null
   };
   
   if (payload.discipline === 'other') {
