@@ -720,6 +720,19 @@
     }
   }
 
+  /* Days multi-select styles */
+  .multi-select-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  .days-options input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+  }
+
   /* Loading State */
   .loading {
     display: flex;
@@ -750,10 +763,6 @@
   <div class="editor-header">
     <div class="header-top">
       <h1 class="editor-title">{{ _('Редактор расписания') }}</h1>
-      <div class="header-actions">
-        <a href="{{ url_for('schedule_page') }}" class="btn btn-secondary btn-sm">{{ _('Публичное расписание') }}</a>
-        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary btn-sm">{{ _('Админ-панель') }}</a>
-      </div>
     </div>
 
     <!-- Days Tabs -->
@@ -769,15 +778,42 @@
     <div class="add-panel-body">
       <form class="add-form" id="add-form" onsubmit="return false;">
         <input type="time" class="input input-time" id="add-time" placeholder="00:00" required>
-        <div class="days-select" id="add-days">
-          <label style="margin-right:8px; color: var(--text-secondary);">{{ _('Дни') }}:</label>
-          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="0"> {{ _('Пн') }}</label>
-          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="1"> {{ _('Вт') }}</label>
-          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="2"> {{ _('Ср') }}</label>
-          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="3"> {{ _('Чт') }}</label>
-          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="4"> {{ _('Пт') }}</label>
-          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="5"> {{ _('Сб') }}</label>
-          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="6"> {{ _('Вс') }}</label>
+        <div class="dropdown" id="add-days-dropdown">
+          <button type="button" class="input multi-select-toggle" id="add-days-toggle" onclick="toggleDropdown(event)">
+            {{ _('Дни') }}: {{ _('Выберите') }}
+          </button>
+          <div class="dropdown-menu" style="padding:8px 12px; min-width: 280px;">
+            <div class="days-options" id="add-days">
+              <label class="dropdown-item" style="gap:10px;">
+                <input type="checkbox" name="add-days" value="0" class="days-checkbox">
+                <span>{{ _('Понедельник') }}</span>
+              </label>
+              <label class="dropdown-item" style="gap:10px;">
+                <input type="checkbox" name="add-days" value="1" class="days-checkbox">
+                <span>{{ _('Вторник') }}</span>
+              </label>
+              <label class="dropdown-item" style="gap:10px;">
+                <input type="checkbox" name="add-days" value="2" class="days-checkbox">
+                <span>{{ _('Среда') }}</span>
+              </label>
+              <label class="dropdown-item" style="gap:10px;">
+                <input type="checkbox" name="add-days" value="3" class="days-checkbox">
+                <span>{{ _('Четверг') }}</span>
+              </label>
+              <label class="dropdown-item" style="gap:10px;">
+                <input type="checkbox" name="add-days" value="4" class="days-checkbox">
+                <span>{{ _('Пятница') }}</span>
+              </label>
+              <label class="dropdown-item" style="gap:10px;">
+                <input type="checkbox" name="add-days" value="5" class="days-checkbox">
+                <span>{{ _('Суббота') }}</span>
+              </label>
+              <label class="dropdown-item" style="gap:10px;">
+                <input type="checkbox" name="add-days" value="6" class="days-checkbox">
+                <span>{{ _('Воскресенье') }}</span>
+              </label>
+            </div>
+          </div>
         </div>
         <select class="input" id="add-group" required>
           <option value="" disabled selected>{{ _('Выберите группу') }}</option>
@@ -981,6 +1017,7 @@ async function init() {
   await loadCoaches();
   renderDaysTabs();
   setupEventListeners();
+  initDaysSelection();
   await loadSchedule();
 }
 
@@ -1275,6 +1312,33 @@ function parseAgeRange(ageStr) {
   return { from: '', to: '' };
 }
 
+function updateDaysToggleLabel() {
+  const btn = document.getElementById('add-days-toggle');
+  const checked = Array.from(document.querySelectorAll('input[name="add-days"]:checked'))
+    .map(el => parseInt(el.value))
+    .filter(v => !Number.isNaN(v));
+  if (!btn) return;
+  if (checked.length === 0) {
+    btn.textContent = `{{ _('Дни') }}: {{ _('Выберите') }}`;
+  } else if (checked.length <= 3) {
+    const names = checked.map(i => DAY_NAMES_SHORT[i]).join(', ');
+    btn.textContent = `{{ _('Дни') }}: ${names}`;
+  } else {
+    btn.textContent = `{{ _('Дни') }}: ${checked.length} {{ _('выбрано') }}`;
+  }
+}
+
+function initDaysSelection() {
+  // preselect active day
+  const el = document.querySelector(`input[name="add-days"][value="${activeDay}"]`);
+  if (el) el.checked = true;
+  // attach change listeners
+  document.querySelectorAll('input[name="add-days"]').forEach(chk => {
+    chk.addEventListener('change', updateDaysToggleLabel);
+  });
+  updateDaysToggleLabel();
+}
+
 // Add Form
 document.getElementById('add-form').onsubmit = async (e) => {
   e.preventDefault();
@@ -1325,6 +1389,11 @@ function toggleAddPanel() {
 // Reset Add Form
 function resetAddForm() {
   document.getElementById('add-form').reset();
+  // restore default day selection to activeDay and update label
+  document.querySelectorAll('input[name="add-days"]').forEach(chk => chk.checked = false);
+  const el = document.querySelector(`input[name="add-days"][value="${activeDay}"]`);
+  if (el) el.checked = true;
+  updateDaysToggleLabel();
 }
 
 
