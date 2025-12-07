@@ -295,7 +295,7 @@
 
   .add-form {
     display: grid;
-    grid-template-columns: 100px 1fr 180px 1fr auto;
+    grid-template-columns: 100px 180px 180px 1fr auto;
     gap: 12px;
     align-items: start;
   }
@@ -658,7 +658,7 @@
   /* Responsive */
   @media (max-width: 1199px) {
     .add-form {
-      grid-template-columns: 100px 1fr 140px auto;
+      grid-template-columns: 100px 180px 180px auto;
     }
     
     .input-coach {
@@ -726,6 +726,7 @@
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
+    width: 100%;
   }
   .days-options input[type="checkbox"] {
     accent-color: var(--accent);
@@ -736,7 +737,7 @@
   /* Ensure the add-days dropdown overlays and doesn't shift layout */
   #add-days-dropdown {
     position: relative;
-    flex: 0 0 260px;
+    width: 100%;
   }
   #add-days-dropdown .dropdown-menu,
   #add-days-dropdown .dropdown,
@@ -801,7 +802,7 @@
           <button type="button" class="input multi-select-toggle" id="add-days-toggle" onclick="toggleDropdown(event)">
             {{ _('Дни') }}: {{ _('Выберите') }}
           </button>
-          <div class="dropdown-menu" style="padding:8px 12px; min-width: 280px;">
+          <div class="dropdown-menu" style="padding:8px 12px;">
             <div class="days-options" id="add-days">
               <label class="dropdown-item" style="gap:10px;">
                 <input type="checkbox" name="add-days" value="0" class="days-checkbox">
