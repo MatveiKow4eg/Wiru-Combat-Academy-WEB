@@ -18,6 +18,12 @@ msgstr "Uudised"
 msgid "Расписание"
 msgstr "Tunniplaan"
 
+msgid "Кирилл Сериков"
+msgstr "Kirill Serikov"
+
+msgid "Сийм Пярк"
+msgstr "Siim Pärk"
+
 msgid "Тренеры"
 msgstr "Treenerid"
 
@@ -658,6 +664,37 @@ msgstr "Telefon"
 
 msgid "Направление"
 msgstr "Suunad"
+
+# Treenerid — rollid ja faktid
+msgid "Главный тренер по боксу"
+msgstr "Põhitreener (poks)"
+
+msgid "Тренер по греко-римской борьбе и ММА"
+msgstr "Kreeka-rooma maadluse ja MMA treener"
+
+msgid "10-кратный чемпион Эстонии по боксу"
+msgstr "10-kordne Eesti meister poksis"
+
+msgid "Бронзовый призёр чемпионата Европы среди студентов"
+msgstr "Euroopa ülikoolide meistrivõistluste pronks"
+
+msgid "16 лет в боксе"
+msgstr "16 aastat poksis"
+
+msgid "Упор на технику и дисциплину"
+msgstr "Fookus tehnikal ja distsipliinil"
+
+msgid "Греко-римская борьба и ММА"
+msgstr "Kreeka-rooma maadlus ja MMA"
+
+msgid "10+ лет тренировок в клубе Kalev"
+msgstr "10+ aastat treeninguid Kalevi klubis"
+
+msgid "Опыт тренировок в SBG Dublin (Ирландия)"
+msgstr "Treeningukogemus SBG Dublinis (Iirimaa)"
+
+msgid "Опыт работы в Школе смешанных единоборств"
+msgstr "Kogemus Segavõitluskunstide Koolis"
 
 # Treenerid
 msgid "Скоро здесь появятся тренеры."

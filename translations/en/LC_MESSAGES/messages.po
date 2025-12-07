@@ -19,6 +19,12 @@ msgstr "News"
 msgid "Расписание"
 msgstr "Schedule"
 
+msgid "Кирилл Сериков"
+msgstr "Kirill Serikov"
+
+msgid "Сийм Пярк"
+msgstr "Siim Pärk"
+
 msgid "Тренеры"
 msgstr "Trainers"
 
@@ -667,6 +673,37 @@ msgstr "Phone"
 
 msgid "Направление"
 msgstr "Discipline"
+
+# Trainers roles/facts
+msgid "Главный тренер по боксу"
+msgstr "Head boxing coach"
+
+msgid "Тренер по греко-римской борьбе и ММА"
+msgstr "Greco-Roman wrestling and MMA coach"
+
+msgid "10-кратный чемпион Эстонии по боксу"
+msgstr "10-time Estonian boxing champion"
+
+msgid "Бронзовый призёр чемпионата Европы среди студентов"
+msgstr "European University Championship bronze medalist"
+
+msgid "16 лет в боксе"
+msgstr "16 years in boxing"
+
+msgid "Упор на технику и дисциплину"
+msgstr "Focus on technique and discipline"
+
+msgid "Греко-римская борьба и ММА"
+msgstr "Greco-Roman wrestling and MMA"
+
+msgid "10+ лет тренировок в клубе Kalev"
+msgstr "10+ years training at Kalev club"
+
+msgid "Опыт тренировок в SBG Dublin (Ирландия)"
+msgstr "Training experience at SBG Dublin (Ireland)"
+
+msgid "Опыт работы в Школе смешанных единоборств"
+msgstr "Experience at Mixed Martial Arts School"
 
 # trainers page message
 msgid "Скоро здесь появятся тренеры."

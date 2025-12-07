@@ -27,7 +27,7 @@ from datetime import datetime, timezone
 from mailgun_service import send_email
 
 from config import Config
-from models import db, News, Schedule, Trainer, Signup, User, Document, RoleChangeLog
+from models import db, News, Schedule, Signup, User, Document, RoleChangeLog
 import models as models
 from forms import (
     LoginForm,
@@ -296,9 +296,8 @@ def create_app():
         schedule = Schedule.query.order_by(
             Schedule.day_of_week.asc(), Schedule.time.asc()
         ).all()
-        trainers = Trainer.query.all()
         return render_template(
-            "home.html", news=news, schedule=schedule, trainers=trainers
+            "home.html", news=news, schedule=schedule
         )
 
     @app.route('/robots.txt')
@@ -333,12 +332,23 @@ def create_app():
 
     @app.route("/trainers")
     def trainers_page():
-        trainers = Trainer.query.all()
+        trainers = [
+            {
+                "name": "Кирилл Сериков",
+                "bio": "Команда тренеров клуба действительно впечатляет. Боксерское направление возглавил Кирилл Сериков — один из самых титулованных боксёров Эстонии. За 16 лет в спорте он стал десятикратным чемпионом страны в лёгкой весовой категории (U40), завоевал бронзу чемпионата Европы среди студентов, серебро чемпионата Европы среди военнослужащих и пятое место на рейтинговом чемпионате Европы. В разные годы входил в состав сборной Эстонии, а в 2015 году был признан лучшим боксёром страны в своем весе. «Я хочу передать свой опыт молодому поколению и показать, что бокс — это не только спорт, но и школа жизни», — говорит Кирилл.\n\n+372 5330 6426",
+                "photo": "/static/images/kirillserikov.jpg",
+            },
+            {
+                "name": "Сийм Пярк",
+                "bio": "Сийм Пярк ведёт тренировки по греко-римской борьбе и ММА. За его плечами более десяти лет занятий в клубе «Kalev», опыт работы в Школе смешанных единоборств и тренировки в известных ирландских клубах, включая «Straight Blast Gym» в Дублине, где в своё время занимался Конор Макгрегор.\n\n+372 5335 9985",
+                "photo": "/static/images/siimpark.jpg",
+            },
+        ]
         return render_template(
             "trainers.html",
             trainers=trainers,
             title="Тренеры — Wiru Combat Academy, Кохтла-Ярве",
-            description="Профессиональные тренеры по боксу и ММА в Кохтла-Ярве. Опытные наставники, инд��видуальный подход.",
+            description="Профессиональные тренеры по боксу и ММА в Кохтла-Ярве. Опытные наставники, индивидуальный подход.",
             og_title="Тренерский состав Wiru Combat Academy, Кохтла-Ярве",
             og_desc="Познакомьтесь с нашими тренерами и их опытом в единоборствах."
         )
@@ -1588,15 +1598,7 @@ def seed_if_empty():
                 )
             )
 
-    if Trainer.query.count() == 0:
-        trainers = [
-            ("Alex Strong", "Мастер спорта по боксу.", "/static/images/boxing.svg"),
-            ("Marta Grip", "Тренер по борьбе с 10-летним стажем.", "/static/images/wrestling.svg"),
-            ("Ivan Iron", "Профессиональный боец ММА.", "/static/images/mma.svg"),
-        ]
-        for name, bio, photo in trainers:
-            db.session.add(Trainer(name=name, bio=bio, photo=photo))
-
+    
     # Superadmin seeding
     superadmin = User.query.filter(User.is_superadmin == True).first()
     if superadmin is None:

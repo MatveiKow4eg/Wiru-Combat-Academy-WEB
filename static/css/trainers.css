@@ -1,0 +1,157 @@
+/* Trainers section styles */
+.trainers-section {
+  --bg: #101010;
+}
+
+.trainers-title {
+  font-size: clamp(28px, 3.6vw, 44px);
+  font-weight: 800;
+  margin: 0 0 28px 0;
+}
+
+.trainers-list {
+  display: grid;
+  gap: 24px;
+}
+
+.trainer {
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+  background: var(--bg);
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+.trainer__media {
+  flex: 0 0 300px;
+  max-width: 300px;
+}
+
+.trainer__photo {
+  width: 100%;
+  height: 100%;
+  max-height: 320px;
+  border-radius: 14px;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(100%);
+}
+
+.trainer__content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.trainer__name {
+  font-size: clamp(22px, 2.6vw, 32px);
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.trainer__role {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wc-red, #E53935);
+  opacity: 0.95;
+}
+
+/* Facts list */
+.trainer__facts ul {
+  margin: 8px 0 30px 0;
+  padding: 0 0 0 4px;
+  list-style: none;
+}
+.trainer__facts li {
+  position: relative;
+  margin: 6px 0;
+  padding-left: 14px;
+  font-size: 20px;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.trainer__facts li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.6);
+}
+
+.trainer__phone {
+  margin-top: 8px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+/* truncate rows hint for desktop length control */
+@media (min-width: 901px) {
+  .trainer__facts li {
+    max-width: 60ch;
+  }
+}
+
+/* Reverse (image on the right) */
+.trainer--reverse {
+  flex-direction: row-reverse;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .trainer__media { flex-basis: 260px; max-width: 260px; }
+}
+
+@media (max-width: 680px) {
+  .trainers-list { gap: 16px; }
+  .trainers-title { margin-bottom: 20px; }
+  .trainer {
+    flex-direction: column;
+    padding: 16px;
+    border-radius: 14px;
+    gap: 16px;
+  }
+  .trainer__media {
+    flex: 0 0 auto;
+    max-width: 100%;
+    margin-bottom: 8px;
+  }
+  .trainer__photo {
+    max-height: 60vh;
+    width: 100%;
+  }
+  .trainer__facts ul {
+    padding-left: 14px;
+    margin: 6px 0 8px;
+  }
+  .trainer__facts li {
+    font-size: 0.95rem;
+    padding-left: 12px;
+    white-space: normal; /* позволяем перенос на мобилке */
+    line-height: 1.5;
+  }
+  .trainer__facts li::before {
+    top: 0.65em;
+    width: 5px;
+    height: 5px;
+  }
+  .trainer__phone {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .trainer { padding: 12px; }
+  .trainer__photo { max-height: 55vh; }
+}
