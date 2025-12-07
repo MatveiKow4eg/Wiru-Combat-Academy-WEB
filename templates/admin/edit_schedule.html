@@ -782,26 +782,20 @@
     <div class="add-panel-body">
       <form class="add-form" id="add-form" onsubmit="return false;">
         <input type="time" class="input input-time" id="add-time" placeholder="00:00" required>
-        <select class="input" id="add-discipline" required>
-          <option value="" disabled selected>{{ _('Выберите активность') }}</option>
-          <option value="boxing">{{ _('Бокс') }}</option>
-          <option value="wrestling">{{ _('Борьба') }}</option>
-          <option value="mma">{{ _('ММА') }}</option>
-          <option value="other">{{ _('Другое') }}</option>
+        <select class="input" id="add-group" required>
+          <option value="" disabled selected>{{ _('Выберите группу') }}</option>
+          <option value="mma_10_14">MMA 10–14 {{ _('лет') }}</option>
+          <option value="mma_15_plus">MMA 15+ {{ _('лет') }}</option>
+          <option value="boxing_5_7">{{ _('Бокс') }} 5–7 {{ _('лет') }}</option>
+          <option value="boxing_8_11">{{ _('Бокс') }} 8–11 {{ _('лет') }}</option>
+          <option value="boxing_12_plus">{{ _('Бокс') }} 12+ {{ _('лет') }}</option>
         </select>
-        <input type="text" class="input" id="add-custom" placeholder="{{ _('Введите название') }}" style="display: none; grid-column: 2;">
-        <div class="age-range">
-          <input type="number" class="input input-age" id="add-age-from" placeholder="{{ _('От') }}" min="1" max="99">
-          <span class="age-separator">–</span>
-          <input type="number" class="input input-age" id="add-age-to" placeholder="{{ _('До') }}" min="1" max="99">
-        </div>
-        <input type="text" class="input input-coach" id="add-coach" placeholder="{{ _('Тренер (необязательно)') }}">
+                        <input type="text" class="input input-coach" id="add-coach" placeholder="{{ _('Тренер (необязательно)') }}">
         <div class="add-form-actions">
           <button type="submit" class="btn btn-primary btn-sm">{{ _('Добавить') }}</button>
           <button type="button" class="btn btn-secondary btn-sm" onclick="resetAddForm()">{{ _('Очистить') }}</button>
         </div>
-        <span class="form-hint">{{ _('Пример: Борьба 6–12, ММА 13+, Общая физиче��кая подготовка') }}</span>
-      </form>
+              </form>
     </div>
   </div>
 
@@ -1248,30 +1242,30 @@ function parseAgeRange(ageStr) {
 // Add Form
 document.getElementById('add-form').onsubmit = async (e) => {
   e.preventDefault();
-  
+
   const time = document.getElementById('add-time').value.trim();
-  const discipline = document.getElementById('add-discipline').value;
-  const custom = document.getElementById('add-custom').value.trim();
-  const ageFrom = document.getElementById('add-age-from').value.trim();
-  const ageTo = document.getElementById('add-age-to').value.trim();
+  const key = document.getElementById('add-group').value;
   const coach = document.getElementById('add-coach').value.trim() || null;
-  
-  if (!time || !discipline) return;
-  
-  const age = formatAgeRange(ageFrom, ageTo);
-  
+
+  if (!time || !key) return;
+
+  const GROUPS = {
+    mma_10_14: { discipline: 'mma', age: '10–14' },
+    mma_15_plus: { discipline: 'mma', age: '15+' },
+    boxing_5_7: { discipline: 'boxing', age: '5–7' },
+    boxing_8_11: { discipline: 'boxing', age: '8–11' },
+    boxing_12_plus: { discipline: 'boxing', age: '12+' },
+  };
+
+  const conf = GROUPS[key];
   const payload = {
     day_of_week: activeDay,
     time,
-    discipline,
-    age,
-    coach
+    discipline: conf.discipline,
+    age: conf.age,
+    coach,
   };
-  
-  if (discipline === 'other') {
-    payload.activity = custom;
-  }
-  
+
   try {
     await api('/admin/schedule/item', { method: 'POST', body: JSON.stringify(payload) });
     await loadSchedule();
@@ -1290,14 +1284,8 @@ function toggleAddPanel() {
 // Reset Add Form
 function resetAddForm() {
   document.getElementById('add-form').reset();
-  document.getElementById('add-custom').style.display = 'none';
 }
 
-// Add Discipline Change
-document.getElementById('add-discipline').onchange = (e) => {
-  const custom = document.getElementById('add-custom');
-  custom.style.display = e.target.value === 'other' ? 'block' : 'none';
-};
 
 // Copy Day
 document.getElementById('copy-btn').onclick = async () => {
