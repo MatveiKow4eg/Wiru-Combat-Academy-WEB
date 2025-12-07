@@ -733,6 +733,25 @@
     height: 16px;
   }
 
+  /* Ensure the add-days dropdown overlays and doesn't shift layout */
+  #add-days-dropdown {
+    position: relative;
+    flex: 0 0 260px;
+  }
+  #add-days-dropdown .dropdown-menu,
+  #add-days-dropdown .dropdown,
+  #add-days-dropdown .dropdown-list,
+  #add-days-dropdown .dropdown-content,
+  #add-days-dropdown .dropdown-body,
+  #add-days-dropdown .days-menu {
+    position: absolute !important;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    z-index: 50;
+    margin: 0;
+  }
+
   /* Loading State */
   .loading {
     display: flex;
