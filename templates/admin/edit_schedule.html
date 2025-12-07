@@ -769,6 +769,16 @@
     <div class="add-panel-body">
       <form class="add-form" id="add-form" onsubmit="return false;">
         <input type="time" class="input input-time" id="add-time" placeholder="00:00" required>
+        <div class="days-select" id="add-days">
+          <label style="margin-right:8px; color: var(--text-secondary);">{{ _('Дни') }}:</label>
+          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="0"> {{ _('Пн') }}</label>
+          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="1"> {{ _('Вт') }}</label>
+          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="2"> {{ _('Ср') }}</label>
+          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="3"> {{ _('Чт') }}</label>
+          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="4"> {{ _('Пт') }}</label>
+          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="5"> {{ _('Сб') }}</label>
+          <label style="margin-right:8px;"><input type="checkbox" name="add-days" value="6"> {{ _('Вс') }}</label>
+        </div>
         <select class="input" id="add-group" required>
           <option value="" disabled selected>{{ _('Выберите группу') }}</option>
           <option value="mma_10_14">MMA 10–14 {{ _('лет') }}</option>
@@ -1275,28 +1285,33 @@ document.getElementById('add-form').onsubmit = async (e) => {
 
   if (!time || !key) return;
 
-  const GROUPS = {
-    mma_10_14: { discipline: 'mma', age: '10–14' },
-    mma_15_plus: { discipline: 'mma', age: '15+' },
-    boxing_5_7: { discipline: 'boxing', age: '5–7' },
-    boxing_8_11: { discipline: 'boxing', age: '8–11' },
-    boxing_12_plus: { discipline: 'boxing', age: '12+' },
-  };
-
   const conf = GROUPS[key];
-  const payload = {
-    day_of_week: activeDay,
-    time,
-    discipline: conf.discipline,
-    age: conf.age,
-    coach,
-  };
+  if (!conf) return;
+
+  // collect selected days; fallback to current activeDay if none
+  const days = Array.from(document.querySelectorAll('input[name="add-days"]:checked'))
+    .map(el => parseInt(el.value))
+    .filter(v => !Number.isNaN(v));
+  const targetDays = days.length > 0 ? days : [activeDay];
 
   try {
-    await api('/admin/schedule/item', { method: 'POST', body: JSON.stringify(payload) });
+    const results = await Promise.allSettled(targetDays.map(day =>
+      api('/admin/schedule/item', {
+        method: 'POST',
+        body: JSON.stringify({
+          day_of_week: day,
+          time,
+          discipline: conf.discipline,
+          age: conf.age,
+          coach,
+        }),
+      })
+    ));
+
+    const ok = results.filter(r => r.status === 'fulfilled').length;
     await loadSchedule();
     resetAddForm();
-    showToast('{{ _('Занятие добавлено') }}');
+    showToast(`${ok} {{ _('добавлено') }}`);
   } catch (error) {
     showToast(error.message, 'error');
   }
