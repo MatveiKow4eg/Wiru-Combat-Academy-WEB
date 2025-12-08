@@ -16,6 +16,14 @@ class Config:
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "pool_recycle": 280,
+        "pool_size": int(os.environ.get("DB_POOL_SIZE", "5")),
+        "max_overflow": int(os.environ.get("DB_MAX_OVERFLOW", "10")),
+        "pool_timeout": int(os.environ.get("DB_POOL_TIMEOUT", "30")),
+    }
+
     # i18n
     LANGUAGES = ["ru", "en", "et"]
     BABEL_DEFAULT_LOCALE = os.environ.get("BABEL_DEFAULT_LOCALE", "ru")
