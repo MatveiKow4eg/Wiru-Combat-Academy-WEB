@@ -287,7 +287,7 @@ h1, .wc-title, .story-heading .story-word.main {
   font-size: clamp(60px, 14vw, 120px);
   color: transparent;
   -webkit-text-stroke: 1px rgba(255,255,255,0.04);
-  letter-spacing: 4px;
+  letter-spacing: 10px;
   z-index: 0;
   pointer-events: none;
 }
