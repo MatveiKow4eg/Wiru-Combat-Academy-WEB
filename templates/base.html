@@ -216,6 +216,12 @@
     <input type="email" name="email" placeholder="{{ _('Ваш Email') }}" required>
   </div>
   <textarea name="message" placeholder="{{ _('Ваше сообщение') }}" rows="5" required></textarea>
+  <div class="form-row" style="margin: 10px 0 14px;">
+    <label for="consent" style="display:flex; align-items:center; gap:8px; color:#ccc; font-size:13px; line-height:1.4;">
+      <input id="consent" type="checkbox" name="consent" required>
+      <span>Согласен(а) на обработку <a href="/privaatsuspoliitika" target="_blank">персональных</a> данных</span>
+    </label>
+  </div>
   <button type="submit">{{ _('Отправить') }}</button>
 </form>
 
