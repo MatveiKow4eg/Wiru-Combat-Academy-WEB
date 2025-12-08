@@ -2,7 +2,7 @@ from pathlib import Path
 from PIL import Image
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-src_logo = BASE_DIR / "static" / "images" / "logo.png"
+src_logo = BASE_DIR / "static" / "images" / "logo_header.png"
 src_hero = BASE_DIR / "static" / "images" / "mainheader.png"
 fav_dir = BASE_DIR / "static" / "images" / "favicon"
 fav_dir.mkdir(parents=True, exist_ok=True)
@@ -23,6 +23,10 @@ sizes = [
 for name, size in sizes:
     resized = img.resize(size, Image.LANCZOS)
     resized.save(fav_dir / name, format="PNG")
+
+# Apple Touch Icon (180x180)
+apple = img.resize((180, 180), Image.LANCZOS)
+apple.save(fav_dir / "apple-touch-icon.png", format="PNG")
 
 # favicon.ico (16,32,48 в одном ICO)
 ico_sizes = [(16, 16), (32, 32), (48, 48)]
