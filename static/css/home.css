@@ -278,7 +278,7 @@ h1, .wc-title, .story-heading .story-word.main {
   color: var(--text);
 }
 .our-story::after {
-  content: "О НАС";
+  content: attr(data-label);
   position: absolute;
   left: 50%;
   top: 20px; /* 🔽 опускаем текст ниже */
