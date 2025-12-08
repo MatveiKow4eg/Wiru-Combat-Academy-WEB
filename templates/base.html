@@ -84,22 +84,21 @@
       .header-actions{ justify-self: end; }
       .header .nav{ justify-self: center; }
     }
-  /* Footer bottom (links first line, copyright second line) */
-  .footer-bottom {
-    display: block !important;
+  /* Footer legal (links first line, copyright second line) */
+  .footer-legal {
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     padding: 18px 0 25px;
     font-size: 13px;
     color: #9ca3af;
     text-align: center;
   }
-  .footer-bottom__inner { display: flex; flex-direction: column; gap: 8px; }
-  .footer-bottom__links { display:flex; justify-content:center; flex-wrap:wrap; gap: 6px 12px; }
-  .footer-bottom__links a { color:#d1d5db; text-decoration:none; }
-  .footer-bottom__links a:hover { text-decoration: underline; }
-  .footer-bottom__copy { margin-top: 4px; opacity: 0.8; }
+  .footer-legal__inner { display: flex; flex-direction: column; gap: 8px; }
+  .footer-legal__links { display:flex; justify-content:center; flex-wrap:wrap; gap: 6px 12px; }
+  .footer-legal__links a { color:#d1d5db; text-decoration:none; }
+  .footer-legal__links a:hover { text-decoration: underline; }
+  .footer-legal__copy { margin-top: 4px; opacity: 0.8; }
   @media (min-width: 900px) {
-    .footer-bottom__inner { align-items: center; }
+    .footer-legal__inner { align-items: center; }
   }
   </style>
     <!-- Favicon -->
@@ -264,9 +263,9 @@
 </footer>
 
 <!-- Нижняя строка: ссылки сверху, копирайт снизу; отдельный, не вложенный футер -->
-<footer class="footer-bottom">
-  <div class="container footer-bottom__inner">
-    <div class="footer-bottom__links">
+<footer class="footer-legal">
+  <div class="container footer-legal__inner">
+    <div class="footer-legal__links">
       <a href="{{ url_for('privacy') }}">Privaatsuspoliitika</a>
       <span>•</span>
       <a href="{{ url_for('terms') }}">Kasutustingimused</a>
@@ -278,7 +277,7 @@
       <a href="{{ url_for('marketing') }}">Turundusnõusolek</a>
     </div>
 
-    <div class="footer-bottom__copy">
+    <div class="footer-legal__copy">
       &copy; {{ now.year }} Wiru Combat Academy — {{ _('Все права защищены') }}
     </div>
   </div>
