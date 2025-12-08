@@ -101,6 +101,10 @@
     .footer-legal__inner { align-items: center; }
   }
   </style>
+  <style>
+    /* Active nav link style */
+    .nav a.active { color: #ef4444 !important; }
+  </style>
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='images/favicon/favicon-32x32.png') }}">
@@ -146,11 +150,11 @@
           <img src="{{ url_for('static', filename='images/logo_header.png') }}" alt="Wiru Combat Academy Logo">
         </a>
       </div>
-      <a href="{{ url_for('home') }}">{{ _('Главная') }}</a>
-      <a href="{{ url_for('news_list') }}" style="display:none" aria-hidden="true" tabindex="-1">{{ _('Новости') }}</a>
-      <a href="{{ url_for('schedule_page') }}">{{ _('Расписание') }}</a>
-      <a href="{{ url_for('trainers_page') }}">{{ _('Тренеры') }}</a>
-      <a href="{{ url_for('contact') }}">{{ _('Контакты') }}</a>
+      <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' else '' }}">{{ _('Главная') }}</a>
+      <a href="{{ url_for('news_list') }}" class="{{ 'active' if request.endpoint == 'news_list' else '' }}" style="display:none" aria-hidden="true" tabindex="-1">{{ _('Новости') }}</a>
+      <a href="{{ url_for('schedule_page') }}" class="{{ 'active' if request.endpoint == 'schedule_page' else '' }}">{{ _('Расписание') }}</a>
+      <a href="{{ url_for('trainers_page') }}" class="{{ 'active' if request.endpoint == 'trainers_page' else '' }}">{{ _('Тренеры') }}</a>
+      <a href="{{ url_for('contact') }}" class="{{ 'active' if request.endpoint == 'contact' else '' }}">{{ _('Контакты') }}</a>
                 </nav>
         <div class="header-actions">
       <div class="lang-switch">
