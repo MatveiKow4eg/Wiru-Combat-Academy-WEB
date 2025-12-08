@@ -84,6 +84,22 @@
       .header-actions{ justify-self: end; }
       .header .nav{ justify-self: center; }
     }
+  /* Footer legal compact bottom strip */
+  .footer-legal {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 16px 0 20px;
+    font-size: 13px;
+    color: #9ca3af;
+  }
+  .footer-legal__inner { display: flex; flex-direction: column; gap: 6px; }
+  .footer-legal__copy { opacity: 0.9; }
+  .footer-legal__links { display:flex; flex-wrap:wrap; gap: 6px 10px; align-items:center; }
+  .footer-legal__links a { text-decoration:none; color:#d1d5db; }
+  .footer-legal__links a:hover { text-decoration: underline; }
+  .footer-legal__links .sep { color:#666; }
+  @media (min-width: 900px) {
+    .footer-legal__inner { flex-direction: row; justify-content: space-between; align-items: center; }
+  }
   </style>
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/favicon/apple-touch-icon.png') }}">
@@ -244,15 +260,23 @@
   </div>
 
   <!-- Нижняя строка -->
-  <div class="footer-copy">
-    <p>
-      &copy; {{ now.year }} Wiru Combat Academy — {{ _('Все права защищены') }}
-      | <a href="{{ url_for('privacy') }}">Privaatsuspoliitika</a>
-      | <a href="{{ url_for('terms') }}">Kasutustingimused</a>
-      | <a href="{{ url_for('cookies') }}">Küpsiste poliitika</a>
-      | <a href="{{ url_for('youth') }}">Noorte ja lapsevanemate tingimused</a>
-      | <a href="{{ url_for('marketing') }}">Turundusnõusolek</a>
-    </p>
+  <div class="footer-legal">
+    <div class="container footer-legal__inner">
+      <div class="footer-legal__copy">
+        &copy; {{ now.year }} Wiru Combat Academy — {{ _('Все права защищены') }}
+      </div>
+      <div class="footer-legal__links">
+        <a href="{{ url_for('privacy') }}">Privaatsuspoliitika</a>
+        <span class="sep">•</span>
+        <a href="{{ url_for('terms') }}">Kasutustingimused</a>
+        <span class="sep">•</span>
+        <a href="{{ url_for('cookies') }}">Küpsiste poliitika</a>
+        <span class="sep">•</span>
+        <a href="{{ url_for('youth') }}">Noorte ja lapsevanemate tingimused</a>
+        <span class="sep">•</span>
+        <a href="{{ url_for('marketing') }}">Turundusnõusolek</a>
+      </div>
+    </div>
   </div>
 </footer>
 
