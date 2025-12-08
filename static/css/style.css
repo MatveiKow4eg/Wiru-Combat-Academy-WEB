@@ -112,6 +112,11 @@ p{font-size:17px;line-height:1.6}
 }
 
 /* LANG SWITCH */
+.lang-switch {
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
 .lang-switch .lang{
   padding:6px 8px;
   border-radius:6px;
@@ -121,6 +126,31 @@ p{font-size:17px;line-height:1.6}
   display:inline-flex; align-items:center; height:32px;
 }
 .lang-switch .lang.active{color:#fff;border-color:var(--accent)}
+
+/* Tiny screens: keep language switch inside header */
+@media (max-width: 374px){
+  .header-inner{
+    gap:4px;
+  }
+  .header-actions{
+    flex-wrap:wrap;
+    justify-content:flex-end;
+    gap:6px;
+  }
+  .lang-switch{
+    order:2;
+    width:100%;
+    justify-content:flex-end;
+  }
+  .auth-ctrls{
+    order:1;
+  }
+  .lang-switch .lang{
+    padding:4px 6px;
+    font-size:11px;
+    height:26px;
+  }
+}
 
 /* BUTTONS */
 .btn{
