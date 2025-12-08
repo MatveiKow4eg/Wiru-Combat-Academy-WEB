@@ -395,6 +395,22 @@ def create_app():
             description="Wiru Combat Academy MTÜ ohutusreeglid treeningutel"
         )
 
+    @app.route("/youth")
+    def youth():
+        return render_template(
+            "youth.html",
+            title="Noorte ja lapsevanemate tingimused – Wiru Combat Academy",
+            description="Wiru Combat Academy MTÜ noorte ja lapsevanemate tingimused"
+        )
+
+    @app.route("/marketing")
+    def marketing():
+        return render_template(
+            "marketing.html",
+            title="Turundusnõusolek – Wiru Combat Academy",
+            description="Wiru Combat Academy MTÜ turundusnõusolek"
+        )
+
     @app.route("/send-message", methods=["POST"])
     def send_message():
         name = request.form.get("name")
