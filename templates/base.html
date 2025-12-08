@@ -245,7 +245,10 @@
 
   <!-- Нижняя строка -->
   <div class="footer-copy">
-    <p>&copy; {{ now.year }} Wiru Combat Academy — {{ _('Все права защищены') }}</p>
+    <p>
+      &copy; {{ now.year }} Wiru Combat Academy — {{ _('Все права защищены') }}
+      | <a href="{{ url_for('privacy') }}">Privaatsuspoliitika</a>
+    </p>
   </div>
 </footer>
 

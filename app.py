@@ -363,6 +363,14 @@ def create_app():
             og_desc="Свяжитесь с нами, чтобы записаться на тренировку или задать вопрос."
         )
 
+    @app.route("/privacy")
+    def privacy():
+        return render_template(
+            "privacy.html",
+            title="Privaatsuspoliitika – Wiru Combat Academy",
+            description="Wiru Combat Academy MTÜ privaatsuspoliitika"
+        )
+
     @app.route("/send-message", methods=["POST"])
     def send_message():
         name = request.form.get("name")
