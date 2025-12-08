@@ -847,3 +847,6 @@ msgstr "Parim hind"
 
 msgid "plans.feature.max_benefit"
 msgstr "Maksimaalne kasu"
+
+msgid "Общеукрепляющие тренировки"
+msgstr "Üldkehaline ringtreening"

@@ -817,3 +817,6 @@ msgstr "Лучшая цена"
 
 msgid "plans.feature.max_benefit"
 msgstr "Максимум выгоды"
+
+msgid "Общеукрепляющие тренировки"
+msgstr "Общеукрепляющие тренировки"

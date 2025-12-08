@@ -842,6 +842,7 @@
           <option value="boxing_5_7">{{ _('Бокс') }} 5–7 {{ _('лет') }}</option>
           <option value="boxing_8_11">{{ _('Бокс') }} 8–11 {{ _('лет') }}</option>
           <option value="boxing_12_plus">{{ _('Бокс') }} 12+ {{ _('лет') }}</option>
+          <option value="general_circuit">{{ _('Общеукрепляющие тренировки') }}</option>
         </select>
                         <select class="input input-coach" id="add-coach">
           <option value="">{{ _('Без тренера') }}</option>
@@ -932,6 +933,7 @@ const GROUPS = {
   boxing_5_7: { discipline: 'boxing', age: '5–7', label: '{{ _('Бокс') }} 5–7 {{ _('лет') }}' },
   boxing_8_11: { discipline: 'boxing', age: '8–11', label: '{{ _('Бокс') }} 8–11 {{ _('лет') }}' },
   boxing_12_plus: { discipline: 'boxing', age: '12+', label: '{{ _('Бокс') }} 12+ {{ _('лет') }}' },
+  general_circuit: { discipline: 'other', age: '', label: '{{ _('Общеукрепляющие тренировки') }}' },
 };
 
 function getGroupKey(discipline, age) {
@@ -1212,6 +1214,9 @@ async function saveEdit(event, id) {
     age: conf.age,
     coach: (document.getElementById(`edit-coach-${id}`)?.value || '').trim() || null
   };
+  if (conf.discipline === 'other') {
+    payload.activity = conf.label;
+  }
   
   try {
     await api(`/admin/schedule/item/${id}`, { method: 'PUT', body: JSON.stringify(payload) });
@@ -1383,11 +1388,12 @@ document.getElementById('add-form').onsubmit = async (e) => {
       api('/admin/schedule/item', {
         method: 'POST',
         body: JSON.stringify({
-          day_of_week: day,
-          time,
-          discipline: conf.discipline,
-          age: conf.age,
-          coach,
+        day_of_week: day,
+        time,
+        discipline: conf.discipline,
+        age: conf.age,
+        coach,
+        ...(conf.discipline === 'other' ? { activity: conf.label } : {})
         }),
       })
     ));

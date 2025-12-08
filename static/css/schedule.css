@@ -1,0 +1,12 @@
+/* Schedule specific styles for active training status */
+.schedule-item__status {
+  margin-left: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #22c55e; /* зелёный */
+}
+
+.schedule-item--active {
+  box-shadow: 0 0 0 2px #22c55e;
+}

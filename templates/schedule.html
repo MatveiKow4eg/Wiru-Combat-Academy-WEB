@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ _('Расписание') }}{% endblock %}
 {% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/schedule.css') }}">
 <style>
   .cards.two{ grid-template-columns: 1fr; }
   .actions-center{ text-align:center; margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
@@ -125,7 +126,9 @@
               <div class="slots">
                 {% if items and items|length > 0 %}
                   {% for it in items %}
-                    <div class="slot">
+                    <div class="slot schedule-item"
+                         data-start="{{ it.time.split('-')[0].strip() }}"
+                         data-end="{{ it.time.split('-')[1].strip() if '-' in it.time else it.time }}">
                       <span class="time-badge">{{ it.time }}</span>
                       <span class="activity">
                         {% if it.discipline == 'other' %}
@@ -133,6 +136,7 @@
                         {% else %}
                           {% if it.discipline == 'boxing' %}{{ _('Бокс') }}{% elif it.discipline == 'wrestling' %}{{ _('Борьба') }}{% elif it.discipline == 'mma' %}{{ _('ММА') }}{% else %}{{ it.activity }}{% endif %}{% if it.age %} <span class="age-display" data-age="{{ it.age }}">{{ it.age }}</span>{% endif %}
                         {% endif %}
+                        <span class="schedule-item__status"></span>
                       </span>
                       <span></span>
                       <span class="coach-muted">{{ it.coach or '' }}</span>
@@ -333,5 +337,43 @@ function onPlanCtaClick(ev, cta, link){
     el.textContent = cleaned + AGE_SUFFIX;
   });
 })();
+</script>
+
+<script>
+  function isNowBetween(startStr, endStr) {
+    const now = new Date();
+
+    const [sh, sm] = startStr.split(':').map(Number);
+    const [eh, em] = endStr.split(':').map(Number);
+
+    const start = new Date(now);
+    start.setHours(sh, sm || 0, 0, 0);
+
+    const end = new Date(now);
+    end.setHours(eh, em || 0, 0, 0);
+
+    return now >= start && now <= end;
+  }
+
+  function updateTrainingStatuses() {
+    const items = document.querySelectorAll('.schedule-item[data-start][data-end]');
+
+    items.forEach(item => {
+      const { start, end } = item.dataset;
+      const statusEl = item.querySelector('.schedule-item__status');
+      if (!statusEl || !start || !end) return;
+
+      if (isNowBetween(start, end)) {
+        statusEl.textContent = 'Тренировка идёт';
+        item.classList.add('schedule-item--active');
+      } else {
+        statusEl.textContent = '';
+        item.classList.remove('schedule-item--active');
+      }
+    });
+  }
+
+  updateTrainingStatuses();
+  setInterval(updateTrainingStatuses, 60000);
 </script>
 {% endblock %}

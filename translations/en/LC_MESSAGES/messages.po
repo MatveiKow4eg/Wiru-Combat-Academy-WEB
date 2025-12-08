@@ -231,6 +231,9 @@ msgstr "Clear"
 msgid "Пример: Борьба 6–12, ММА 13+, Общая физическая подготовка"
 msgstr "Example: Wrestling 6–12, MMA 13+, General physical training"
 
+msgid "Общеукрепляющие тренировки"
+msgstr "Strength & Conditioning"
+
 msgid "Выбрать"
 msgstr "Select"
 
