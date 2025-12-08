@@ -132,9 +132,23 @@
                       <span class="time-badge">{{ it.time }}</span>
                       <span class="activity">
                         {% if it.discipline == 'other' %}
-                          {{ it.activity }}
+                          {# Явный перевод для Общеукрепляющих #}
+                          {% set act = (it.activity|string).strip() %}
+                          {% if act == 'Общеукрепляющие тренировки' or act == 'Общеукрепляющие' %}
+                            {{ _('Общеукрепляющие тренировки') }}
+                          {% else %}
+                            {{ it.activity }}
+                          {% endif %}
                         {% else %}
-                          {% if it.discipline == 'boxing' %}{{ _('Бокс') }}{% elif it.discipline == 'wrestling' %}{{ _('Борьба') }}{% elif it.discipline == 'mma' %}{{ _('ММА') }}{% else %}{{ it.activity }}{% endif %}{% if it.age %} <span class="age-display" data-age="{{ it.age }}">{{ it.age }}</span>{% endif %}
+                          {% if it.discipline == 'boxing' %}{{ _('Бокс') }}{% elif it.discipline == 'wrestling' %}{{ _('Борьба') }}{% elif it.discipline == 'mma' %}{{ _('ММА') }}{% else %}
+                            {# Фолбэк с переводом для неизвестных дисциплин #}
+                            {% set act = (it.activity|string).strip() %}
+                            {% if act == 'Общеукрепляющие тренировки' or act == 'Общеукрепляющие' %}
+                              {{ _('Общеукрепляющие тренировки') }}
+                            {% else %}
+                              {{ it.activity }}
+                            {% endif %}
+                          {% endif %}{% if it.age %} <span class="age-display" data-age="{{ it.age }}">{{ it.age }}</span>{% endif %}
                         {% endif %}
                         <span class="schedule-item__status"></span>
                       </span>
