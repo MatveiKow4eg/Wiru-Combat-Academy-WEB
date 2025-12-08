@@ -455,3 +455,104 @@ p{font-size:17px;line-height:1.6}
 @media (max-width: 520px){
   .form-row.two-cols{ grid-template-columns: 1fr; }
 }
+
+/* Legal/policy pages: improved layout and typography */
+.page-section {
+  padding: clamp(28px, 5vw, 56px) 0 clamp(48px, 7vw, 84px);
+  position: relative;
+}
+.page-section::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 220px;
+  background: radial-gradient(1200px 220px at 50% 0, rgba(224, 37, 37, 0.06), rgba(0,0,0,0));
+  pointer-events: none;
+}
+.page-section > .container {
+  width: min(920px, 92%);
+  background: linear-gradient(180deg, rgba(20,20,20,0.94), rgba(18,18,18,0.94));
+  border: 1px solid #262626;
+  border-radius: 16px;
+  padding: clamp(20px, 3.5vw, 40px) clamp(18px, 3.5vw, 44px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+
+/* Title + divider */
+.page-section h1 {
+  text-align: center;
+  letter-spacing: .5px;
+  margin-bottom: 8px;
+}
+.page-section h1::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 3px;
+  margin: 12px auto 6px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  border-radius: 2px;
+}
+.page-section > .container > p:first-of-type {
+  text-align: center;
+  color: #a3a3a3;
+  margin-top: 4px;
+  margin-bottom: 24px;
+}
+
+/* Subheadings */
+.page-section h2 {
+  margin-top: clamp(20px, 4vw, 34px);
+  font-size: clamp(20px, 3.5vw, 28px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.page-section h2::before {
+  content: "";
+  width: 6px;
+  height: 22px;
+  background: var(--accent);
+  border-radius: 3px;
+  display: inline-block;
+}
+
+/* Lists */
+.page-section ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 10px 0 18px;
+  display: grid;
+  gap: 8px;
+}
+.page-section ul li {
+  position: relative;
+  padding-left: 22px;
+  line-height: 1.65;
+}
+.page-section ul li::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  position: absolute;
+  left: 0;
+  top: 10px;
+  box-shadow: 0 0 0 3px rgba(224, 37, 37, 0.12);
+}
+
+/* Text */
+.page-section p { color: #e5e5e5; }
+.page-section p strong { color: #fff; }
+
+/* Link emphasis */
+.page-section a { color: #ff6b6b; }
+.page-section a:hover { color: #ff8a8a; }
+
+/* Spacing fixes on small screens */
+@media (max-width: 600px) {
+  .page-section::before { height: 140px; }
+  .page-section > .container { padding: 18px 16px; }
+  .page-section h1::after { width: 60px; }
+}
