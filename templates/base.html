@@ -86,6 +86,7 @@
     }
   /* Footer bottom (links first line, copyright second line) */
   .footer-bottom {
+    display: block !important;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     padding: 18px 0 25px;
     font-size: 13px;
@@ -259,25 +260,28 @@
     </div>
   </div>
 
-  <!-- Нижняя строка -->
-  <footer class="footer-bottom">
-    <div class="container footer-bottom__inner">
-      <div class="footer-bottom__links">
-        <a href="{{ url_for('privacy') }}">Privaatsuspoliitika</a>
-        <span>·</span>
-        <a href="{{ url_for('terms') }}">Kasutustingimused</a>
-        <span>·</span>
-        <a href="{{ url_for('cookies') }}">Küpsiste poliitika</a>
-        <span>·</span>
-        <a href="{{ url_for('youth') }}">Noorte ja lapsevanemate tingimused</a>
-        <span>·</span>
-        <a href="{{ url_for('marketing') }}">Turundusnõusolek</a>
-      </div>
-      <div class="footer-bottom__copy">
-        &copy; {{ now.year }} Wiru Combat Academy — {{ _('Все права защищены') }}
-      </div>
+  <!-- Закрываем основной футер с картой и контактами -->
+</footer>
+
+<!-- Нижняя строка: ссылки сверху, копирайт снизу; отдельный, не вложенный футер -->
+<footer class="footer-bottom">
+  <div class="container footer-bottom__inner">
+    <div class="footer-bottom__links">
+      <a href="{{ url_for('privacy') }}">Privaatsuspoliitika</a>
+      <span>•</span>
+      <a href="{{ url_for('terms') }}">Kasutustingimused</a>
+      <span>•</span>
+      <a href="{{ url_for('cookies') }}">Küpsiste poliitika</a>
+      <span>•</span>
+      <a href="{{ url_for('youth') }}">Noorte ja lapsevanemate tingimused</a>
+      <span>•</span>
+      <a href="{{ url_for('marketing') }}">Turundusnõusolek</a>
     </div>
-  </footer>
+
+    <div class="footer-bottom__copy">
+      &copy; {{ now.year }} Wiru Combat Academy — {{ _('Все права защищены') }}
+    </div>
+  </div>
 </footer>
 
 
