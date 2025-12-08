@@ -357,27 +357,53 @@ function onPlanCtaClick(ev, cta, link){
   function isNowBetween(startStr, endStr) {
     const now = new Date();
 
-    const [sh, sm] = startStr.split(':').map(Number);
-    const [eh, em] = endStr.split(':').map(Number);
+    const norm = s => (s || '').trim();
+    const [sh, sm] = norm(startStr).split(':').map(Number);
+    const [eh, em] = norm(endStr).split(':').map(Number);
+
+    if (Number.isNaN(sh) || Number.isNaN(eh)) return false;
 
     const start = new Date(now);
-    start.setHours(sh, sm || 0, 0, 0);
+    start.setHours(sh, Number.isNaN(sm) ? 0 : sm, 0, 0);
 
     const end = new Date(now);
-    end.setHours(eh, em || 0, 0, 0);
+    end.setHours(eh, Number.isNaN(em) ? 0 : em, 0, 0);
+
+    // Handle intervals crossing midnight
+    if (end < start) {
+      end.setDate(end.getDate() + 1);
+    }
 
     return now >= start && now <= end;
   }
 
   function updateTrainingStatuses() {
-    const items = document.querySelectorAll('.schedule-item[data-start][data-end]');
+    const items = document.querySelectorAll('.schedule-item');
 
     items.forEach(item => {
-      const { start, end } = item.dataset;
       const statusEl = item.querySelector('.schedule-item__status');
-      if (!statusEl || !start || !end) return;
+      if (!statusEl) return;
 
-      if (isNowBetween(start, end)) {
+      // Prefer reading from visible time-badge; normalize unicode dashes to '-'
+      const badge = item.querySelector('.time-badge');
+      let start, end;
+
+      if (badge && badge.textContent) {
+        const norm = badge.textContent.replace(/[\u2012\u2013\u2014\u2015\u2212]/g, '-').trim();
+        const parts = norm.split('-').map(s => s.trim());
+        if (parts.length >= 2) {
+          start = parts[0];
+          end = parts[1];
+        }
+      }
+
+      // Fallback to dataset if badge parsing failed
+      if (!start || !end) {
+        start = (item.dataset.start || '').replace(/[\u2012\u2013\u2014\u2015\u2212]/g, '-').trim();
+        end = (item.dataset.end || '').replace(/[\u2012\u2013\u2014\u2015\u2212]/g, '-').trim();
+      }
+
+      if (start && end && isNowBetween(start, end)) {
         statusEl.textContent = 'Тренировка идёт';
         item.classList.add('schedule-item--active');
       } else {
