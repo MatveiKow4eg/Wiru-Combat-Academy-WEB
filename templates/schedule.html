@@ -357,7 +357,22 @@ function onPlanCtaClick(ev, cta, link){
 <script>
   function updateTrainingStatuses() {
     const now = new Date();
-    const items = document.querySelectorAll('.schedule-item[data-start]');
+
+    // 1) Сначала очистим подсветку у всех элементов на странице,
+    //    чтобы не оставались старые состояния на других днях
+    document.querySelectorAll('.schedule-item').forEach(item => {
+      item.classList.remove('schedule-item--active');
+      const statusEl = item.querySelector('.schedule-item__status');
+      if (statusEl) statusEl.innerHTML = '';
+    });
+
+    // 2) Найдём карточку текущего дня (там, где остался .today-chip)
+    const todayChip = document.querySelector('.day-head .today-chip');
+    const todayCard = todayChip ? todayChip.closest('.day-card') : null;
+    if (!todayCard) return;
+
+    // 3) Обрабатываем только слоты текущего дня
+    const items = todayCard.querySelectorAll('.schedule-item[data-start]');
 
     items.forEach(item => {
       const startStrRaw = item.dataset.start || '';
@@ -372,14 +387,9 @@ function onPlanCtaClick(ev, cta, link){
 
       const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
 
-      const statusEl = item.querySelector('.schedule-item__status');
-      if (!statusEl) return;
-
       if (now >= start && now <= end) {
-        statusEl.innerHTML = '<span class="active-dot"></span>';
         item.classList.add('schedule-item--active');
       } else {
-        statusEl.innerHTML = '';
         item.classList.remove('schedule-item--active');
       }
     });
