@@ -3,6 +3,7 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/schedule.css') }}">
 <style>
+  .active-dot { display:inline-block; width:10px; height:10px; background-color:#22c55e; border-radius:50%; margin-left:6px; box-shadow:0 0 6px rgba(34, 197, 94, 0.8); }
   .cards.two{ grid-template-columns: 1fr; }
   .actions-center{ text-align:center; margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
   .actions-center .btn{ min-width:220px; }
@@ -354,66 +355,39 @@ function onPlanCtaClick(ev, cta, link){
 </script>
 
 <script>
-  function isNowBetween(startStr, endStr) {
-    const now = new Date();
-
-    const norm = s => (s || '').trim();
-    const [sh, sm] = norm(startStr).split(':').map(Number);
-    const [eh, em] = norm(endStr).split(':').map(Number);
-
-    if (Number.isNaN(sh) || Number.isNaN(eh)) return false;
-
-    const start = new Date(now);
-    start.setHours(sh, Number.isNaN(sm) ? 0 : sm, 0, 0);
-
-    const end = new Date(now);
-    end.setHours(eh, Number.isNaN(em) ? 0 : em, 0, 0);
-
-    // Handle intervals crossing midnight
-    if (end < start) {
-      end.setDate(end.getDate() + 1);
-    }
-
-    return now >= start && now <= end;
-  }
-
   function updateTrainingStatuses() {
-    const items = document.querySelectorAll('.schedule-item');
+    const now = new Date();
+    const items = document.querySelectorAll('.schedule-item[data-start]');
 
     items.forEach(item => {
+      const startStrRaw = item.dataset.start || '';
+      if (!startStrRaw) return;
+
+      const startStr = startStrRaw.replace('.', ':').trim();
+      const [h, m] = startStr.split(':').map(Number);
+      if (Number.isNaN(h)) return;
+
+      const start = new Date();
+      start.setHours(h, Number.isNaN(m) ? 0 : m, 0, 0);
+
+      const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+
       const statusEl = item.querySelector('.schedule-item__status');
       if (!statusEl) return;
 
-      // Prefer reading from visible time-badge; normalize unicode dashes to '-'
-      const badge = item.querySelector('.time-badge');
-      let start, end;
-
-      if (badge && badge.textContent) {
-        const norm = badge.textContent.replace(/[\u2012\u2013\u2014\u2015\u2212]/g, '-').trim();
-        const parts = norm.split('-').map(s => s.trim());
-        if (parts.length >= 2) {
-          start = parts[0];
-          end = parts[1];
-        }
-      }
-
-      // Fallback to dataset if badge parsing failed
-      if (!start || !end) {
-        start = (item.dataset.start || '').replace(/[\u2012\u2013\u2014\u2015\u2212]/g, '-').trim();
-        end = (item.dataset.end || '').replace(/[\u2012\u2013\u2014\u2015\u2212]/g, '-').trim();
-      }
-
-      if (start && end && isNowBetween(start, end)) {
-        statusEl.textContent = 'Тренировка идёт';
+      if (now >= start && now <= end) {
+        statusEl.innerHTML = '<span class="active-dot"></span>';
         item.classList.add('schedule-item--active');
       } else {
-        statusEl.textContent = '';
+        statusEl.innerHTML = '';
         item.classList.remove('schedule-item--active');
       }
     });
   }
 
-  updateTrainingStatuses();
-  setInterval(updateTrainingStatuses, 60000);
+  document.addEventListener('DOMContentLoaded', () => {
+    updateTrainingStatuses();
+    setInterval(updateTrainingStatuses, 60000);
+  });
 </script>
 {% endblock %}
