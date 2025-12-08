@@ -371,6 +371,30 @@ def create_app():
             description="Wiru Combat Academy MTÜ privaatsuspoliitika"
         )
 
+    @app.route("/terms")
+    def terms():
+        return render_template(
+            "terms.html",
+            title="Kasutustingimused – Wiru Combat Academy",
+            description="Wiru Combat Academy MTÜ kasutustingimused"
+        )
+
+    @app.route("/cookies")
+    def cookies():
+        return render_template(
+            "cookies.html",
+            title="Küpsiste poliitika – Wiru Combat Academy",
+            description="Wiru Combat Academy MTÜ küpsiste poliitika"
+        )
+
+    @app.route("/safety")
+    def safety():
+        return render_template(
+            "safety.html",
+            title="Ohutusreeglid treeningutel – Wiru Combat Academy",
+            description="Wiru Combat Academy MTÜ ohutusreeglid treeningutel"
+        )
+
     @app.route("/send-message", methods=["POST"])
     def send_message():
         name = request.form.get("name")
