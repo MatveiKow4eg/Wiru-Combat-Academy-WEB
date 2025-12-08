@@ -281,12 +281,12 @@ h1, .wc-title, .story-heading .story-word.main {
   content: attr(data-label);
   position: absolute;
   left: 50%;
-  top: 20px; /* 🔽 опускаем текст ниже */
+  top: 45px;
   transform: translateX(-50%);
   font-family: "Anton", sans-serif;
-  font-size: clamp(60px, 14vw, 160px); /* 🔽 уменьшенный размер */
+  font-size: clamp(60px, 14vw, 120px);
   color: transparent;
-  -webkit-text-stroke: 1px rgba(255,255,255,0.06);
+  -webkit-text-stroke: 1px rgba(255,255,255,0.04);
   letter-spacing: 4px;
   z-index: 0;
   pointer-events: none;
