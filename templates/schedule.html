@@ -141,7 +141,7 @@
                             {{ it.activity }}
                           {% endif %}
                         {% else %}
-                          {% if it.discipline == 'boxing' %}{{ _('Бокс') }}{% elif it.discipline == 'wrestling' %}{{ _('Борьба') }}{% elif it.discipline == 'mma' %}{{ _('ММА') }}{% else %}
+                          {% if it.discipline == 'boxing' %}{{ _('Бокс') }}{% elif it.discipline == 'wrestling' %}{{ _('Борьба') }}{% elif it.discipline == 'mma' %}{{ _('ММА') }}{% elif it.discipline == 'sparring' %}{{ _('Спарринг') }}{% else %}
                             {# Фолбэк с переводом для неизвестных дисциплин #}
                             {% set act = (it.activity|string).strip() %}
                             {% if act == 'Общеукрепляющие тренировки' or act == 'Общеукрепляющие' %}

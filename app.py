@@ -651,7 +651,7 @@ def create_app():
         form = ScheduleForm()
         if form.validate_on_submit():
             disc = form.discipline.data if hasattr(form, "discipline") else None
-            labels = {"boxing": "Boxing", "wrestling": "Wrestling", "mma": "MMA"}
+            labels = {"boxing": "Boxing", "wrestling": "Wrestling", "mma": "MMA", "sparring": "Sparring"}
             item = Schedule(
                 day_of_week=form.day_of_week.data,
                 time=form.time.data,
@@ -718,7 +718,7 @@ def create_app():
         if not time or not valid_time(time):
             app.logger.error(f"Invalid time: {time}")
             return jsonify({"error": "invalid time"}), 400
-        if not discipline or discipline not in {"boxing", "wrestling", "mma", "other"}:
+        if not discipline or discipline not in {"boxing", "wrestling", "mma", "sparring", "other"}:
             app.logger.error(f"Invalid discipline: {discipline}")
             return jsonify({"error": "invalid discipline"}), 400
 
@@ -726,6 +726,7 @@ def create_app():
             "boxing": "Boxing",
             "wrestling": "Wrestling",
             "mma": "MMA",
+            "sparring": "Sparring",
             "other": "Other",
         }
         if discipline == "other":
@@ -806,14 +807,14 @@ def create_app():
             item.coach = coach
         if "discipline" in data:
             disc = (data.get("discipline") or "").strip().lower() or None
-            if not disc or disc not in {"boxing", "wrestling", "mma", "other"}:
+            if not disc or disc not in {"boxing", "wrestling", "mma", "sparring", "other"}:
                 return jsonify({"error": "invalid discipline"}), 400
             item.discipline = disc
         if "age" in data:
             item.age = (data.get("age") or "").strip() or None
 
         if "discipline" in data or "age" in data:
-            labels = {"boxing": "Boxing", "wrestling": "Wrestling", "mma": "MMA"}
+            labels = {"boxing": "Boxing", "wrestling": "Wrestling", "mma": "MMA", "sparring": "Sparring"}
             if item.discipline == "other":
                 custom_base = (data.get("activity") or "").strip()
                 if not custom_base:

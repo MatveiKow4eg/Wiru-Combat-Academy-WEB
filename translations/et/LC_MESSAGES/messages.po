@@ -179,6 +179,9 @@ msgstr "Kokku:"
 msgid "Добавить новость"
 msgstr "Lisa uudis"
 
+msgid "Подробнее"
+msgstr "Loe lähemalt"
+
 msgid "Заявки"
 msgstr "Avaldused"
 
@@ -527,7 +530,7 @@ msgstr "Kõik õigused kaitstud"
 
 # Avalehe sektsioonid
 msgid "БУДЬ В ФОРМЕ"
-msgstr "OLE HEAS VORMIS"
+msgstr "SAAVUTA VORM"
 
 msgid "СТАНЬ СИЛЬНЕЕ"
 msgstr "MUUTU TUGEVAMAKS"
