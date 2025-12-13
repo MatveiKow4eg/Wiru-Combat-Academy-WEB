@@ -865,3 +865,6 @@ msgstr "At Wiru Combat Academy, we offer boxing, wrestling and MMA training with
 
 msgid "Подробнее"
 msgstr "Learn more"
+
+msgid "Спарринг"
+msgstr "Sparring"

@@ -541,6 +541,10 @@ msgstr "MEIST"
 msgid "Наша история"
 msgstr "Meie lugu"
 
+
+msgid "Спарринг"
+msgstr "Sparring"
+
 msgid "Тренировки и расписание"
 msgstr "Treeningud ja ajakava"
 
