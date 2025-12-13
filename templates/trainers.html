@@ -6,34 +6,62 @@
 {% endblock %}
 
 {% block content %}
+{#
+  NOTE:
+  - Полностью убрана хрупкая логика по t.name.
+  - Строгая привязка по стабильному идентификатору t.slug.
+  - Безопасный fallback: если slug отсутствует, используем пустой словарь.
+  - TODO: обеспечить, чтобы slug приходил из backend (Flask) для каждого тренера.
+#}
+
+{# Единый конфиг по slug: роль, факты, телефон #}
+{% set TRAINER_DEFAULTS = {
+  'serikov': {
+    'role': _('Главный тренер по боксу'),
+    'facts': [
+      _('10-кратный чемпион Эстонии по боксу'),
+      _('Бронзовый призёр чемпионата Европы среди студентов'),
+      _('16 лет в боксе'),
+    ],
+    'phone': '+372 5330 6426',
+  },
+  'park': {
+    'role': _('Тренер по греко-римской борьбе и ММА'),
+    'facts': [
+      _('10+ лет тренировок в клубе Kalev'),
+      _('Опыт тренировок в SBG Dublin (Ирландия)'),
+      _('Опыт работы в Школе смешанных единоборств'),
+    ],
+    'phone': '+372 557 8012',
+  },
+} %}
+
 <section class="container pad-y trainers-section">
   <h1 class="trainers-title">{{ _('Тренеры') }}</h1>
 
   <div class="trainers-list">
     {% for t in trainers %}
-      {% set role = t.role or (_('Главный тренер по боксу') if t.name == 'Кирилл Сериков' else (_('Тренер по греко-римской борьбе и ММА') if t.name == 'Сийм Пярк' else None)) %}
+      {# Стабильный ключ тренера #}
+      {% set slug = (t.slug if t.slug is defined and t.slug) or '' %}
+      {% set d = TRAINER_DEFAULTS.get(slug) | default({}, true) %}
+
+      {# Вычисляем данные с учётом непустых значений и fallback #}
+      {% set role = (t.role if t.role is defined and t.role) or d.role %}
+      {% set facts = (t.facts if t.facts is defined and t.facts) or (d.facts if d.facts is defined and d.facts) or [] %}
+      {% set phone = (t.phone if t.phone is defined and t.phone) or d.phone %}
+
       <article class="trainer{{ ' trainer--reverse' if loop.index is even else '' }}">
         <div class="trainer__media">
           <img class="trainer__photo" src="{{ t.photo or url_for('static', filename='images/trainer.svg') }}" alt="{{ _(t.name) }}">
         </div>
         <div class="trainer__content">
           <h2 class="trainer__name">{{ _(t.name) }}</h2>
+
           {% if role %}
             <div class="trainer__role">{{ role }}</div>
           {% endif %}
 
-          {# Список ключевых фактов #}
-          {% set facts = t.facts if t.facts is defined else (
-            [
-              _('10-кратный чемпион Эстонии по боксу'),
-              _('Бронзовый призёр чемпионата Европы среди студентов'),
-              _('16 лет в боксе'),
-            ] if t.name == 'Кирилл Сериков' else [
-              _('10+ лет тренировок в клубе Kalev'),
-              _('Опыт тренировок в SBG Dublin (Ирландия)'),
-              _('Опыт работы в Школе смешанных единоборств'),
-            ]) %}
-
+          {# Список ключевых фактов (максимум 4) #}
           <div class="trainer__facts">
             <ul>
               {% for item in facts[:4] %}
@@ -42,12 +70,13 @@
             </ul>
           </div>
 
-{# Телефон #}
-{% set phone = t.phone if t.phone is defined else ('+372 5330 6426' if t.name == 'Кирилл Сериков' else '+372 5335 9985') %}
-
-<div class="trainer__phone">
-  <a href="tel:{{ phone|replace(' ', '') }}">{{ phone }}</a>
-</div>
+          {# Телефон (только если есть) #}
+          {% if phone %}
+          <div class="trainer__phone">
+            <a href="tel:{{ (phone|string)|replace(' ', '') }}">{{ phone }}</a>
+          </div>
+          {% endif %}
+        </div>
       </article>
     {% else %}
       <p>{{ _('Скоро здесь появятся тренеры.') }}</p>
