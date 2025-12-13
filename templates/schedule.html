@@ -154,7 +154,7 @@
                         <span class="schedule-item__status"></span>
                       </span>
                       <span></span>
-                      <span class="coach-muted">{{ it.coach or '' }}</span>
+                      <span class="coach-muted">{% if it.coach %}{{ _(it.coach) }}{% endif %}</span>
                     </div>
                   {% endfor %}
                 {% else %}
