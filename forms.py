@@ -44,7 +44,7 @@ class ScheduleForm(FlaskForm):
     discipline = SelectField(
         "Discipline",
         validators=[DataRequired()],
-        choices=[("boxing", "Boxing"), ("wrestling", "Wrestling"), ("mma", "MMA")],
+        choices=[("boxing", "Boxing"), ("wrestling", "Wrestling"), ("mma", "MMA"), ("sparring", "Sparring")],
     )
     coach = StringField("Coach")
     submit = SubmitField("Save")
@@ -57,7 +57,7 @@ class SignupForm(FlaskForm):
     activity = SelectField(
         "Activity",
         validators=[DataRequired()],
-        choices=[("boxing", "Boxing"), ("wrestling", "Wrestling"), ("mma", "MMA")],
+        choices=[("boxing", "Boxing"), ("wrestling", "Wrestling"), ("mma", "MMA"), ("sparring", "Sparring")],
     )
     submit = SubmitField("Sign up")
 
