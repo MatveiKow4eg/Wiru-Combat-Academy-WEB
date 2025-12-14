@@ -678,8 +678,8 @@ msgid "Направление"
 msgstr "Discipline"
 
 # Trainers roles/facts
-msgid "Главный тренер по боксу"
-msgstr "Head boxing coach"
+msgid "Бокс и общая физическая подготовка для молодёжи"
+msgstr "Boxing & youth general physical preparation"
 
 msgid "Тренер по греко-римской борьбе и ММА"
 msgstr "Greco-Roman wrestling and MMA coach"

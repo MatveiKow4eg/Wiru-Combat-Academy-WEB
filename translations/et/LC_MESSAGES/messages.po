@@ -673,8 +673,8 @@ msgid "Направление"
 msgstr "Suunad"
 
 # Treenerid — rollid ja faktid
-msgid "Главный тренер по боксу"
-msgstr "Põhitreener (poks)"
+msgid "Бокс и общая физическая подготовка для молодёжи"
+msgstr "Poks ja noorte üldfüüsiline ettevalmistus"
 
 msgid "Тренер по греко-римской борьбе и ММА"
 msgstr "Kreeka-rooma maadluse ja MMA treener"
