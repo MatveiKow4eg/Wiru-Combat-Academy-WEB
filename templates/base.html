@@ -215,6 +215,7 @@
         <h3>{{ _('Напишите нам') }}</h3>
 <form method="POST" action="{{ url_for('send_message') }}">
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <input type="text" name="website" value="" style="display:none !important; visibility:hidden; height:0; width:0; opacity:0;" tabindex="-1" autocomplete="off" aria-hidden="true">
   
   <div class="form-row two-cols">
     <input type="text" name="name" placeholder="{{ _('Ваше имя') }}" required>
