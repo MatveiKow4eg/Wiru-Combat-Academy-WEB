@@ -298,5 +298,62 @@
 
 
 <script src="{{ url_for('static', filename='js/title-line.js') }}"></script>
+<script>
+  // Client-side XSS guard for footer contact form
+  (function(){
+    function $(sel, root){ return (root || document).querySelector(sel); }
+    function createError(el, msg){
+      removeError(el);
+      var d = document.createElement('div');
+      d.className = 'error';
+      d.textContent = msg || '{{ _("Недопустимые символы") }}';
+      d.style.marginTop = '6px';
+      el.setAttribute('aria-invalid','true');
+      el.classList.add('input-error');
+      if (el.parentNode) el.parentNode.appendChild(d);
+    }
+    function removeError(el){
+      el.removeAttribute('aria-invalid');
+      el.classList.remove('input-error');
+      var next = el.parentNode ? el.parentNode.querySelector('.error') : null;
+      if (next) next.parentNode.removeChild(next);
+    }
+
+    var form = document.querySelector('form[action="{{ url_for('send_message') }}"]');
+    if (!form) return;
+
+    var nameEl = $('input[name="name"]', form);
+    var emailEl = $('input[name="email"]', form);
+    var msgEl = $('textarea[name="message"]', form);
+
+    // Detect common XSS payloads
+    var xssRe = /(javascript\s*:|on[a-z]+\s*=|<\s*(script|img|svg|iframe|object|embed)[^>]*|<\s*\/\s*script\s*>|<[a-z][^>]*>)/i;
+
+    function validateField(el){
+      if (!el) return true;
+      var v = (el.value || '').trim();
+      if (!v) { removeError(el); return true; }
+      if (xssRe.test(v)) { createError(el, '{{ _("Недопустимые символы") }}'); return false; }
+      removeError(el); return true;
+    }
+
+    [nameEl, emailEl, msgEl].forEach(function(el){
+      if (!el) return;
+      el.addEventListener('input', function(){ validateField(el); });
+      el.addEventListener('blur', function(){ validateField(el); });
+    });
+
+    form.addEventListener('submit', function(evt){
+      var ok = true;
+      ok = validateField(nameEl) && ok;
+      ok = validateField(emailEl) && ok;
+      ok = validateField(msgEl) && ok;
+      if (!ok) {
+        evt.preventDefault();
+        try { (nameEl && nameEl.focus()) || (emailEl && emailEl.focus()) || (msgEl && msgEl.focus()); } catch(e) {}
+      }
+    });
+  })();
+</script>
 </body>
 </html>
